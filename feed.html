@@ -8,13 +8,11 @@
     <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
     
     <style>
-        /* --- ARQUITETURA DE DESIGN (Linhas 1-150) ---
-           Estilos baseados em profundidade, desfoque e contraste.
-        */
+        /* --- ARQUITETURA DE DESIGN --- */
         :root {
-            --primary: #FFD700; /* Amarelo Vibrante */
+            --primary: #FFD700; 
             --primary-dark: #ccac00;
-            --bg: #0f0f0f;      /* Fundo escuro premium */
+            --bg: #0f0f0f;      
             --card-bg: rgba(255, 255, 255, 0.05);
             --glass: rgba(255, 255, 255, 0.1);
             --text-main: #ffffff;
@@ -24,9 +22,7 @@
         }
 
         * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+            margin: 0; padding: 0; box-sizing: border-box;
             font-family: 'Inter', sans-serif;
             -webkit-tap-highlight-color: transparent;
         }
@@ -37,265 +33,75 @@
             overflow-x: hidden;
         }
 
-        /* Custom Scrollbar */
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: var(--bg); }
-        ::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 10px; }
-
-        /* --- HEADER PREMIUM (Linhas 151-250) --- */
         .app-header {
-            position: fixed;
-            top: 0;
-            width: 100%;
-            height: 70px;
-            background: rgba(15, 15, 15, 0.8);
-            backdrop-filter: blur(20px);
+            position: fixed; top: 0; width: 100%; height: 70px;
+            background: rgba(15, 15, 15, 0.8); backdrop-filter: blur(20px);
             border-bottom: 1px solid var(--border);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0 20px;
-            z-index: 1000;
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 0 20px; z-index: 1000;
         }
 
-        .brand {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
+        .brand { display: flex; align-items: center; gap: 10px; }
         .brand .logo-circle {
-            width: 35px;
-            height: 35px;
-            background: var(--primary);
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 800;
-            color: #000;
-            box-shadow: 0 0 15px rgba(255, 215, 0, 0.3);
+            width: 35px; height: 35px; background: var(--primary);
+            border-radius: 8px; display: flex; align-items: center;
+            justify-content: center; font-weight: 800; color: #000;
         }
 
-        .brand h1 {
-            font-size: 1.2rem;
-            letter-spacing: -0.5px;
-            background: linear-gradient(90deg, #fff, var(--primary));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .header-actions {
-            display: flex;
-            gap: 20px;
-            font-size: 1.2rem;
-        }
-
-        /* --- STORIES / CATEGORIAS (Linhas 251-400) --- */
         .stories-container {
-            margin-top: 85px;
-            padding: 10px 0;
-            display: flex;
-            overflow-x: auto;
-            gap: 15px;
-            padding-left: 20px;
-            scrollbar-width: none;
+            margin-top: 85px; padding: 10px 0; display: flex;
+            overflow-x: auto; gap: 15px; padding-left: 20px; scrollbar-width: none;
         }
 
         .story-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            min-width: 75px;
-            transition: 0.3s;
+            display: flex; flex-direction: column; align-items: center;
+            min-width: 75px; cursor: pointer;
         }
 
         .story-ring {
-            width: 68px;
-            height: 68px;
-            border-radius: 50%;
-            padding: 3px;
+            width: 68px; height: 68px; border-radius: 50%; padding: 3px;
             background: linear-gradient(45deg, var(--primary), #ff8c00, #fff);
             margin-bottom: 8px;
         }
 
         .story-content {
-            width: 100%;
-            height: 100%;
-            background: var(--bg);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.5rem;
-            border: 2px solid var(--bg);
+            width: 100%; height: 100%; background: var(--bg);
+            border-radius: 50%; display: flex; align-items: center;
+            justify-content: center; font-size: 1.5rem;
         }
 
-        .story-item span {
-            font-size: 0.7rem;
-            font-weight: 500;
-            color: var(--text-dim);
-        }
-
-        /* --- FEED DE CARTÕES (Linhas 401-800) --- */
-        .main-feed {
-            max-width: 600px;
-            margin: 20px auto;
-            padding: 0 15px 100px;
-        }
+        .main-feed { max-width: 600px; margin: 20px auto; padding: 0 15px 100px; }
 
         .post-card {
-            background: var(--card-bg);
-            backdrop-filter: blur(10px);
-            border: 1px solid var(--border);
-            border-radius: 24px;
-            margin-bottom: 30px;
-            overflow: hidden;
-            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            background: var(--card-bg); border: 1px solid var(--border);
+            border-radius: 24px; margin-bottom: 30px; overflow: hidden;
         }
 
-        .post-card:hover {
-            transform: translateY(-5px);
-            border-color: rgba(255, 215, 0, 0.3);
-        }
+        .post-media img { width: 100%; display: block; }
 
-        .post-header {
-            padding: 15px 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .author-info {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .author-img {
-            width: 40px;
-            height: 40px;
-            border-radius: 12px;
-            background: var(--primary);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #000;
-            font-weight: 700;
-        }
-
-        .author-text h4 { font-size: 0.95rem; }
-        .author-text p { font-size: 0.75rem; color: var(--text-dim); }
-
-        .post-media {
-            width: 100%;
-            position: relative;
-            min-height: 300px;
-            background: #1a1a1a;
-        }
-
-        .post-media img {
-            width: 100%;
-            display: block;
-        }
-
-        .tag-overlay {
-            position: absolute;
-            top: 15px;
-            right: 15px;
-            background: rgba(0,0,0,0.6);
-            padding: 5px 12px;
-            border-radius: 20px;
-            font-size: 0.7rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            backdrop-filter: blur(5px);
-            color: var(--primary);
-            border: 1px solid var(--primary);
-        }
-
-        .post-footer {
-            padding: 20px;
-        }
-
-        .interaction-bar {
-            display: flex;
-            gap: 20px;
-            margin-bottom: 15px;
-            font-size: 1.4rem;
-        }
-
-        .interaction-bar i {
-            cursor: pointer;
-            transition: 0.2s;
-        }
-
-        .interaction-bar i:hover { color: var(--primary); }
-
-        .caption {
-            font-size: 0.9rem;
-            line-height: 1.5;
-        }
-
-        .caption strong { color: var(--primary); }
-
-        /* --- BARRA DE NAVEGAÇÃO DOCK (Linhas 801-1000) --- */
         .dock-nav {
-            position: fixed;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 90%;
-            max-width: 400px;
-            height: 65px;
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(25px);
-            border: 1px solid var(--border);
-            border-radius: 30px;
-            display: flex;
-            justify-content: space-around;
-            align-items: center;
-            box-shadow: var(--shadow);
-            z-index: 2000;
+            position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+            width: 90%; max-width: 400px; height: 65px;
+            background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(25px);
+            border: 1px solid var(--border); border-radius: 30px;
+            display: flex; justify-content: space-around; align-items: center; z-index: 2000;
         }
 
-        .nav-item {
-            color: var(--text-dim);
-            font-size: 1.2rem;
-            transition: 0.3s;
-            cursor: pointer;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        .nav-item.active {
-            color: var(--primary);
-        }
-
+        .nav-item { color: var(--text-dim); font-size: 1.2rem; cursor: pointer; transition: 0.3s; }
+        .nav-item.active { color: var(--primary); }
         .nav-item.center-btn {
-            width: 50px;
-            height: 50px;
-            background: var(--primary);
-            color: #000;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-top: -30px;
-            border: 5px solid var(--bg);
-            box-shadow: 0 0 20px rgba(255, 215, 0, 0.4);
+            width: 50px; height: 50px; background: var(--primary); color: #000;
+            border-radius: 50%; display: flex; align-items: center;
+            justify-content: center; margin-top: -30px; border: 5px solid var(--bg);
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
+        #dynamic-content { padding: 20px; margin-top: 20px; animation: fadeIn 0.5s ease; }
+        .alert-item {
+            background: #1a1a1a; border-left: 5px solid var(--primary);
+            padding: 15px; border-radius: 12px; margin-bottom: 15px;
         }
 
-        .animate-post {
-            animation: fadeIn 0.8s ease forwards;
-        }
-
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body>
@@ -307,16 +113,16 @@
         </div>
         <div class="header-actions">
             <span>🔍</span>
-            <span>🔔</span>
+            <span style="cursor:pointer;" onclick="window.location.href='alertas.html'">🔔</span>
         </div>
     </header>
 
-    <div class="stories-container">
-        <div class="story-item">
+    <div class="stories-container" id="stories">
+        <div class="story-item" onclick="location.reload()">
             <div class="story-ring"><div class="story-content">⭐</div></div>
             <span>Para Você</span>
         </div>
-        <div class="story-item">
+        <div class="story-item" onclick="window.location.href='alertas.html'">
             <div class="story-ring" style="background: #ff4444;"><div class="story-content">🚨</div></div>
             <span>Alertas</span>
         </div>
@@ -328,89 +134,107 @@
             <div class="story-ring"><div class="story-content">🚧</div></div>
             <span>Obras</span>
         </div>
-        <div class="story-item">
-            <div class="story-ring"><div class="story-content">🏥</div></div>
-            <span>Saúde</span>
-        </div>
-        <div class="story-item">
-            <div class="story-ring"><div class="story-content">🏀</div></div>
-            <span>Esporte</span>
-        </div>
     </div>
 
-    <main class="main-feed">
-
-        <article class="post-card animate-post">
-            <div class="post-header">
-                <div class="author-info">
-                    <div class="author-img" style="background: #ff4444; color: white;">00</div>
-                    <div class="author-text">
-                        <h4>Brother Alerta</h4>
-                        <p>Zona Norte • há 15 min</p>
-                    </div>
-                </div>
-                <span>•••</span>
+    <main class="main-feed" id="content-area">
+        <article class="post-card">
+            <div style="padding:15px 20px; display:flex; align-items:center; gap:12px;">
+                <div style="width:40px; height:40px; border-radius:12px; background:#ff4444; display:flex; align-items:center; justify-content:center; font-weight:700;">00</div>
+                <div><h4>Brother Alerta</h4><p style="font-size:0.75rem; color:var(--text-dim);">Zona Norte • há 15 min</p></div>
             </div>
             <div class="post-media">
-                <div class="tag-overlay">Urgente</div>
-                <img src="https://images.unsplash.com/photo-1541675154750-0444c7d51e8e?auto=format&fit=crop&w=600&q=80" alt="Alerta">
+                <img src="https://images.unsplash.com/photo-1541675154750-0444c7d51e8e?auto=format&fit=crop&w=600&q=80">
             </div>
-            <div class="post-footer">
-                <div class="interaction-bar">
-                    <span>❤️</span> <span>💬</span> <span>✈️</span>
-                </div>
-                <div class="caption">
-                    <p><strong>2.430 pessoas viram isso</strong></p>
-                    <p><strong>Brother Alerta:</strong> Atenção moradores! O temporal causou queda de árvores na Rua Principal. Evitem a região. <br><strong>#Segurança #Chuva</strong></p>
-                </div>
+            <div style="padding:20px;">
+                <p><strong>Brother Alerta:</strong> Atenção! Queda de árvore na Rua Principal. Evitem a região. #Segurança</p>
             </div>
         </article>
-
-        <article class="post-card animate-post" style="animation-delay: 0.2s;">
-            <div class="post-header">
-                <div class="author-info">
-                    <div class="author-img">💼</div>
-                    <div class="author-text">
-                        <h4>Oportunidades Locais</h4>
-                        <p>Centro • há 2h</p>
-                    </div>
-                </div>
-                <span>•••</span>
-            </div>
-            <div class="post-media" style="background: linear-gradient(135deg, #FFD700, #ff8c00); display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 40px; text-align: center; color: #000;">
-                <h2 style="font-size: 2rem;">VAGA: RECEPCIONISTA</h2>
-                <p style="font-weight: 600; margin-top: 10px;">Clínica Saúde Total</p>
-                <div style="margin-top: 20px; background: #000; color: #fff; padding: 10px 20px; border-radius: 10px;">Candidatar-se</div>
-            </div>
-            <div class="post-footer">
-                <div class="interaction-bar">
-                    <span>❤️</span> <span>💬</span> <span>✈️</span>
-                </div>
-                <div class="caption">
-                    <p><strong>Brother:</strong> Tem vaga nova no bairro! Se você tem experiência em atendimento, essa é sua chance. <br><strong>#EmpregoJá #EconomiaLocal</strong></p>
-                </div>
-            </div>
-        </article>
-
     </main>
 
     <nav class="dock-nav">
-        <div class="nav-item active">
-            <span>🏠</span>
-        </div>
-        <div class="nav-item">
-            <span>📍</span>
-        </div>
-        <div class="nav-item center-btn">
-            <span>➕</span>
-        </div>
-        <div class="nav-item">
-            <span>💬</span>
-        </div>
-        <div class="nav-item">
-            <span>👤</span>
-        </div>
+        <div class="nav-item active" id="nav-home"><span>🏠</span></div>
+        <div class="nav-item" id="nav-map"><span>📍</span></div>
+        <div class="nav-item center-btn" id="nav-add"><span>➕</span></div>
+        <div class="nav-item" id="nav-vagas"><span>💼</span></div>
+        <div class="nav-item" id="nav-profile"><span>👤</span></div>
     </nav>
 
+    <script>
+        const contentArea = document.getElementById('content-area');
+        const stories = document.getElementById('stories');
+        const navItems = document.querySelectorAll('.nav-item');
+
+        function setActive(el) {
+            navItems.forEach(nav => nav.classList.remove('active'));
+            el.classList.add('active');
+        }
+
+        function clearScreen(hideStories = true) {
+            contentArea.innerHTML = '';
+            if(hideStories) stories.style.display = 'none';
+            else stories.style.display = 'flex';
+            window.scrollTo(0,0);
+        }
+
+        // 1. HOME (Recarrega para voltar ao feed)
+        document.getElementById('nav-home').addEventListener('click', function() {
+            location.reload();
+        });
+
+        // 2. MAPA (Dinâmico)
+        document.getElementById('nav-map').addEventListener('click', function() {
+            setActive(this);
+            clearScreen(false);
+            contentArea.innerHTML = `
+                <div id="dynamic-content" style="text-align:center;">
+                    <h2 style="color:var(--primary);">📍 Mapa da Cidade</h2>
+                    <div style="width:100%; height:350px; background:#222; border-radius:24px; margin-top:20px; display:flex; align-items:center; justify-content:center; border:2px dashed #444;">
+                        <p style="color:var(--text-dim);">[ Mapa Interativo em Desenvolvimento ]</p>
+                    </div>
+                </div>`;
+        });
+
+        // 3. ADICIONAR (Dinâmico)
+        document.getElementById('nav-add').addEventListener('click', function() {
+            clearScreen(true);
+            contentArea.innerHTML = `
+                <div id="dynamic-content">
+                    <h2 style="color:var(--primary);">➕ Nova Ocorrência</h2>
+                    <p style="margin-bottom:20px; color:var(--text-dim);">O que está acontecendo agora?</p>
+                    <textarea placeholder="Descreva o problema ou evento..." style="width:100%; height:120px; background:#1a1a1a; border:1px solid var(--border); border-radius:15px; padding:15px; color:white; margin-bottom:15px; outline:none;"></textarea>
+                    <button style="width:100%; padding:15px; background:var(--primary); color:black; border:none; border-radius:15px; font-weight:800; cursor:pointer;">PUBLICAR</button>
+                </div>`;
+        });
+
+        // 4. VAGAS (Dinâmico)
+        document.getElementById('nav-vagas').addEventListener('click', function() {
+            setActive(this);
+            clearScreen(false);
+            contentArea.innerHTML = `
+                <div id="dynamic-content">
+                    <h2 style="color:var(--primary);">💼 Oportunidades</h2>
+                    <div class="alert-item">
+                        <h4>Atendente Comercial</h4>
+                        <p style="font-size:0.85rem; color:#bbb;">Loja Centro | Salário: R$ 1.800,00</p>
+                    </div>
+                </div>`;
+        });
+
+        // 5. PERFIL (Dinâmico)
+        document.getElementById('nav-profile').addEventListener('click', function() {
+            setActive(this);
+            clearScreen(true);
+            contentArea.innerHTML = `
+                <div id="dynamic-content" style="text-align:center;">
+                    <div style="width:100px; height:100px; background:var(--primary); border-radius:30px; margin:0 auto 20px; display:flex; align-items:center; justify-content:center; font-size:2rem; color:black; font-weight:800;">GB</div>
+                    <h2>Gabriel Brother</h2>
+                    <p style="color:var(--text-dim);">Cidadão Ouro</p>
+                    <div style="display:flex; justify-content:space-around; margin-top:40px;">
+                        <div><h3 style="color:var(--primary);">12</h3><p style="font-size:0.7rem;">Relatos</p></div>
+                        <div><h3 style="color:var(--primary);">85</h3><p style="font-size:0.7rem;">Apoios</p></div>
+                    </div>
+                </div>`;
+        });
+    </script>
 </body>
 </html>
