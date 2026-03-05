@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>00 Brother - Feed da Cidade</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* --- ESTILOS DO FEED (INSPIRADO NO INSTAGRAM) --- */
+        :root {
+            --primary: #FFD700; /* Amarelo Logo */
+            --bg: #fafafa;
+            --white: #ffffff;
+            --border: #dbdbdb;
+            --text: #262626;
+            --gray: #8e8e8e;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding-bottom: 60px; /* Espaço para barra inferior */
+        }
+
+        /* Barra Superior Fixa */
+        .top-bar {
+            background: var(--white);
+            border-bottom: 1px solid var(--border);
+            padding: 10px 20px;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-sizing: border-box;
+        }
+
+        .top-bar h2 {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #000;
+        }
+
+        /* Filtros de Categoria (Stories Style) */
+        .filters {
+            display: flex;
+            overflow-x: auto;
+            padding: 70px 15px 15px;
+            gap: 15px;
+            background: var(--white);
+            scrollbar-width: none;
+        }
+
+        .filter-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-width: 70px;
+        }
+
+        .filter-circle {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            border: 2px solid var(--primary);
+            padding: 3px;
+            background: var(--white);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        .filter-item span {
+            font-size: 0.7rem;
+            margin-top: 5px;
+            font-weight: 600;
+        }
+
+        /* Feed de Posts */
+        .feed {
+            max-width: 500px;
+            margin: 20px auto;
+            padding: 0 10px;
+        }
+
+        .post-card {
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            margin-bottom: 25px;
+            overflow: hidden;
+        }
+
+        .post-header {
+            padding: 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 0.8rem;
+        }
+
+        .post-info h4 {
+            font-size: 0.9rem;
+            margin: 0;
+        }
+
+        .post-info span {
+            font-size: 0.7rem;
+            color: var(--gray);
+        }
+
+        .post-image {
+            width: 100%;
+            aspect-ratio: 1/1;
+            background-color: #efefef;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+        }
+
+        .post-actions {
+            padding: 12px;
+            display: flex;
+            gap: 15px;
+            font-size: 1.3rem;
+        }
+
+        .post-content {
+            padding: 0 12px 12px;
+        }
+
+        .post-content p {
+            font-size: 0.9rem;
+            margin: 5px 0;
+        }
+
+        .post-content .hashtag {
+            color: #00376b;
+            font-weight: 600;
+        }
+
+        /* Barra de Navegação Inferior */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            background: var(--white);
+            border-top: 1px solid var(--border);
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0;
+            font-size: 1.5rem;
+        }
+
+        .nav-btn {
+            cursor: pointer;
+            color: var(--text);
+        }
+
+        .btn-plus {
+            background: var(--primary);
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: -5px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="top-bar">
+        <h2>00 Brother</h2>
+        <div style="font-size: 1.2rem;">🔔 🔍</div>
+    </div>
+
+    <div class="filters">
+        <div class="filter-item">
+            <div class="filter-circle">⭐</div>
+            <span>Tudo</span>
+        </div>
+        <div class="filter-item">
+            <div class="filter-circle">🚨</div>
+            <span>Alertas</span>
+        </div>
+        <div class="filter-item">
+            <div class="filter-circle">🎉</div>
+            <span>Eventos</span>
+        </div>
+        <div class="filter-item">
+            <div class="filter-circle">🏥</div>
+            <span>Saúde</span>
+        </div>
+        <div class="filter-item">
+            <div class="filter-circle">🚧</div>
+            <span>Obras</span>
+        </div>
+    </div>
+
+    <div class="feed">
+
+        <div class="post-card">
+            <div class="post-header">
+                <div class="user-avatar">PM</div>
+                <div class="post-info">
+                    <h4>Prefeitura Municipal</h4>
+                    <span>Centro • Há 20 min</span>
+                </div>
+            </div>
+            <div class="post-image" style="background: url('https://images.unsplash.com/photo-1573164713988-8665fc963095?auto=format&fit=crop&w=500&q=60') center/cover;">
+                </div>
+            <div class="post-actions">
+                <span>❤️</span> <span>💬</span> <span>✈️</span>
+            </div>
+            <div class="post-content">
+                <p><strong>254 curtidas</strong></p>
+                <p><strong>Prefeitura:</strong> Atenção! Obras na Av. Central começam hoje às 22h. Planeje sua rota. <span class="hashtag">#TransitoLocal #00Brother</span></p>
+            </div>
+        </div>
+
+        <div class="post-card">
+            <div class="post-header">
+                <div class="user-avatar" style="background: #000; color: #FFD700;">00</div>
+                <div class="post-info">
+                    <h4>Brother Denúncia</h4>
+                    <span>Bairro Jardim • Há 2h</span>
+                </div>
+            </div>
+            <div class="post-image" style="background: #FFD700; color: #000; font-weight: bold; font-size: 1.5rem; text-align: center; padding: 20px;">
+                CUIDADO: Buraco na Rua das Flores!
+            </div>
+            <div class="post-actions">
+                <span>❤️</span> <span>💬</span> <span>✈️</span>
+            </div>
+            <div class="post-content">
+                <p><strong>89 curtidas</strong></p>
+                <p><strong>Usuário_Silva:</strong> Quase quebrei a suspensão do carro aqui. Alô prefeitura! <span class="hashtag">#Buraco #Zeladoria</span></p>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="bottom-nav">
+        <div class="nav-btn">🏠</div>
+        <div class="nav-btn">📍</div>
+        <div class="nav-btn btn-plus">➕</div>
+        <div class="nav-btn">💼</div>
+        <div class="nav-btn">👤</div>
+    </div>
+
+</body>
+</html>
