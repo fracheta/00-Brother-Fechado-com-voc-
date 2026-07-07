@@ -6,26 +6,17 @@
     <title>00brother – Feed</title>
     <meta name="description" content="00brother - A rede social da sua cidade. Feed de utilidade pública, sem distrações.">
     <meta name="theme-color" content="#0f0f0f">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800;14..32,900&display=swap" rel="stylesheet">
 
     <style>
-        /* ============================================================
-           DESIGN SYSTEM — TOKENS & VARIÁVEIS
-           ============================================================ */
         :root {
             --primary: #FFD700;
             --primary-glow: rgba(255, 215, 0, 0.25);
             --primary-glass: rgba(255, 215, 0, 0.08);
             --bg: #0f0f0f;
-            --bg-elevated: rgba(255, 255, 255, 0.03);
             --surface: rgba(255, 255, 255, 0.04);
             --surface-hover: rgba(255, 255, 255, 0.07);
-            --glass: rgba(255, 255, 255, 0.05);
-            --glass-strong: rgba(255, 255, 255, 0.1);
             --glass-border: rgba(255, 255, 255, 0.08);
             --text-main: #ffffff;
             --text-secondary: #b0b0b0;
@@ -33,150 +24,97 @@
             --danger: #ff4444;
             --success: #2ecc71;
             --info: #3498db;
-
-            --shadow-xs: 0 1px 3px rgba(0,0,0,0.3);
-            --shadow-sm: 0 4px 12px rgba(0,0,0,0.4);
             --shadow-md: 0 8px 28px rgba(0,0,0,0.5);
-            --shadow-lg: 0 20px 60px rgba(0,0,0,0.7);
-            --shadow-glow: 0 0 40px rgba(255,215,0,0.2);
-
             --radius-sm: 10px;
             --radius-md: 16px;
             --radius-lg: 24px;
             --radius-full: 9999px;
-
             --ease-out-expo: cubic-bezier(0.19, 1, 0.22, 1);
-            --ease-out-back: cubic-bezier(0.34, 1.56, 0.64, 1);
             --duration-fast: 180ms;
             --duration-normal: 350ms;
-            --duration-slow: 600ms;
-
             --text-body: clamp(0.875rem, 0.85rem + 0.1vw, 0.95rem);
             --text-small: clamp(0.7rem, 0.68rem + 0.08vw, 0.8rem);
-
             --header-h: 72px;
             --sidebar-w: 260px;
             --feed-max-w: 660px;
-            --widget-w: 290px;
-            --safe-bottom: env(safe-area-inset-bottom, 16px);
         }
-
         @media (prefers-color-scheme: light) {
             :root {
-                --bg: #f0f2f5;
-                --text-main: #1a1a1a;
-                --text-secondary: #555;
-                --text-dim: #999;
-                --surface: rgba(0,0,0,0.03);
-                --glass-border: rgba(0,0,0,0.08);
+                --bg: #f0f2f5; --text-main: #1a1a1a; --text-secondary: #555;
+                --text-dim: #999; --surface: rgba(0,0,0,0.03); --glass-border: rgba(0,0,0,0.08);
             }
         }
-        body.high-contrast {
-            --bg: #000; --text-main: #fff; --surface: #111;
-            --primary: #FFFF00; --glass-border: #fff;
-        }
-
+        body.high-contrast { --bg: #000; --text-main: #fff; --surface: #111; --primary: #FFFF00; --glass-border: #fff; }
         *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
         html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
         body {
             font-family: 'Inter', system-ui, -apple-system, sans-serif;
-            background: var(--bg); color: var(--text-main);
-            min-height: 100vh; overflow-x: hidden;
-            -webkit-font-smoothing: antialiased; line-height: 1.6;
-            transition: background var(--duration-normal) var(--ease-out-expo);
-            font-size: var(--text-body);
+            background: var(--bg); color: var(--text-main); min-height: 100vh;
+            overflow-x: hidden; -webkit-font-smoothing: antialiased; line-height: 1.6;
+            font-size: var(--text-body); transition: background var(--duration-normal) var(--ease-out-expo);
         }
         body::after {
             content: ''; position: fixed; inset: 0;
             background: radial-gradient(ellipse at 30% 0%, rgba(255,215,0,0.05) 0%, transparent 50%),
                         radial-gradient(ellipse at 70% 100%, rgba(255,140,0,0.03) 0%, transparent 50%);
             pointer-events: none; z-index: -1;
-            animation: ambientGlow 12s ease-in-out infinite alternate;
         }
-        @keyframes ambientGlow { 0% { opacity: 0.7; } 100% { opacity: 1; } }
-        a { color: inherit; text-decoration: none; }
-        button { cursor: pointer; border: none; background: none; color: inherit; font: inherit; }
-        img { max-width: 100%; display: block; }
-        ::selection { background: var(--primary); color: #000; }
-
-        /* Scrollbar */
         ::-webkit-scrollbar { width: 6px; }
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 3px; }
-        ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.3); }
+        a { color: inherit; text-decoration: none; }
+        button { cursor: pointer; border: none; background: none; color: inherit; font: inherit; }
+        img { max-width: 100%; display: block; }
 
-        /* ============================================================
-           HEADER
-           ============================================================ */
+        /* Header */
         .app-header {
             position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
             height: var(--header-h); padding: 0 24px;
             background: rgba(15,15,15,0.7); backdrop-filter: blur(30px) saturate(200%);
             -webkit-backdrop-filter: blur(30px) saturate(200%);
-            border-bottom: 1px solid var(--glass-border);
-            display: flex; justify-content: space-between; align-items: center;
+            border-bottom: 1px solid var(--glass-border); display: flex;
+            justify-content: space-between; align-items: center;
         }
-        .brand { display: flex; align-items: center; gap: 12px; user-select: none; }
+        .brand { display: flex; align-items: center; gap: 12px; }
         .logo-circle {
             width: 44px; height: 44px; background: var(--primary); border-radius: var(--radius-sm);
             display: flex; align-items: center; justify-content: center; font-weight: 900;
             color: #000; font-size: 1.2rem; box-shadow: 0 0 24px var(--primary-glow);
         }
-        .brand h1 { font-size: clamp(1.2rem, 1.1rem + 0.3vw, 1.4rem); font-weight: 800; letter-spacing: -0.5px; line-height: 1.1; }
+        .brand h1 { font-size: 1.3rem; font-weight: 800; letter-spacing: -0.5px; line-height: 1.1; }
         .brand h1 span { display: block; font-size: 0.5rem; font-weight: 500; letter-spacing: 2.5px; text-transform: uppercase; color: var(--text-dim); }
         .header-actions { display: flex; gap: 20px; align-items: center; }
         .header-actions a, .header-actions button {
             color: var(--text-secondary); font-size: 1.15rem; transition: var(--duration-fast);
-            width: 38px; height: 38px; display: flex; align-items: center; justify-content: center;
-            border-radius: 50%;
+            width: 38px; height: 38px; display: flex; align-items: center; justify-content: center; border-radius: 50%;
         }
         .header-actions a:hover, .header-actions button:hover { color: var(--primary); background: var(--primary-glass); }
         .badge-dot {
             position: absolute; top: 4px; right: 4px; width: 9px; height: 9px;
             background: var(--danger); border-radius: 50%; border: 2px solid var(--bg);
-            animation: pulseBadge 2s ease-in-out infinite;
         }
-        @keyframes pulseBadge { 0%,100% { transform: scale(1); } 50% { transform: scale(1.3); } }
         .menu-toggle { display: none; }
 
-        /* ============================================================
-           LAYOUT PRINCIPAL
-           ============================================================ */
+        /* Layout */
         .app-layout { display: flex; min-height: 100vh; padding-top: var(--header-h); }
         .sidebar {
             width: var(--sidebar-w); flex-shrink: 0; padding: 20px 14px;
             border-right: 1px solid var(--glass-border); background: rgba(15,15,15,0.3);
             backdrop-filter: blur(10px); display: flex; flex-direction: column; gap: 4px;
-            position: sticky; top: var(--header-h); height: calc(100vh - var(--header-h));
-            overflow-y: auto; z-index: 500;
+            position: sticky; top: var(--header-h); height: calc(100vh - var(--header-h)); overflow-y: auto; z-index: 500;
         }
         .sidebar-nav-label { font-size: 0.6rem; text-transform: uppercase; letter-spacing: 2.5px; color: var(--text-dim); padding: 10px 14px 6px; font-weight: 700; }
         .sidebar a {
-            display: flex; align-items: center; gap: 14px; padding: 11px 16px;
-            border-radius: var(--radius-md); color: var(--text-secondary); font-weight: 500;
-            font-size: 0.88rem; transition: var(--duration-fast); position: relative;
-        }
-        .sidebar a::before {
-            content: ''; position: absolute; left: 0; top: 50%; transform: translateY(-50%);
-            width: 3px; height: 0; background: var(--primary); border-radius: 0 3px 3px 0;
-            transition: height var(--duration-fast) var(--ease-out-expo);
+            display: flex; align-items: center; gap: 14px; padding: 11px 16px; border-radius: var(--radius-md);
+            color: var(--text-secondary); font-weight: 500; font-size: 0.88rem; transition: var(--duration-fast); position: relative;
         }
         .sidebar a:hover { background: var(--surface-hover); color: var(--primary); }
         .sidebar a.active { background: var(--primary-glass); color: var(--primary); font-weight: 700; }
-        .sidebar a.active::before { height: 24px; }
         .sidebar a i { width: 22px; text-align: center; font-size: 1.1rem; }
-        .sidebar .new-post-btn {
-            background: linear-gradient(135deg, var(--primary), #ffaa00); color: #000;
-            justify-content: center; font-weight: 700; margin-top: 14px;
-            border-radius: var(--radius-lg); padding: 14px; font-size: 0.95rem;
-            gap: 8px; box-shadow: 0 8px 24px rgba(255,215,0,0.3);
-        }
         .main-area { flex: 1; display: flex; justify-content: center; padding: 28px 36px; gap: 36px; min-width: 0; }
         .feed-wrapper { flex: 1; max-width: var(--feed-max-w); min-width: 0; }
 
-        /* ============================================================
-           STORIES (agora com filtro ativo)
-           ============================================================ */
+        /* Stories */
         .stories-scroll {
             padding: 4px 0 20px; overflow-x: auto; display: flex; gap: 16px;
             scrollbar-width: none; mask-image: linear-gradient(to right, black 92%, transparent 100%);
@@ -184,17 +122,13 @@
         }
         .stories-scroll::-webkit-scrollbar { display: none; }
         .story-pill {
-            display: flex; flex-direction: column; align-items: center;
-            min-width: 74px; cursor: pointer; text-decoration: none;
-            color: inherit; gap: 6px; transition: transform var(--duration-fast), opacity var(--duration-fast);
-            background: none; border: none; font: inherit;
+            display: flex; flex-direction: column; align-items: center; min-width: 74px;
+            cursor: pointer; gap: 6px; transition: transform var(--duration-fast); background: none; border: none; font: inherit;
         }
-        .story-pill:active { transform: scale(0.94); }
         .story-avatar {
             width: 64px; height: 64px; border-radius: 50%; padding: 3px;
             background: linear-gradient(135deg, var(--primary), #ff8c00, #fff);
             transition: box-shadow var(--duration-fast), transform var(--duration-fast);
-            position: relative;
         }
         .story-avatar.alert { background: linear-gradient(135deg, var(--danger), #ff6b6b, #fff); }
         .story-avatar.event { background: linear-gradient(135deg, var(--info), #5dade2, #fff); }
@@ -202,38 +136,28 @@
         .story-avatar.health { background: linear-gradient(135deg, #e74c3c, #f1948a, #fff); }
         .story-inner {
             width: 100%; height: 100%; background: var(--bg); border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 1.5rem; transition: background var(--duration-fast);
+            display: flex; align-items: center; justify-content: center; font-size: 1.5rem;
         }
-        .story-pill:hover .story-avatar { box-shadow: 0 0 28px rgba(255,215,0,0.4); transform: scale(1.06); }
         .story-pill.active-filter .story-avatar { box-shadow: 0 0 0 4px var(--primary); }
         .story-label { font-size: 0.65rem; font-weight: 600; text-align: center; white-space: nowrap; max-width: 74px; overflow: hidden; text-overflow: ellipsis; color: var(--text-secondary); }
 
-        /* ============================================================
-           POSTS
-           ============================================================ */
+        /* Posts */
         .feed-container { display: flex; flex-direction: column; gap: 24px; }
         .post {
             background: var(--surface); border: 1px solid var(--glass-border);
             border-radius: var(--radius-lg); overflow: hidden;
             transition: border-color var(--duration-normal), box-shadow var(--duration-normal), transform var(--duration-normal);
-            animation: postIn 0.5s var(--ease-out-expo) both;
-            contain: layout style; backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
+            animation: postIn 0.5s var(--ease-out-expo) both; backdrop-filter: blur(10px);
         }
-        .post:nth-child(1) { animation-delay: 0s; }
-        .post:nth-child(2) { animation-delay: 0.12s; }
-        .post:nth-child(3) { animation-delay: 0.24s; }
-        .post:nth-child(4) { animation-delay: 0.36s; }
         @keyframes postIn { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
-        .post:hover { border-color: rgba(255,215,0,0.35); box-shadow: var(--shadow-md), 0 0 60px rgba(255,215,0,0.05); transform: translateY(-2px); }
+        .post:hover { border-color: rgba(255,215,0,0.35); box-shadow: var(--shadow-md); transform: translateY(-2px); }
+        .post.hidden-post { display: none; }
         .post-header { padding: 14px 20px; display: flex; align-items: center; gap: 12px; }
         .avatar {
             width: 46px; height: 46px; border-radius: var(--radius-sm); display: flex;
-            align-items: center; justify-content: center; font-weight: 700; color: #fff;
-            flex-shrink: 0; font-size: 0.8rem;
+            align-items: center; justify-content: center; font-weight: 700; color: #fff; flex-shrink: 0;
         }
-        .avatar.pref { background: #1a1a1a; border: 2px solid var(--primary); color: var(--primary); box-shadow: 0 0 16px var(--primary-glow); }
+        .avatar.pref { background: #1a1a1a; border: 2px solid var(--primary); color: var(--primary); }
         .avatar.alert { background: var(--danger); }
         .avatar.sport { background: #2c3e50; }
         .avatar.job { background: #1e8449; }
@@ -241,7 +165,7 @@
         .post-meta p { font-size: var(--text-small); color: var(--text-dim); display: flex; align-items: center; gap: 4px; margin-top: 2px; }
         .verified-icon { color: var(--primary); font-size: 0.7rem; }
         .post-media img { width: 100%; max-height: 420px; object-fit: cover; transition: transform 0.7s var(--ease-out-expo); }
-        .post:hover .post-media img { transform: scale(1.03); }
+        .post:hover .post-media img { transform: scale(1.02); }
         .post-body { padding: 18px 20px; }
         .category-badge {
             display: inline-block; padding: 5px 14px; border-radius: var(--radius-full);
@@ -255,56 +179,13 @@
         .post-body p { font-size: var(--text-body); line-height: 1.65; }
         .post-actions {
             display: flex; gap: 22px; padding: 10px 20px 16px;
-            border-top: 1px solid rgba(255,255,255,0.03);
-            color: var(--text-dim); font-size: var(--text-small);
+            border-top: 1px solid rgba(255,255,255,0.03); color: var(--text-dim); font-size: var(--text-small);
         }
-        .post-actions button {
-            display: inline-flex; align-items: center; gap: 7px;
-            transition: var(--duration-fast); padding: 8px 14px; border-radius: var(--radius-full); font-weight: 500;
-        }
+        .post-actions button { display: inline-flex; align-items: center; gap: 7px; padding: 8px 14px; border-radius: var(--radius-full); font-weight: 500; transition: var(--duration-fast); }
         .post-actions button:hover { color: var(--primary); background: var(--primary-glass); }
-        .post-actions button.liked { color: var(--primary); }
-        .post-actions button.liked i { animation: likePop 0.4s var(--ease-out-back); }
-        @keyframes likePop { 0% { transform: scale(1); } 50% { transform: scale(1.4); } 100% { transform: scale(1); } }
 
-        /* Oculta posts que não correspondem ao filtro */
-        .post.hidden-post { display: none; }
-
-        /* ============================================================
-           WIDGETS
-           ============================================================ */
-        .widget-panel {
-            width: var(--widget-w); flex-shrink: 0; display: flex; flex-direction: column; gap: 18px;
-            position: sticky; top: calc(var(--header-h) + 28px);
-            align-self: flex-start; max-height: calc(100vh - var(--header-h) - 56px); overflow-y: auto;
-        }
-        .widget-card {
-            background: var(--surface); border: 1px solid var(--glass-border);
-            border-radius: var(--radius-lg); padding: 22px; backdrop-filter: blur(10px);
-        }
-        .widget-card h4 { font-size: 0.8rem; font-weight: 700; margin-bottom: 14px; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 1.5px; }
-        .weather-row { display: flex; align-items: center; gap: 14px; font-size: 2.2rem; }
-        .weather-row .icon { color: var(--primary); font-size: 2.4rem; }
-        .weather-row .temp { font-weight: 800; }
-        .quick-links { display: flex; flex-direction: column; gap: 6px; }
-        .quick-links a {
-            display: flex; align-items: center; gap: 12px; padding: 10px 14px;
-            border-radius: var(--radius-md); font-size: 0.85rem; font-weight: 500;
-            color: var(--text-secondary); transition: var(--duration-fast);
-        }
-        .quick-links a:hover { background: var(--surface-hover); color: var(--primary); }
-        .quick-links a i { width: 20px; text-align: center; color: var(--primary); }
-
-        /* ============================================================
-           RESPONSIVO
-           ============================================================ */
-        @media (max-width: 1200px) { .widget-panel { display: none; } .main-area { padding: 24px 20px; } }
         @media (max-width: 768px) {
-            .sidebar { position: fixed; top: var(--header-h); left: 0; bottom: 0; transform: translateX(-100%); z-index: 1500; background: rgba(15,15,15,0.97); width: 280px; }
-            .sidebar.mobile-open { transform: translateX(0); }
-            .sidebar-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 1400; }
-            .sidebar-overlay.active { display: block; }
-            .menu-toggle { display: flex; }
+            .sidebar { display: none; }
             .main-area { padding: 16px 10px; }
             .feed-container { gap: 16px; }
             .post-body { padding: 14px 16px; }
@@ -315,147 +196,197 @@
 </head>
 <body>
 
-    <header class="app-header" id="appHeader" role="banner">
+    <header class="app-header">
         <div style="display:flex; align-items:center; gap:16px;">
-            <button class="menu-toggle" id="menuToggle" aria-label="Abrir menu"><i class="fa-solid fa-bars"></i></button>
-            <a href="10.html" class="brand" aria-label="00brother - Ir para o início">
-                <div class="logo-circle">00</div>
-                <h1>00brother <span>Fechado com você</span></h1>
-            </a>
+            <a href="10.html" class="brand"><div class="logo-circle">00</div><h1>00brother <span>Fechado com você</span></h1></a>
         </div>
         <div class="header-actions">
             <button popovertarget="searchPopover" aria-label="Buscar"><i class="fa-solid fa-magnifying-glass"></i></button>
-            <a href="70.html" aria-label="Notificações" style="position:relative;"><i class="fa-solid fa-bell"></i><span class="badge-dot" aria-hidden="true"></span></a>
+            <a href="70.html" aria-label="Notificações" style="position:relative;"><i class="fa-solid fa-bell"></i><span class="badge-dot"></span></a>
         </div>
     </header>
 
-    <div id="searchPopover" popover style="position:fixed;top:80px;left:50%;transform:translateX(-50%);background:var(--glass-strong);backdrop-filter:blur(30px);border:1px solid var(--glass-border);border-radius:var(--radius-lg);padding:16px;width:min(400px,90vw);z-index:5000;color:var(--text-main);">
-        <input type="text" placeholder="Buscar na cidade..." style="width:100%;padding:12px 16px;border-radius:var(--radius-full);border:1px solid var(--glass-border);background:var(--surface);color:var(--text-main);font-size:0.9rem;outline:none;">
-    </div>
-
     <div class="app-layout">
-        <aside class="sidebar" id="sidebar" role="navigation" aria-label="Menu principal">
-            <span class="sidebar-nav-label">Navegação</span>
-            <a href="10.html" class="active"><i class="fa-solid fa-house"></i> Início</a>
-            <a href="30.html"><i class="fa-solid fa-map-location-dot"></i> Mapa da Cidade</a>
-            <a href="70.html"><i class="fa-solid fa-bell"></i> Alertas</a>
-            <a href="90.html"><i class="fa-solid fa-calendar-days"></i> Eventos</a>
-            <a href="50.html"><i class="fa-solid fa-briefcase"></i> Vagas</a>
-            <span class="sidebar-nav-label" style="margin-top:10px;">Comunidade</span>
-            <a href="100.html"><i class="fa-solid fa-road-barrier"></i> Obras</a>
-            <a href="110.html"><i class="fa-solid fa-hospital"></i> Saúde</a>
-            <a href="120.html"><i class="fa-solid fa-graduation-cap"></i> Escolas</a>
-            <a href="60.html"><i class="fa-solid fa-user"></i> Meu Perfil</a>
-            <a href="40.html" class="new-post-btn"><i class="fa-solid fa-plus"></i> Nova Ocorrência</a>
-        </aside>
-        <div class="sidebar-overlay" id="sidebarOverlay"></div>
-
         <main class="main-area">
             <div class="feed-wrapper">
-                <!-- Stories com filtro -->
                 <div class="stories-scroll" id="storiesContainer">
-                    <button class="story-pill active-filter" data-filter="all">
-                        <div class="story-avatar"><div class="story-inner">⭐</div></div>
-                        <span class="story-label">Para Você</span>
-                    </button>
-                    <button class="story-pill" data-filter="alerta">
-                        <div class="story-avatar alert"><div class="story-inner">🚨</div></div>
-                        <span class="story-label">Alertas</span>
-                    </button>
-                    <button class="story-pill" data-filter="evento">
-                        <div class="story-avatar event"><div class="story-inner">🎭</div></div>
-                        <span class="story-label">Eventos</span>
-                    </button>
-                    <button class="story-pill" data-filter="obras">
-                        <div class="story-avatar"><div class="story-inner">🚧</div></div>
-                        <span class="story-label">Obras</span>
-                    </button>
-                    <button class="story-pill" data-filter="vagas">
-                        <div class="story-avatar job"><div class="story-inner">💼</div></div>
-                        <span class="story-label">Vagas</span>
-                    </button>
-                    <button class="story-pill" data-filter="saude">
-                        <div class="story-avatar health"><div class="story-inner">🏥</div></div>
-                        <span class="story-label">Saúde</span>
-                    </button>
+                    <button class="story-pill active-filter" data-filter="all"><div class="story-avatar"><div class="story-inner">⭐</div></div><span class="story-label">Para Você</span></button>
+                    <button class="story-pill" data-filter="alerta"><div class="story-avatar alert"><div class="story-inner">🚨</div></div><span class="story-label">Alertas</span></button>
+                    <button class="story-pill" data-filter="evento"><div class="story-avatar event"><div class="story-inner">🎭</div></div><span class="story-label">Eventos</span></button>
+                    <button class="story-pill" data-filter="obras"><div class="story-avatar"><div class="story-inner">🚧</div></div><span class="story-label">Obras</span></button>
+                    <button class="story-pill" data-filter="vagas"><div class="story-avatar job"><div class="story-inner">💼</div></div><span class="story-label">Vagas</span></button>
+                    <button class="story-pill" data-filter="saude"><div class="story-avatar health"><div class="story-inner">🏥</div></div><span class="story-label">Saúde</span></button>
                 </div>
 
-                <!-- Feed com data-category -->
                 <div class="feed-container" id="feedContainer" role="feed">
-                    <article class="post" data-category="alerta" tabindex="0">
+                    <!-- 1. Alerta -->
+                    <article class="post" data-category="alerta">
                         <div class="post-header"><div class="avatar pref"><i class="fa-solid fa-building-columns"></i></div><div class="post-meta"><h4>Prefeitura Municipal</h4><p><i class="fa-solid fa-circle-check verified-icon"></i> Verificado • há 20 min</p></div></div>
                         <div class="post-body"><span class="category-badge danger">Alerta de Trânsito</span><p><strong>🚧 Interdição na Av. Central</strong> para obras de drenagem. Trecho entre as ruas 7 e 9 ficará fechado de 15 a 20/11. Desvio sinalizado pela rotatória.</p></div>
                         <div class="post-actions"><button data-action="like"><i class="fa-regular fa-thumbs-up"></i> 142</button><button><i class="fa-regular fa-comment"></i> 23</button><button><i class="fa-regular fa-share-from-square"></i></button></div>
                     </article>
-                    <article class="post" data-category="vagas" tabindex="0">
+
+                    <!-- 2. Vagas -->
+                    <article class="post" data-category="vagas">
                         <div class="post-header"><div class="avatar job"><i class="fa-solid fa-briefcase"></i></div><div class="post-meta"><h4>Agência do Trabalhador</h4><p>Oficial • há 2h</p></div></div>
-                        <div class="post-body"><span class="category-badge success">Vagas de Emprego</span><p><strong>💼 Feirão de empregos reúne 500 vagas</strong> na região central. Comércio e indústria participam. Inscrições abertas até sexta-feira no site da prefeitura.</p></div>
+                        <div class="post-body"><span class="category-badge success">Vagas de Emprego</span><p><strong>💼 Feirão de empregos reúne 500 vagas</strong> na região central. Comércio e indústria participam. Inscrições abertas até sexta-feira.</p></div>
                         <div class="post-actions"><button data-action="like"><i class="fa-regular fa-thumbs-up"></i> 89</button><button><i class="fa-regular fa-comment"></i> 12</button><button><i class="fa-regular fa-share-from-square"></i></button></div>
                     </article>
-                    <article class="post" data-category="evento" tabindex="0">
+
+                    <!-- 3. Evento -->
+                    <article class="post" data-category="evento">
                         <div class="post-header"><div class="avatar sport"><i class="fa-solid fa-futbol"></i></div><div class="post-meta"><h4>Grêmio Estudantil</h4><p>Escola Municipal • há 4h</p></div></div>
                         <div class="post-media"><img src="https://images.unsplash.com/photo-1579952363873-27f3bade9f55?auto=format&fit=crop&w=600&q=80" alt="Futsal"></div>
-                        <div class="post-body"><span class="category-badge info">Esporte Local</span><p><strong>⚽ Final do Intercolegial de Futsal</strong> será no ginásio municipal neste sábado. Entrada gratuita com 1kg de alimento. Torcida organizada pelos grêmios!</p></div>
+                        <div class="post-body"><span class="category-badge info">Esporte Local</span><p><strong>⚽ Final do Intercolegial de Futsal</strong> será no ginásio municipal neste sábado. Entrada gratuita com 1kg de alimento.</p></div>
                         <div class="post-actions"><button data-action="like"><i class="fa-regular fa-thumbs-up"></i> 315</button><button><i class="fa-regular fa-comment"></i> 67</button><button><i class="fa-regular fa-share-from-square"></i></button></div>
                     </article>
-                    <article class="post" data-category="obras" tabindex="0">
+
+                    <!-- 4. Obras -->
+                    <article class="post" data-category="obras">
                         <div class="post-header"><div class="avatar alert"><i class="fa-solid fa-triangle-exclamation"></i></div><div class="post-meta"><h4>Morador Zona Norte</h4><p>Mural da Comunidade • há 30 min</p></div></div>
+                        <div class="post-media"><img src="https://images.unsplash.com/photo-1625602812206-5ec545ca1231?auto=format&fit=crop&w=600&q=80" alt="Lâmpada"></div>
                         <div class="post-body"><span class="category-badge">Zeladoria Urbana</span><p><strong>💡 Lâmpada queimada na Rua das Flores</strong> já faz 3 dias. Poste nº 234. Alguém mais já reportou? #BairroUnido</p></div>
                         <div class="post-actions"><button data-action="like"><i class="fa-regular fa-thumbs-up"></i> 47</button><button><i class="fa-regular fa-comment"></i> 8</button><button><i class="fa-regular fa-share-from-square"></i></button></div>
                     </article>
-                    <!-- Post extra de saúde (exemplo) -->
-                    <article class="post" data-category="saude" tabindex="0">
+
+                    <!-- 5. Saúde -->
+                    <article class="post" data-category="saude">
                         <div class="post-header"><div class="avatar pref"><i class="fa-solid fa-hospital"></i></div><div class="post-meta"><h4>Secretaria de Saúde</h4><p><i class="fa-solid fa-circle-check verified-icon"></i> Verificado • há 1h</p></div></div>
+                        <div class="post-media"><img src="https://images.unsplash.com/photo-1576091160550-2173dba999ef?auto=format&fit=crop&w=600&q=80" alt="Vacinação"></div>
                         <div class="post-body"><span class="category-badge">Saúde Pública</span><p><strong>🏥 Campanha de vacinação</strong> neste sábado nas UBSs centrais. Das 8h às 17h. Não esqueça a carteirinha!</p></div>
                         <div class="post-actions"><button data-action="like"><i class="fa-regular fa-thumbs-up"></i> 202</button><button><i class="fa-regular fa-comment"></i> 45</button><button><i class="fa-regular fa-share-from-square"></i></button></div>
                     </article>
+
+                    <!-- 6. Alerta -->
+                    <article class="post" data-category="alerta">
+                        <div class="post-header"><div class="avatar alert"><i class="fa-solid fa-cloud-showers-heavy"></i></div><div class="post-meta"><h4>Defesa Civil</h4><p><i class="fa-solid fa-circle-check verified-icon"></i> Verificado • há 3h</p></div></div>
+                        <div class="post-body"><span class="category-badge danger">Alerta Climático</span><p><strong>🌧️ Temporal com rajadas de vento</strong> previsto para hoje à noite. Evite áreas de alagamento e fique em local seguro.</p></div>
+                        <div class="post-actions"><button data-action="like"><i class="fa-regular fa-thumbs-up"></i> 98</button><button><i class="fa-regular fa-comment"></i> 15</button><button><i class="fa-regular fa-share-from-square"></i></button></div>
+                    </article>
+
+                    <!-- 7. Vagas -->
+                    <article class="post" data-category="vagas">
+                        <div class="post-header"><div class="avatar job"><i class="fa-solid fa-store"></i></div><div class="post-meta"><h4>Comércio Local</h4><p>Parceiro • há 5h</p></div></div>
+                        <div class="post-body"><span class="category-badge success">Vagas de Emprego</span><p><strong>🛒 Supermercado contrata</strong> 20 vagas para repositor e caixa. Benefícios: VT + VA. Enviar currículo até dia 25.</p></div>
+                        <div class="post-actions"><button data-action="like"><i class="fa-regular fa-thumbs-up"></i> 56</button><button><i class="fa-regular fa-comment"></i> 9</button><button><i class="fa-regular fa-share-from-square"></i></button></div>
+                    </article>
+
+                    <!-- 8. Evento -->
+                    <article class="post" data-category="evento">
+                        <div class="post-header"><div class="avatar sport"><i class="fa-solid fa-music"></i></div><div class="post-meta"><h4>Secretaria de Cultura</h4><p><i class="fa-solid fa-circle-check verified-icon"></i> Verificado • há 6h</p></div></div>
+                        <div class="post-media"><img src="https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?auto=format&fit=crop&w=600&q=80" alt="Show"></div>
+                        <div class="post-body"><span class="category-badge info">Agenda Cultural</span><p><strong>🎵 Show gratuito na praça</strong> com banda local neste domingo às 18h. Traga a família!</p></div>
+                        <div class="post-actions"><button data-action="like"><i class="fa-regular fa-thumbs-up"></i> 178</button><button><i class="fa-regular fa-comment"></i> 34</button><button><i class="fa-regular fa-share-from-square"></i></button></div>
+                    </article>
+
+                    <!-- 9. Obras -->
+                    <article class="post" data-category="obras">
+                        <div class="post-header"><div class="avatar pref"><i class="fa-solid fa-building-columns"></i></div><div class="post-meta"><h4>Secretaria de Obras</h4><p><i class="fa-solid fa-circle-check verified-icon"></i> Verificado • há 1d</p></div></div>
+                        <div class="post-media"><img src="https://images.unsplash.com/photo-1590859808308-3d2d9c515b8a?auto=format&fit=crop&w=600&q=80" alt="Obras"></div>
+                        <div class="post-body"><span class="category-badge">Obras Públicas</span><p><strong>🏗️ Nova creche no Jardim América</strong> com 60% das obras concluídas. Previsão de entrega: dezembro.</p></div>
+                        <div class="post-actions"><button data-action="like"><i class="fa-regular fa-thumbs-up"></i> 234</button><button><i class="fa-regular fa-comment"></i> 41</button><button><i class="fa-regular fa-share-from-square"></i></button></div>
+                    </article>
+
+                    <!-- 10. Saúde -->
+                    <article class="post" data-category="saude">
+                        <div class="post-header"><div class="avatar pref"><i class="fa-solid fa-hospital"></i></div><div class="post-meta"><h4>UBS Central</h4><p>Oficial • há 2d</p></div></div>
+                        <div class="post-body"><span class="category-badge">Saúde Pública</span><p><strong>🩺 Atendimento oftalmológico gratuito</strong> nas quartas-feiras. Senhas distribuídas a partir das 7h.</p></div>
+                        <div class="post-actions"><button data-action="like"><i class="fa-regular fa-thumbs-up"></i> 87</button><button><i class="fa-regular fa-comment"></i> 12</button><button><i class="fa-regular fa-share-from-square"></i></button></div>
+                    </article>
+
+                    <!-- 11. Alerta -->
+                    <article class="post" data-category="alerta">
+                        <div class="post-header"><div class="avatar alert"><i class="fa-solid fa-bolt"></i></div><div class="post-meta"><h4>Companhia Elétrica</h4><p>Oficial • há 4h</p></div></div>
+                        <div class="post-body"><span class="category-badge danger">Alerta de Serviço</span><p><strong>⚡ Queda de energia programada</strong> no bairro Industrial. Desligamento das 14h às 17h para manutenção da rede.</p></div>
+                        <div class="post-actions"><button data-action="like"><i class="fa-regular fa-thumbs-up"></i> 63</button><button><i class="fa-regular fa-comment"></i> 20</button><button><i class="fa-regular fa-share-from-square"></i></button></div>
+                    </article>
+
+                    <!-- 12. Vagas -->
+                    <article class="post" data-category="vagas">
+                        <div class="post-header"><div class="avatar job"><i class="fa-solid fa-laptop-code"></i></div><div class="post-meta"><h4>TechCity Incubadora</h4><p>Parceiro • há 6h</p></div></div>
+                        <div class="post-body"><span class="category-badge success">Vagas de Emprego</span><p><strong>💻 Estágio em TI</strong> para estudantes do ensino médio. Bolsa de R$800,00 + curso de programação incluso.</p></div>
+                        <div class="post-actions"><button data-action="like"><i class="fa-regular fa-thumbs-up"></i> 134</button><button><i class="fa-regular fa-comment"></i> 28</button><button><i class="fa-regular fa-share-from-square"></i></button></div>
+                    </article>
+
+                    <!-- 13. Evento -->
+                    <article class="post" data-category="evento">
+                        <div class="post-header"><div class="avatar sport"><i class="fa-solid fa-person-running"></i></div><div class="post-meta"><h4>Liga Esportiva Municipal</h4><p>Oficial • há 1d</p></div></div>
+                        <div class="post-media"><img src="https://images.unsplash.com/photo-1552674605-db6ffd4facb5?auto=format&fit=crop&w=600&q=80" alt="Corrida"></div>
+                        <div class="post-body"><span class="category-badge info">Esporte Local</span><p><strong>🏃 Corrida de Rua 5km</strong> inscrições abertas até dia 30. Largada no parque central às 7h. Medalha para todos!</p></div>
+                        <div class="post-actions"><button data-action="like"><i class="fa-regular fa-thumbs-up"></i> 267</button><button><i class="fa-regular fa-comment"></i> 53</button><button><i class="fa-regular fa-share-from-square"></i></button></div>
+                    </article>
+
+                    <!-- 14. Obras -->
+                    <article class="post" data-category="obras">
+                        <div class="post-header"><div class="avatar alert"><i class="fa-solid fa-road"></i></div><div class="post-meta"><h4>Morador Centro</h4><p>Mural da Comunidade • há 5h</p></div></div>
+                        <div class="post-media"><img src="https://images.unsplash.com/photo-1625602812206-5ec545ca1231?auto=format&fit=crop&w=600&q=80" alt="Buraco"></div>
+                        <div class="post-body"><span class="category-badge">Zeladoria Urbana</span><p><strong>🕳️ Buraco na Rua XV</strong> está causando acidentes. Já são 3 carros com pneu furado essa semana. Urgente!</p></div>
+                        <div class="post-actions"><button data-action="like"><i class="fa-regular fa-thumbs-up"></i> 112</button><button><i class="fa-regular fa-comment"></i> 31</button><button><i class="fa-regular fa-share-from-square"></i></button></div>
+                    </article>
+
+                    <!-- 15. Saúde -->
+                    <article class="post" data-category="saude">
+                        <div class="post-header"><div class="avatar pref"><i class="fa-solid fa-hospital"></i></div><div class="post-meta"><h4>Vigilância Sanitária</h4><p><i class="fa-solid fa-circle-check verified-icon"></i> Verificado • há 2d</p></div></div>
+                        <div class="post-body"><span class="category-badge">Saúde Pública</span><p><strong>🦟 Mutirão contra dengue</strong> neste sábado no bairro São José. Agentes visitarão as casas das 8h às 12h.</p></div>
+                        <div class="post-actions"><button data-action="like"><i class="fa-regular fa-thumbs-up"></i> 76</button><button><i class="fa-regular fa-comment"></i> 14</button><button><i class="fa-regular fa-share-from-square"></i></button></div>
+                    </article>
+
+                    <!-- 16. Alerta -->
+                    <article class="post" data-category="alerta">
+                        <div class="post-header"><div class="avatar alert"><i class="fa-solid fa-fire"></i></div><div class="post-meta"><h4>Corpo de Bombeiros</h4><p>Oficial • há 45 min</p></div></div>
+                        <div class="post-body"><span class="category-badge danger">Alerta de Emergência</span><p><strong>🔥 Incêndio em vegetação</strong> próximo ao anel viário. Equipes no local. Evitem a região e não joguem bitucas de cigarro.</p></div>
+                        <div class="post-actions"><button data-action="like"><i class="fa-regular fa-thumbs-up"></i> 189</button><button><i class="fa-regular fa-comment"></i> 27</button><button><i class="fa-regular fa-share-from-square"></i></button></div>
+                    </article>
+
+                    <!-- 17. Vagas -->
+                    <article class="post" data-category="vagas">
+                        <div class="post-header"><div class="avatar job"><i class="fa-solid fa-utensils"></i></div><div class="post-meta"><h4>Restaurante Sabor Caseiro</h4><p>Local • há 8h</p></div></div>
+                        <div class="post-body"><span class="category-badge success">Vagas de Emprego</span><p><strong>🍳 Cozinheiro(a) e garçom/garçonete</strong> com experiência. Meio período ou integral. Comparecer com currículo.</p></div>
+                        <div class="post-actions"><button data-action="like"><i class="fa-regular fa-thumbs-up"></i> 42</button><button><i class="fa-regular fa-comment"></i> 6</button><button><i class="fa-regular fa-share-from-square"></i></button></div>
+                    </article>
+
+                    <!-- 18. Evento -->
+                    <article class="post" data-category="evento">
+                        <div class="post-header"><div class="avatar sport"><i class="fa-solid fa-film"></i></div><div class="post-meta"><h4>Cineclube Municipal</h4><p>Oficial • há 3d</p></div></div>
+                        <div class="post-media"><img src="https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?auto=format&fit=crop&w=600&q=80" alt="Cinema"></div>
+                        <div class="post-body"><span class="category-badge info">Agenda Cultural</span><p><strong>🎬 Sessão de cinema ao ar livre</strong> hoje às 20h no parque. Filme: "Central do Brasil". Pipoca gratuita!</p></div>
+                        <div class="post-actions"><button data-action="like"><i class="fa-regular fa-thumbs-up"></i> 321</button><button><i class="fa-regular fa-comment"></i> 89</button><button><i class="fa-regular fa-share-from-square"></i></button></div>
+                    </article>
+
+                    <!-- 19. Obras -->
+                    <article class="post" data-category="obras">
+                        <div class="post-header"><div class="avatar pref"><i class="fa-solid fa-building-columns"></i></div><div class="post-meta"><h4>Prefeitura Municipal</h4><p><i class="fa-solid fa-circle-check verified-icon"></i> Verificado • há 2d</p></div></div>
+                        <div class="post-body"><span class="category-badge">Obras Públicas</span><p><strong>🚌 Novo terminal de ônibus</strong> no bairro Industrial será inaugurado mês que vem. 12 linhas serão integradas.</p></div>
+                        <div class="post-actions"><button data-action="like"><i class="fa-regular fa-thumbs-up"></i> 456</button><button><i class="fa-regular fa-comment"></i> 78</button><button><i class="fa-regular fa-share-from-square"></i></button></div>
+                    </article>
+
+                    <!-- 20. Saúde -->
+                    <article class="post" data-category="saude">
+                        <div class="post-header"><div class="avatar pref"><i class="fa-solid fa-hospital"></i></div><div class="post-meta"><h4>Secretaria de Saúde</h4><p><i class="fa-solid fa-circle-check verified-icon"></i> Verificado • há 4d</p></div></div>
+                        <div class="post-media"><img src="https://images.unsplash.com/photo-1584515933487-779824d29309?auto=format&fit=crop&w=600&q=80" alt="Doação de sangue"></div>
+                        <div class="post-body"><span class="category-badge">Saúde Pública</span><p><strong>🩸 Doação de sangue</strong> no Hemocentro. Estoque crítico para tipos O+ e O-. Doe vida, doe sangue!</p></div>
+                        <div class="post-actions"><button data-action="like"><i class="fa-regular fa-thumbs-up"></i> 512</button><button><i class="fa-regular fa-comment"></i> 103</button><button><i class="fa-regular fa-share-from-square"></i></button></div>
+                    </article>
                 </div>
             </div>
-            <aside class="widget-panel" aria-label="Widgets">
-                <div class="widget-card"><h4>🌤️ Clima na Cidade</h4><div class="weather-row"><span class="icon"><i class="fa-solid fa-sun"></i></span><span class="temp">28°C</span></div><p style="font-size:0.8rem;color:var(--text-dim);margin-top:4px;">Parcialmente nublado • Londrina</p></div>
-                <div class="widget-card"><h4>⚡ Acesso Rápido</h4><div class="quick-links"><a href="30.html"><i class="fa-solid fa-location-dot"></i> Farmácias de Plantão</a><a href="30.html"><i class="fa-solid fa-bus"></i> Horários de Ônibus</a><a href="40.html"><i class="fa-solid fa-circle-exclamation"></i> Reportar Problema</a><a href="110.html"><i class="fa-solid fa-syringe"></i> Vacinação</a></div></div>
-                <div class="widget-card" style="text-align:center;padding:18px;"><p style="font-size:0.75rem;color:var(--text-dim);">© 2026 00brother<br>Fechado com você.</p></div>
-            </aside>
         </main>
     </div>
 
     <script>
-        'use strict';
-
-        // ========== SIDEBAR MOBILE ==========
-        const sidebar = document.getElementById('sidebar');
-        const overlay = document.getElementById('sidebarOverlay');
-        const menuToggle = document.getElementById('menuToggle');
-        function openSidebar() { sidebar.classList.add('mobile-open'); overlay.classList.add('active'); document.body.style.overflow = 'hidden'; }
-        function closeSidebar() { sidebar.classList.remove('mobile-open'); overlay.classList.remove('active'); document.body.style.overflow = ''; }
-        menuToggle.addEventListener('click', () => sidebar.classList.contains('mobile-open') ? closeSidebar() : openSidebar());
-        overlay.addEventListener('click', closeSidebar);
-        sidebar.querySelectorAll('a').forEach(link => link.addEventListener('click', () => { if (window.innerWidth <= 768) closeSidebar(); }));
-
-        // ========== FILTRO POR STORIES ==========
-        const storyPills = document.querySelectorAll('.story-pill');
+        const pills = document.querySelectorAll('.story-pill');
         const posts = document.querySelectorAll('.post');
 
-        function filterPosts(category) {
-            posts.forEach(post => {
-                if (category === 'all' || post.dataset.category === category) {
-                    post.classList.remove('hidden-post');
-                } else {
-                    post.classList.add('hidden-post');
-                }
-            });
-        }
-
-        storyPills.forEach(pill => {
+        pills.forEach(pill => {
             pill.addEventListener('click', () => {
-                storyPills.forEach(p => p.classList.remove('active-filter'));
+                pills.forEach(p => p.classList.remove('active-filter'));
                 pill.classList.add('active-filter');
                 const filter = pill.dataset.filter;
-                filterPosts(filter);
+                posts.forEach(post => {
+                    post.classList.toggle('hidden-post', filter !== 'all' && post.dataset.category !== filter);
+                });
             });
         });
 
-        // ========== LIKE ==========
         document.querySelectorAll('[data-action="like"]').forEach(btn => {
             btn.addEventListener('click', function(e) {
                 e.preventDefault();
@@ -465,19 +396,12 @@
                 let count = match ? parseInt(match[0]) : 0;
                 if (isLiked) {
                     icon.classList.replace('fa-solid', 'fa-regular');
-                    this.classList.remove('liked');
                     this.innerHTML = '<i class="fa-regular fa-thumbs-up"></i> ' + Math.max(0, count - 1);
                 } else {
                     icon.classList.replace('fa-regular', 'fa-solid');
-                    this.classList.add('liked');
                     this.innerHTML = '<i class="fa-solid fa-thumbs-up"></i> ' + (count + 1);
                 }
             });
-        });
-
-        // ========== SCROLL DO HEADER ==========
-        window.addEventListener('scroll', () => {
-            document.getElementById('appHeader').classList.toggle('scrolled', window.scrollY > 10);
         });
     </script>
 </body>
