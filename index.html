@@ -82,8 +82,7 @@
             --gray: #333;
             background: #fff !important;
         }
-        body.high-contrast .service-card,
-        body.high-contrast .news-item {
+        body.high-contrast .service-card {
             border: 2px solid #000;
             background: #fff;
         }
@@ -105,19 +104,17 @@
             color: #000;
         }
 
-        /* Header */
+        /* Header simplificado (apenas logo) */
         header {
             background-color: var(--primary);
-            padding: 1rem 5%;
+            padding: 1.2rem 5%;
             position: sticky;
             top: 0;
             z-index: 1000;
             box-shadow: 0 4px 20px rgba(0,0,0,0.08);
             display: flex;
-            justify-content: space-between;
+            justify-content: center;
             align-items: center;
-            flex-wrap: wrap;
-            gap: 12px;
         }
         .logo-container {
             display: flex;
@@ -142,28 +139,6 @@
             letter-spacing: 2px;
             text-transform: uppercase;
             color: #333;
-        }
-        nav ul {
-            display: flex;
-            list-style: none;
-            gap: 4px;
-        }
-        nav ul li a {
-            text-decoration: none;
-            color: var(--dark);
-            font-weight: 600;
-            font-size: 0.85rem;
-            padding: 10px 18px;
-            border-radius: 25px;
-            transition: var(--transition);
-            background: transparent;
-        }
-        nav ul li a:hover {
-            background: var(--dark);
-            color: var(--primary);
-        }
-        @media (max-width: 768px) {
-            nav { display: none; }
         }
 
         /* Hero com imagem de fundo real */
@@ -343,70 +318,6 @@
             margin-top: 14px;
         }
 
-        /* Radar da cidade */
-        .news-section {
-            background-color: var(--white);
-            padding: 80px 5%;
-            border-top: 1px solid var(--gray-light);
-        }
-        .news-grid {
-            max-width: 950px;
-            margin: 0 auto;
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
-        .news-item {
-            display: flex;
-            background: var(--light);
-            border-radius: var(--border-radius);
-            overflow: hidden;
-            box-shadow: 0 4px 14px rgba(0,0,0,0.04);
-            transition: var(--transition);
-            flex-wrap: wrap;
-        }
-        .news-item:hover {
-            box-shadow: 0 12px 30px rgba(0,0,0,0.1);
-            transform: translateY(-3px);
-        }
-        .news-img {
-            width: 150px;
-            min-height: 150px;
-            background-size: cover;
-            background-position: center;
-            flex-shrink: 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 2.8rem;
-            background-color: #f0f0f0;
-        }
-        .news-content {
-            padding: 22px;
-            flex: 1;
-        }
-        .news-content .category {
-            font-size: 0.7rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            color: #fff;
-            background: #1a1a1a;
-            padding: 4px 12px;
-            border-radius: 14px;
-            display: inline-block;
-            margin-bottom: 8px;
-        }
-        .news-content h4 {
-            font-weight: 700;
-            margin-bottom: 6px;
-            font-size: 1.1rem;
-        }
-        .news-content p {
-            font-size: 0.85rem;
-            color: var(--gray);
-        }
-
         /* Footer */
         footer {
             background-color: var(--dark);
@@ -447,8 +358,6 @@
 
         @media (max-width: 768px) {
             .hero h2 { font-size: 2rem; }
-            .news-item { flex-direction: column; }
-            .news-img { width: 100%; height: 180px; }
             .cta-group { flex-direction: column; align-items: center; }
         }
     </style>
@@ -462,20 +371,12 @@
         <button id="increaseFont"><i class="fa-solid fa-text-height"></i> A+</button>
     </div>
 
-    <!-- Header -->
+    <!-- Header simplificado (somente logo) -->
     <header>
         <div class="logo-container">
             <i class="fa-solid fa-handshake"></i>
             <h1>00brother <span>Fechado com você</span></h1>
         </div>
-        <nav>
-            <ul>
-                <li><a href="#">Início</a></li>
-                <li><a href="#modulos">Módulos</a></li>
-                <li><a href="#radar">Radar</a></li>
-                <li><a href="#contato">Contato</a></li>
-            </ul>
-        </nav>
     </header>
 
     <!-- Hero Section (imagem de fundo de cidade) -->
@@ -546,40 +447,6 @@
         </div>
     </div>
 
-    <!-- Radar da Cidade (pré-visualização do feed) -->
-    <section class="news-section" id="radar">
-        <div class="section-title">
-            <h2>Radar da Cidade</h2>
-            <p style="color:var(--gray);">Exemplos do feed limpo, categorizado e sem ruído.</p>
-        </div>
-        <div class="news-grid">
-            <div class="news-item">
-                <div class="news-img" style="background: linear-gradient(135deg, #FFD700, #e6c200);">🚧</div>
-                <div class="news-content">
-                    <span class="category">Alerta de Trânsito</span>
-                    <h4>Interdição na Av. Central para obras</h4>
-                    <p>Trecho entre as ruas 7 e 9 ficará interditado de 15 a 20/11. Desvio sinalizado.</p>
-                </div>
-            </div>
-            <div class="news-item">
-                <div class="news-img" style="background: linear-gradient(135deg, #28a745, #20c997);">💼</div>
-                <div class="news-content">
-                    <span class="category">Vagas de Emprego</span>
-                    <h4>Feirão reúne 500 vagas na região</h4>
-                    <p>Comércio e indústria participam. Inscrições abertas até sexta-feira no site da prefeitura.</p>
-                </div>
-            </div>
-            <div class="news-item">
-                <div class="news-img" style="background: linear-gradient(135deg, #17a2b8, #0dcaf0);">⚽</div>
-                <div class="news-content">
-                    <span class="category">Esporte Local</span>
-                    <h4>Final do Intercolegial de Futsal no ginásio</h4>
-                    <p>Grêmios organizam torcida. Entrada gratuita com 1kg de alimento.</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
     <!-- Footer -->
     <footer id="contato">
         <div class="footer-links">
@@ -589,7 +456,7 @@
             <a href="#">Seja um Parceiro</a>
             <a href="mailto:contato@00brother.com">contato@00brother.com</a>
         </div>
-        <p>&copy; 2024 00brother – Fechado com Você. Todos os direitos reservados.</p>
+        <p>&copy; 2026 00brother – Fechado com Você. Todos os direitos reservados.</p>
         <span class="lgpd-badge"><i class="fa-solid fa-shield-halved"></i> Em conformidade com a LGPD</span>
     </footer>
 
