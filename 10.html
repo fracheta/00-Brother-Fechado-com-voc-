@@ -19,10 +19,8 @@
            DESIGN SYSTEM — TOKENS & VARIÁVEIS
            ============================================================ */
         :root {
-            /* Cores principais */
             --primary: #FFD700;
             --primary-glow: rgba(255, 215, 0, 0.25);
-            --primary-dark: #e6c200;
             --bg: #0f0f0f;
             --surface: rgba(255, 255, 255, 0.04);
             --surface-hover: rgba(255, 255, 255, 0.07);
@@ -35,39 +33,33 @@
             --success: #2ecc71;
             --info: #3498db;
 
-            /* Sombras */
             --shadow-sm: 0 2px 8px rgba(0,0,0,0.3);
             --shadow-md: 0 8px 24px rgba(0,0,0,0.4);
             --shadow-lg: 0 16px 48px rgba(0,0,0,0.6);
             --shadow-glow: 0 0 40px rgba(255,215,0,0.2);
 
-            /* Bordas & raios */
             --radius-sm: 10px;
             --radius-md: 18px;
             --radius-lg: 24px;
             --radius-xl: 32px;
 
-            /* Transições */
             --ease-out-expo: cubic-bezier(0.19, 1, 0.22, 1);
             --ease-out-back: cubic-bezier(0.34, 1.56, 0.64, 1);
             --duration-fast: 150ms;
             --duration-normal: 300ms;
-            --duration-slow: 500ms;
 
-            /* Tipografia */
             --font-xs: 0.7rem;
             --font-sm: 0.8rem;
             --font-md: 0.9rem;
             --font-lg: 1.1rem;
             --font-xl: 1.3rem;
 
-            /* Layout */
             --header-h: 70px;
-            --dock-h: 66px;
+            --sidebar-w: 240px;
+            --feed-max-w: 680px;
             --safe-bottom: env(safe-area-inset-bottom, 16px);
         }
 
-        /* Tema claro automático (respeita preferência do sistema) */
         @media (prefers-color-scheme: light) {
             :root {
                 --bg: #f5f5f7;
@@ -81,7 +73,6 @@
             }
         }
 
-        /* Alto contraste forçado */
         body.high-contrast {
             --bg: #000 !important;
             --text-main: #fff !important;
@@ -90,16 +81,8 @@
             --glass-border: #fff !important;
         }
 
-        /* ============================================================
-           RESET & BASE
-           ============================================================ */
-        *, *::before, *::after {
-            margin: 0; padding: 0; box-sizing: border-box;
-        }
-        html {
-            scroll-behavior: smooth;
-            -webkit-text-size-adjust: 100%;
-        }
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
         body {
             font-family: 'Inter', system-ui, -apple-system, sans-serif;
             background: var(--bg);
@@ -107,9 +90,7 @@
             min-height: 100vh;
             overflow-x: hidden;
             -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
             line-height: 1.5;
-            padding-bottom: calc(var(--dock-h) + var(--safe-bottom) + 30px);
             transition: background var(--duration-normal) var(--ease-out-expo);
         }
         body::before {
@@ -123,58 +104,35 @@
         img { max-width: 100%; display: block; }
 
         /* ============================================================
-           ACESSIBILIDADE BAR
+           LAYOUT PRINCIPAL (DESKTOP)
            ============================================================ */
-        .a11y-bar {
-            position: fixed; top: 0; left: 0; right: 0; z-index: 2001;
-            background: rgba(0,0,0,0.9); backdrop-filter: blur(10px);
-            color: #ccc; padding: 8px 5%; font-size: var(--font-xs);
-            display: flex; justify-content: flex-end; align-items: center; gap: 10px;
-            border-bottom: 1px solid rgba(255,255,255,0.05);
-            transform: translateY(-100%); transition: transform var(--duration-normal);
+        .app-layout {
+            display: flex;
+            min-height: 100vh;
+            padding-top: var(--header-h);
         }
-        .a11y-bar.visible { transform: translateY(0); }
-        .a11y-bar button {
-            display: inline-flex; align-items: center; gap: 6px;
-            padding: 6px 14px; border-radius: 20px; border: 1px solid #444;
-            font-size: var(--font-xs); font-weight: 500; transition: var(--duration-fast);
-        }
-        .a11y-bar button:hover, .a11y-bar button:focus-visible {
-            background: var(--primary); color: #000; border-color: var(--primary);
-        }
-        .a11y-toggle {
-            position: fixed; bottom: 100px; right: 20px; z-index: 1999;
-            width: 40px; height: 40px; border-radius: 50%; background: var(--surface);
-            border: 1px solid var(--glass-border); color: var(--text-dim);
-            display: flex; align-items: center; justify-content: center;
-            font-size: 1rem; backdrop-filter: blur(10px);
-            transition: var(--duration-fast);
-        }
-        .a11y-toggle:hover { background: var(--primary); color: #000; border-color: var(--primary); }
 
         /* ============================================================
-           HEADER
+           HEADER (fixo no topo, full-width)
            ============================================================ */
         .app-header {
-            position: sticky; top: 0; z-index: 1000;
-            height: var(--header-h); padding: 0 20px;
-            background: rgba(15,15,15,0.8); backdrop-filter: blur(25px) saturate(180%);
+            position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+            height: var(--header-h); padding: 0 24px;
+            background: rgba(15,15,15,0.85); backdrop-filter: blur(25px) saturate(180%);
             -webkit-backdrop-filter: blur(25px) saturate(180%);
             border-bottom: 1px solid var(--glass-border);
             display: flex; justify-content: space-between; align-items: center;
             transition: background var(--duration-normal);
         }
         .brand {
-            display: flex; align-items: center; gap: 10px;
-            user-select: none;
+            display: flex; align-items: center; gap: 12px; user-select: none;
         }
         .logo-circle {
-            width: 40px; height: 40px; background: var(--primary);
+            width: 42px; height: 42px; background: var(--primary);
             border-radius: var(--radius-sm); display: flex; align-items: center;
             justify-content: center; font-weight: 900; color: #000;
             font-size: 1.2rem; box-shadow: 0 0 20px var(--primary-glow);
             transition: transform var(--duration-normal) var(--ease-out-back);
-            position: relative;
         }
         .logo-circle:active { transform: scale(0.9); }
         .brand h1 {
@@ -195,25 +153,78 @@
             background: var(--danger); border-radius: 50%; border: 2px solid var(--bg);
         }
 
+        /* Botão de menu mobile (escondido no desktop) */
+        .menu-toggle {
+            display: none; background: none; border: none; color: var(--text-main);
+            font-size: 1.4rem; cursor: pointer;
+        }
+
+        /* ============================================================
+           SIDEBAR (visível no desktop)
+           ============================================================ */
+        .sidebar {
+            width: var(--sidebar-w);
+            flex-shrink: 0;
+            padding: 24px 16px;
+            border-right: 1px solid var(--glass-border);
+            background: rgba(15,15,15,0.4);
+            display: flex; flex-direction: column; gap: 8px;
+            position: sticky; top: var(--header-h);
+            height: calc(100vh - var(--header-h));
+            overflow-y: auto;
+            z-index: 500;
+        }
+        .sidebar-nav-label {
+            font-size: 0.65rem; text-transform: uppercase; letter-spacing: 2px;
+            color: var(--text-dim); padding: 8px 12px 4px; font-weight: 700;
+        }
+        .sidebar a {
+            display: flex; align-items: center; gap: 14px; padding: 12px 16px;
+            border-radius: var(--radius-md); color: var(--text-secondary);
+            font-weight: 500; font-size: 0.9rem; transition: var(--duration-fast);
+        }
+        .sidebar a:hover, .sidebar a.active {
+            background: var(--surface-hover); color: var(--primary);
+        }
+        .sidebar a.active { background: rgba(255,215,0,0.1); font-weight: 700; }
+        .sidebar a i { width: 22px; text-align: center; font-size: 1.1rem; }
+        .sidebar .new-post-btn {
+            background: var(--primary); color: #000; justify-content: center;
+            font-weight: 700; margin-top: 12px; border-radius: var(--radius-lg);
+            padding: 14px; font-size: 0.95rem; gap: 8px;
+        }
+        .sidebar .new-post-btn:hover { background: #fff; color: #000; transform: translateY(-2px); box-shadow: var(--shadow-glow); }
+
+        /* ============================================================
+           ÁREA PRINCIPAL (feed + widgets)
+           ============================================================ */
+        .main-area {
+            flex: 1; display: flex; justify-content: center; padding: 24px 32px;
+            gap: 32px; min-width: 0;
+        }
+        .feed-wrapper {
+            flex: 1; max-width: var(--feed-max-w); min-width: 0;
+        }
+
         /* ============================================================
            STORIES (CATEGORIAS)
            ============================================================ */
         .stories-scroll {
-            padding: 14px 0 8px; overflow-x: auto; display: flex; gap: 12px;
-            padding-left: 20px; scrollbar-width: none;
+            padding: 4px 0 16px; overflow-x: auto; display: flex; gap: 14px;
+            scrollbar-width: none;
             -webkit-overflow-scrolling: touch;
-            mask-image: linear-gradient(to right, black 85%, transparent 100%);
-            -webkit-mask-image: linear-gradient(to right, black 85%, transparent 100%);
+            mask-image: linear-gradient(to right, black 90%, transparent 100%);
+            -webkit-mask-image: linear-gradient(to right, black 90%, transparent 100%);
         }
         .stories-scroll::-webkit-scrollbar { display: none; }
         .story-pill {
             display: flex; flex-direction: column; align-items: center;
-            min-width: 70px; cursor: pointer; text-decoration: none;
+            min-width: 72px; cursor: pointer; text-decoration: none;
             color: inherit; gap: 6px; transition: transform var(--duration-fast);
         }
         .story-pill:active { transform: scale(0.95); }
         .story-avatar {
-            width: 60px; height: 60px; border-radius: 50%; padding: 2.5px;
+            width: 62px; height: 62px; border-radius: 50%; padding: 2.5px;
             background: linear-gradient(135deg, var(--primary), #ff8c00, #fff);
             transition: box-shadow var(--duration-fast);
         }
@@ -229,15 +240,14 @@
         .story-pill:hover .story-inner { background: rgba(255,215,0,0.1); }
         .story-label {
             font-size: 0.65rem; font-weight: 600; text-align: center;
-            white-space: nowrap; max-width: 70px; overflow: hidden; text-overflow: ellipsis;
+            white-space: nowrap; max-width: 72px; overflow: hidden; text-overflow: ellipsis;
             color: var(--text-secondary);
         }
 
         /* ============================================================
-           FEED
+           FEED DE POSTS
            ============================================================ */
         .feed-container {
-            max-width: 600px; margin: 0 auto; padding: 8px 16px;
             display: flex; flex-direction: column; gap: 24px;
         }
         .post {
@@ -276,7 +286,7 @@
         .verified-icon { color: var(--primary); font-size: 0.7rem; }
         .post-media img {
             width: 100%; max-height: 400px; object-fit: cover;
-            transition: transform var(--duration-slow);
+            transition: transform 0.5s var(--ease-out-expo);
         }
         .post:hover .post-media img { transform: scale(1.02); }
         .post-body { padding: 16px 18px; }
@@ -303,38 +313,45 @@
         .post-actions button.liked { color: var(--primary); }
 
         /* ============================================================
-           DOCK NAV
+           WIDGET LATERAL (desktop) — clima, atalhos
            ============================================================ */
-        .dock {
-            position: fixed; bottom: calc(var(--safe-bottom) + 8px); left: 50%;
-            transform: translateX(-50%); width: min(92%, 420px);
-            height: var(--dock-h); background: rgba(20,20,20,0.85);
-            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-            border: 1px solid var(--glass-border); border-radius: 35px;
-            display: flex; justify-content: space-around; align-items: center;
-            z-index: 1000; box-shadow: var(--shadow-lg);
-            padding: 0 8px;
+        .widget-panel {
+            width: 280px; flex-shrink: 0; display: flex; flex-direction: column; gap: 16px;
+            position: sticky; top: calc(var(--header-h) + 24px);
+            align-self: flex-start; max-height: calc(100vh - var(--header-h) - 48px);
+            overflow-y: auto;
         }
-        .dock a {
-            display: flex; align-items: center; justify-content: center;
-            width: 44px; height: 44px; border-radius: 50%; color: var(--text-dim);
-            font-size: 1.2rem; transition: all var(--duration-normal) var(--ease-out-back);
-            position: relative;
+        .widget-card {
+            background: var(--surface); border: 1px solid var(--glass-border);
+            border-radius: var(--radius-lg); padding: 20px;
         }
-        .dock a.active { color: var(--primary); background: rgba(255,215,0,0.1); }
-        .dock a.center {
-            width: 54px; height: 54px; background: var(--primary); color: #000;
-            margin-top: -28px; border-radius: 50%; font-size: 1.4rem;
-            box-shadow: 0 6px 24px rgba(255,215,0,0.5); border: 3px solid var(--bg);
+        .widget-card h4 {
+            font-size: 0.85rem; font-weight: 700; margin-bottom: 12px;
+            color: var(--text-secondary); text-transform: uppercase; letter-spacing: 1px;
         }
-        .dock a.center:active { transform: scale(0.9); }
-        .dock a:hover { color: var(--primary); }
+        .widget-card .weather {
+            display: flex; align-items: center; gap: 12px; font-size: 2rem;
+        }
+        .widget-card .weather .temp { font-weight: 800; }
+        .widget-card .weather .icon { color: var(--primary); }
+        .widget-card .quick-links {
+            display: flex; flex-direction: column; gap: 8px;
+        }
+        .widget-card .quick-links a {
+            display: flex; align-items: center; gap: 10px; padding: 10px 12px;
+            border-radius: var(--radius-md); font-size: 0.85rem; font-weight: 500;
+            color: var(--text-secondary); transition: var(--duration-fast);
+        }
+        .widget-card .quick-links a:hover {
+            background: var(--surface-hover); color: var(--primary);
+        }
+        .widget-card .quick-links a i { width: 20px; text-align: center; color: var(--primary); }
 
         /* ============================================================
            TOAST
            ============================================================ */
         .toast {
-            position: fixed; top: 80px; left: 50%; transform: translateX(-50%) translateY(-120px);
+            position: fixed; top: 90px; left: 50%; transform: translateX(-50%) translateY(-120px);
             background: var(--primary); color: #000; padding: 12px 24px;
             border-radius: 30px; font-weight: 700; font-size: var(--font-sm);
             z-index: 3000; box-shadow: var(--shadow-md);
@@ -344,32 +361,81 @@
         .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
 
         /* ============================================================
-           PARTICLES (confete no logo)
+           ACESSIBILIDADE
            ============================================================ */
-        .particle {
-            position: fixed; pointer-events: none; z-index: 4000;
-            width: 8px; height: 8px; border-radius: 50%; background: var(--primary);
-            animation: particleBurst 1s var(--ease-out-expo) forwards;
+        .a11y-toggle {
+            position: fixed; bottom: 24px; right: 24px; z-index: 1999;
+            width: 44px; height: 44px; border-radius: 50%; background: var(--surface);
+            border: 1px solid var(--glass-border); color: var(--text-dim);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.1rem; backdrop-filter: blur(10px);
+            transition: var(--duration-fast);
         }
-        @keyframes particleBurst {
-            0% { opacity: 1; transform: translate(0,0) scale(1); }
-            100% { opacity: 0; transform: translate(var(--tx), var(--ty)) scale(0); }
+        .a11y-toggle:hover { background: var(--primary); color: #000; border-color: var(--primary); }
+        .a11y-bar {
+            position: fixed; top: 0; left: 0; right: 0; z-index: 2001;
+            background: rgba(0,0,0,0.9); backdrop-filter: blur(10px);
+            color: #ccc; padding: 8px 5%; font-size: var(--font-xs);
+            display: flex; justify-content: flex-end; align-items: center; gap: 10px;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            transform: translateY(-100%); transition: transform var(--duration-normal);
         }
+        .a11y-bar.visible { transform: translateY(0); }
+        .a11y-bar button {
+            display: inline-flex; align-items: center; gap: 6px;
+            padding: 6px 14px; border-radius: 20px; border: 1px solid #444;
+            font-size: var(--font-xs); font-weight: 500; transition: var(--duration-fast);
+        }
+        .a11y-bar button:hover { background: var(--primary); color: #000; border-color: var(--primary); }
 
         /* ============================================================
-           RESPONSIVO
+           RESPONSIVO — TABLET & MOBILE
            ============================================================ */
-        @media (max-width: 480px) {
+        @media (max-width: 1100px) {
+            .widget-panel { display: none; }
+            .main-area { padding: 20px 16px; }
+        }
+        @media (max-width: 768px) {
+            /* Sidebar vira menu off-canvas ou some, e dock aparece */
+            .sidebar { display: none; }
+            .main-area { padding: 16px 8px; }
             .app-header { padding: 0 14px; }
-            .feed-container { padding: 8px 10px; gap: 18px; }
+            .stories-scroll { padding-left: 0; }
             .post-body p { font-size: 0.85rem; }
-            .stories-scroll { padding-left: 14px; }
+            .feed-container { gap: 16px; }
+            /* Botão menu mobile */
+            .menu-toggle { display: block; }
+            /* Sidebar mobile (quando ativada) */
+            .sidebar.mobile-open {
+                display: flex; position: fixed; top: var(--header-h); left: 0;
+                bottom: 0; width: 260px; z-index: 1500; background: rgba(15,15,15,0.95);
+                backdrop-filter: blur(20px); border-right: 1px solid var(--glass-border);
+                animation: slideIn 0.3s var(--ease-out-expo);
+            }
+            @keyframes slideIn {
+                from { transform: translateX(-100%); }
+                to { transform: translateX(0); }
+            }
+            /* Overlay */
+            .sidebar-overlay {
+                display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5);
+                z-index: 1400;
+            }
+            .sidebar-overlay.active { display: block; }
+        }
+        @media (max-width: 480px) {
+            .stories-scroll { gap: 10px; }
+            .story-avatar { width: 54px; height: 54px; }
+            .story-label { font-size: 0.6rem; max-width: 54px; }
+            .post-header { padding: 10px 14px; }
+            .post-body { padding: 12px 14px; }
+            .post-actions { padding: 6px 14px 10px; gap: 14px; }
         }
     </style>
 </head>
 <body>
 
-    <!-- Barra de acessibilidade (oculta, revelada pelo botão flutuante) -->
+    <!-- Barra de acessibilidade -->
     <div class="a11y-bar" id="a11yBar" role="region" aria-label="Acessibilidade">
         <span>Acessibilidade:</span>
         <button id="toggleContrast" aria-label="Alto contraste"><i class="fa-solid fa-circle-half-stroke"></i> Contraste</button>
@@ -383,12 +449,20 @@
     <!-- Toast -->
     <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
+    <!-- Overlay sidebar mobile -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
     <!-- Header -->
     <header class="app-header" role="banner">
-        <a href="10.html" class="brand" id="logoBrand" aria-label="00brother - Ir para o início">
-            <div class="logo-circle" id="logoCircle">00</div>
-            <h1>00brother <span>Fechado com você</span></h1>
-        </a>
+        <div style="display:flex; align-items:center; gap:16px;">
+            <button class="menu-toggle" id="menuToggle" aria-label="Abrir menu" title="Menu">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+            <a href="10.html" class="brand" aria-label="00brother - Ir para o início">
+                <div class="logo-circle" id="logoCircle">00</div>
+                <h1>00brother <span>Fechado com você</span></h1>
+            </a>
+        </div>
         <div class="header-actions">
             <a href="80.html" aria-label="Buscar" title="Buscar"><i class="fa-solid fa-magnifying-glass"></i></a>
             <a href="70.html" aria-label="Notificações" title="Notificações" style="position:relative;">
@@ -398,138 +472,200 @@
         </div>
     </header>
 
-    <!-- Stories -->
-    <nav class="stories-scroll" aria-label="Categorias rápidas">
-        <a href="10.html" class="story-pill" aria-label="Para você">
-            <div class="story-avatar"><div class="story-inner">⭐</div></div>
-            <span class="story-label">Para Você</span>
-        </a>
-        <a href="70.html" class="story-pill" aria-label="Alertas">
-            <div class="story-avatar alert-gradient"><div class="story-inner">🚨</div></div>
-            <span class="story-label">Alertas</span>
-        </a>
-        <a href="90.html" class="story-pill" aria-label="Eventos">
-            <div class="story-avatar event-gradient"><div class="story-inner">🎭</div></div>
-            <span class="story-label">Eventos</span>
-        </a>
-        <a href="100.html" class="story-pill" aria-label="Obras">
-            <div class="story-avatar"><div class="story-inner">🚧</div></div>
-            <span class="story-label">Obras</span>
-        </a>
-        <a href="50.html" class="story-pill" aria-label="Vagas">
-            <div class="story-avatar job-gradient"><div class="story-inner">💼</div></div>
-            <span class="story-label">Vagas</span>
-        </a>
-        <a href="110.html" class="story-pill" aria-label="Saúde">
-            <div class="story-avatar"><div class="story-inner">🏥</div></div>
-            <span class="story-label">Saúde</span>
-        </a>
-    </nav>
+    <!-- Layout principal -->
+    <div class="app-layout">
 
-    <!-- Feed -->
-    <main class="feed-container" id="feedContainer" role="feed" aria-label="Feed de publicações">
+        <!-- Sidebar (desktop: sempre visível | mobile: toggle) -->
+        <aside class="sidebar" id="sidebar" role="navigation" aria-label="Menu principal">
+            <span class="sidebar-nav-label">Navegação</span>
+            <a href="10.html" class="active"><i class="fa-solid fa-house"></i> Início</a>
+            <a href="30.html"><i class="fa-solid fa-map-location-dot"></i> Mapa da Cidade</a>
+            <a href="70.html"><i class="fa-solid fa-bell"></i> Alertas</a>
+            <a href="90.html"><i class="fa-solid fa-calendar-days"></i> Eventos</a>
+            <a href="50.html"><i class="fa-solid fa-briefcase"></i> Vagas</a>
+            <span class="sidebar-nav-label" style="margin-top:12px;">Comunidade</span>
+            <a href="100.html"><i class="fa-solid fa-road-barrier"></i> Obras</a>
+            <a href="110.html"><i class="fa-solid fa-hospital"></i> Saúde</a>
+            <a href="120.html"><i class="fa-solid fa-graduation-cap"></i> Escolas</a>
+            <a href="60.html"><i class="fa-solid fa-user"></i> Meu Perfil</a>
+            <a href="40.html" class="new-post-btn"><i class="fa-solid fa-plus"></i> Nova Ocorrência</a>
+        </aside>
 
-        <!-- Post 1: Prefeitura -->
-        <article class="post" tabindex="0" aria-label="Publicação da Prefeitura: Interdição na Avenida Central">
-            <div class="post-header">
-                <div class="avatar pref"><i class="fa-solid fa-building-columns"></i></div>
-                <div class="post-meta">
-                    <h4>Prefeitura Municipal</h4>
-                    <p><i class="fa-solid fa-circle-check verified-icon"></i> Verificado • há 20 min</p>
+        <!-- Área principal (feed) -->
+        <main class="main-area">
+            <div class="feed-wrapper">
+                <!-- Stories -->
+                <nav class="stories-scroll" aria-label="Categorias rápidas">
+                    <a href="10.html" class="story-pill" aria-label="Para você">
+                        <div class="story-avatar"><div class="story-inner">⭐</div></div>
+                        <span class="story-label">Para Você</span>
+                    </a>
+                    <a href="70.html" class="story-pill" aria-label="Alertas">
+                        <div class="story-avatar alert-gradient"><div class="story-inner">🚨</div></div>
+                        <span class="story-label">Alertas</span>
+                    </a>
+                    <a href="90.html" class="story-pill" aria-label="Eventos">
+                        <div class="story-avatar event-gradient"><div class="story-inner">🎭</div></div>
+                        <span class="story-label">Eventos</span>
+                    </a>
+                    <a href="100.html" class="story-pill" aria-label="Obras">
+                        <div class="story-avatar"><div class="story-inner">🚧</div></div>
+                        <span class="story-label">Obras</span>
+                    </a>
+                    <a href="50.html" class="story-pill" aria-label="Vagas">
+                        <div class="story-avatar job-gradient"><div class="story-inner">💼</div></div>
+                        <span class="story-label">Vagas</span>
+                    </a>
+                    <a href="110.html" class="story-pill" aria-label="Saúde">
+                        <div class="story-avatar"><div class="story-inner">🏥</div></div>
+                        <span class="story-label">Saúde</span>
+                    </a>
+                </nav>
+
+                <!-- Feed de posts -->
+                <div class="feed-container" role="feed" aria-label="Feed de publicações">
+                    <article class="post" tabindex="0" aria-label="Publicação da Prefeitura: Interdição na Avenida Central">
+                        <div class="post-header">
+                            <div class="avatar pref"><i class="fa-solid fa-building-columns"></i></div>
+                            <div class="post-meta">
+                                <h4>Prefeitura Municipal</h4>
+                                <p><i class="fa-solid fa-circle-check verified-icon"></i> Verificado • há 20 min</p>
+                            </div>
+                        </div>
+                        <div class="post-body">
+                            <span class="category-badge danger">Alerta de Trânsito</span>
+                            <p><strong>🚧 Interdição na Av. Central</strong> para obras de drenagem. Trecho entre as ruas 7 e 9 ficará fechado de 15 a 20/11. Desvio sinalizado pela rotatória.</p>
+                        </div>
+                        <div class="post-actions">
+                            <button aria-label="Curtir" data-action="like"><i class="fa-regular fa-thumbs-up"></i> 142</button>
+                            <button aria-label="Comentar"><i class="fa-regular fa-comment"></i> 23</button>
+                            <button aria-label="Compartilhar"><i class="fa-regular fa-share-from-square"></i></button>
+                        </div>
+                    </article>
+
+                    <article class="post" tabindex="0" aria-label="Publicação da Agência do Trabalhador: Feirão de empregos">
+                        <div class="post-header">
+                            <div class="avatar job"><i class="fa-solid fa-briefcase"></i></div>
+                            <div class="post-meta">
+                                <h4>Agência do Trabalhador</h4>
+                                <p>Oficial • há 2h</p>
+                            </div>
+                        </div>
+                        <div class="post-body">
+                            <span class="category-badge success">Vagas de Emprego</span>
+                            <p><strong>💼 Feirão de empregos reúne 500 vagas</strong> na região central. Comércio e indústria participam. Inscrições abertas até sexta-feira no site da prefeitura.</p>
+                        </div>
+                        <div class="post-actions">
+                            <button aria-label="Curtir" data-action="like"><i class="fa-regular fa-thumbs-up"></i> 89</button>
+                            <button aria-label="Comentar"><i class="fa-regular fa-comment"></i> 12</button>
+                            <button aria-label="Compartilhar"><i class="fa-regular fa-share-from-square"></i></button>
+                        </div>
+                    </article>
+
+                    <article class="post" tabindex="0" aria-label="Publicação do Grêmio Estudantil: Final do Intercolegial de Futsal">
+                        <div class="post-header">
+                            <div class="avatar sport"><i class="fa-solid fa-futbol"></i></div>
+                            <div class="post-meta">
+                                <h4>Grêmio Estudantil</h4>
+                                <p>Escola Municipal • há 4h</p>
+                            </div>
+                        </div>
+                        <div class="post-media">
+                            <img src="https://images.unsplash.com/photo-1579952363873-27f3bade9f55?auto=format&fit=crop&w=600&q=80" alt="Jogadores de futsal em quadra" loading="lazy">
+                        </div>
+                        <div class="post-body">
+                            <span class="category-badge info">Esporte Local</span>
+                            <p><strong>⚽ Final do Intercolegial de Futsal</strong> será no ginásio municipal neste sábado. Entrada gratuita com 1kg de alimento. Torcida organizada pelos grêmios!</p>
+                        </div>
+                        <div class="post-actions">
+                            <button aria-label="Curtir" data-action="like"><i class="fa-regular fa-thumbs-up"></i> 315</button>
+                            <button aria-label="Comentar"><i class="fa-regular fa-comment"></i> 67</button>
+                            <button aria-label="Compartilhar"><i class="fa-regular fa-share-from-square"></i></button>
+                        </div>
+                    </article>
+
+                    <article class="post" tabindex="0" aria-label="Publicação de morador: Lâmpada queimada na Rua das Flores">
+                        <div class="post-header">
+                            <div class="avatar alert"><i class="fa-solid fa-triangle-exclamation"></i></div>
+                            <div class="post-meta">
+                                <h4>Morador Zona Norte</h4>
+                                <p>Mural da Comunidade • há 30 min</p>
+                            </div>
+                        </div>
+                        <div class="post-body">
+                            <span class="category-badge">Zeladoria Urbana</span>
+                            <p><strong>💡 Lâmpada queimada na Rua das Flores</strong> já faz 3 dias. Poste nº 234. Alguém mais já reportou? #BairroUnido</p>
+                        </div>
+                        <div class="post-actions">
+                            <button aria-label="Curtir" data-action="like"><i class="fa-regular fa-thumbs-up"></i> 47</button>
+                            <button aria-label="Comentar"><i class="fa-regular fa-comment"></i> 8</button>
+                            <button aria-label="Compartilhar"><i class="fa-regular fa-share-from-square"></i></button>
+                        </div>
+                    </article>
                 </div>
             </div>
-            <div class="post-body">
-                <span class="category-badge danger">Alerta de Trânsito</span>
-                <p><strong>🚧 Interdição na Av. Central</strong> para obras de drenagem. Trecho entre as ruas 7 e 9 ficará fechado de 15 a 20/11. Desvio sinalizado pela rotatória.</p>
-            </div>
-            <div class="post-actions">
-                <button aria-label="Curtir" data-action="like"><i class="fa-regular fa-thumbs-up"></i> 142</button>
-                <button aria-label="Comentar"><i class="fa-regular fa-comment"></i> 23</button>
-                <button aria-label="Compartilhar"><i class="fa-regular fa-share-from-square"></i></button>
-            </div>
-        </article>
 
-        <!-- Post 2: Vagas -->
-        <article class="post" tabindex="0" aria-label="Publicação da Agência do Trabalhador: Feirão de empregos">
-            <div class="post-header">
-                <div class="avatar job"><i class="fa-solid fa-briefcase"></i></div>
-                <div class="post-meta">
-                    <h4>Agência do Trabalhador</h4>
-                    <p>Oficial • há 2h</p>
+            <!-- Widget Panel (apenas desktop) -->
+            <aside class="widget-panel" aria-label="Widgets laterais">
+                <div class="widget-card">
+                    <h4>🌤️ Clima na Cidade</h4>
+                    <div class="weather">
+                        <span class="icon"><i class="fa-solid fa-sun"></i></span>
+                        <span class="temp">28°C</span>
+                    </div>
+                    <p style="font-size:0.8rem;color:var(--text-dim);margin-top:4px;">Parcialmente nublado • Londrina</p>
                 </div>
-            </div>
-            <div class="post-body">
-                <span class="category-badge success">Vagas de Emprego</span>
-                <p><strong>💼 Feirão de empregos reúne 500 vagas</strong> na região central. Comércio e indústria participam. Inscrições abertas até sexta-feira no site da prefeitura.</p>
-            </div>
-            <div class="post-actions">
-                <button aria-label="Curtir" data-action="like"><i class="fa-regular fa-thumbs-up"></i> 89</button>
-                <button aria-label="Comentar"><i class="fa-regular fa-comment"></i> 12</button>
-                <button aria-label="Compartilhar"><i class="fa-regular fa-share-from-square"></i></button>
-            </div>
-        </article>
-
-        <!-- Post 3: Esporte -->
-        <article class="post" tabindex="0" aria-label="Publicação do Grêmio Estudantil: Final do Intercolegial de Futsal">
-            <div class="post-header">
-                <div class="avatar sport"><i class="fa-solid fa-futbol"></i></div>
-                <div class="post-meta">
-                    <h4>Grêmio Estudantil</h4>
-                    <p>Escola Municipal • há 4h</p>
+                <div class="widget-card">
+                    <h4>⚡ Acesso Rápido</h4>
+                    <div class="quick-links">
+                        <a href="30.html"><i class="fa-solid fa-location-dot"></i> Farmácias de Plantão</a>
+                        <a href="30.html"><i class="fa-solid fa-bus"></i> Horários de Ônibus</a>
+                        <a href="40.html"><i class="fa-solid fa-circle-exclamation"></i> Reportar Problema</a>
+                        <a href="110.html"><i class="fa-solid fa-syringe"></i> Vacinação</a>
+                    </div>
                 </div>
-            </div>
-            <div class="post-media">
-                <img src="https://images.unsplash.com/photo-1579952363873-27f3bade9f55?auto=format&fit=crop&w=600&q=80" alt="Jogadores de futsal em quadra" loading="lazy">
-            </div>
-            <div class="post-body">
-                <span class="category-badge info">Esporte Local</span>
-                <p><strong>⚽ Final do Intercolegial de Futsal</strong> será no ginásio municipal neste sábado. Entrada gratuita com 1kg de alimento. Torcida organizada pelos grêmios!</p>
-            </div>
-            <div class="post-actions">
-                <button aria-label="Curtir" data-action="like"><i class="fa-regular fa-thumbs-up"></i> 315</button>
-                <button aria-label="Comentar"><i class="fa-regular fa-comment"></i> 67</button>
-                <button aria-label="Compartilhar"><i class="fa-regular fa-share-from-square"></i></button>
-            </div>
-        </article>
-
-        <!-- Post 4: Zeladoria -->
-        <article class="post" tabindex="0" aria-label="Publicação de morador: Lâmpada queimada na Rua das Flores">
-            <div class="post-header">
-                <div class="avatar alert"><i class="fa-solid fa-triangle-exclamation"></i></div>
-                <div class="post-meta">
-                    <h4>Morador Zona Norte</h4>
-                    <p>Mural da Comunidade • há 30 min</p>
+                <div class="widget-card" style="text-align:center; padding:16px;">
+                    <p style="font-size:0.75rem;color:var(--text-dim);">© 2026 00brother<br>Fechado com você.</p>
                 </div>
-            </div>
-            <div class="post-body">
-                <span class="category-badge">Zeladoria Urbana</span>
-                <p><strong>💡 Lâmpada queimada na Rua das Flores</strong> já faz 3 dias. Poste nº 234. Alguém mais já reportou? #BairroUnido</p>
-            </div>
-            <div class="post-actions">
-                <button aria-label="Curtir" data-action="like"><i class="fa-regular fa-thumbs-up"></i> 47</button>
-                <button aria-label="Comentar"><i class="fa-regular fa-comment"></i> 8</button>
-                <button aria-label="Compartilhar"><i class="fa-regular fa-share-from-square"></i></button>
-            </div>
-        </article>
-    </main>
-
-    <!-- Dock Navigation -->
-    <nav class="dock" role="navigation" aria-label="Navegação principal">
-        <a href="10.html" class="active" aria-label="Início" title="Início"><i class="fa-solid fa-house"></i></a>
-        <a href="30.html" aria-label="Mapa da cidade" title="Mapa"><i class="fa-solid fa-map-location-dot"></i></a>
-        <a href="40.html" class="center" aria-label="Nova ocorrência" title="Nova Ocorrência"><i class="fa-solid fa-plus"></i></a>
-        <a href="50.html" aria-label="Vagas de emprego" title="Vagas"><i class="fa-solid fa-briefcase"></i></a>
-        <a href="60.html" aria-label="Perfil do usuário" title="Perfil"><i class="fa-solid fa-user"></i></a>
-    </nav>
+            </aside>
+        </main>
+    </div>
 
     <!-- Scripts -->
     <script>
         'use strict';
 
-        // ========== DOCK ATIVO ==========
+        // ========== SIDEBAR MOBILE TOGGLE ==========
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('sidebarOverlay');
+        const menuToggle = document.getElementById('menuToggle');
+
+        function openSidebar() {
+            sidebar.classList.add('mobile-open');
+            overlay.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+        function closeSidebar() {
+            sidebar.classList.remove('mobile-open');
+            overlay.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+        menuToggle.addEventListener('click', () => {
+            if (sidebar.classList.contains('mobile-open')) closeSidebar();
+            else openSidebar();
+        });
+        overlay.addEventListener('click', closeSidebar);
+        // Fechar ao clicar em qualquer link da sidebar (mobile)
+        sidebar.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', () => {
+                if (window.innerWidth <= 768) closeSidebar();
+            });
+        });
+
+        // ========== SIDEBAR ATIVO ==========
         (() => {
             const current = window.location.pathname.split('/').pop() || '10.html';
-            document.querySelectorAll('.dock a').forEach(link => {
+            sidebar.querySelectorAll('a').forEach(link => {
                 link.classList.toggle('active', link.getAttribute('href') === current);
             });
         })();
@@ -552,7 +688,7 @@
         });
         if (localStorage.getItem('highContrast') === 'true') document.body.classList.add('high-contrast');
 
-        // ========== TEMA (OVERRIDE DO SISTEMA) ==========
+        // ========== TEMA ==========
         const themeBtn = document.getElementById('toggleTheme');
         themeBtn.addEventListener('click', () => {
             const isLight = document.documentElement.style.getPropertyValue('--bg') === '#f5f5f7';
@@ -560,7 +696,6 @@
                 document.documentElement.style.setProperty('--bg', '#0f0f0f');
                 document.documentElement.style.setProperty('--text-main', '#ffffff');
                 document.documentElement.style.setProperty('--surface', 'rgba(255,255,255,0.04)');
-                document.documentElement.style.setProperty('--glass', 'rgba(255,255,255,0.06)');
                 document.documentElement.style.setProperty('--glass-border', 'rgba(255,255,255,0.08)');
                 document.documentElement.style.setProperty('--text-secondary', '#b0b0b0');
                 document.documentElement.style.setProperty('--text-dim', '#707070');
@@ -570,7 +705,6 @@
                 document.documentElement.style.setProperty('--bg', '#f5f5f7');
                 document.documentElement.style.setProperty('--text-main', '#1a1a1a');
                 document.documentElement.style.setProperty('--surface', 'rgba(0,0,0,0.03)');
-                document.documentElement.style.setProperty('--glass', 'rgba(255,255,255,0.8)');
                 document.documentElement.style.setProperty('--glass-border', 'rgba(0,0,0,0.08)');
                 document.documentElement.style.setProperty('--text-secondary', '#555');
                 document.documentElement.style.setProperty('--text-dim', '#999');
@@ -578,7 +712,6 @@
                 localStorage.setItem('theme', 'light');
             }
         });
-        // Carregar tema salvo
         if (localStorage.getItem('theme') === 'light') themeBtn.click();
 
         // ========== AUMENTO DE FONTE ==========
@@ -593,8 +726,7 @@
         const savedFont = localStorage.getItem('fontSize');
         if (savedFont) {
             fontSizeLevel = parseInt(savedFont);
-            const sizes = ['100%', '110%', '120%', '130%'];
-            document.documentElement.style.fontSize = sizes[fontSizeLevel];
+            document.documentElement.style.fontSize = ['100%','110%','120%','130%'][fontSizeLevel];
         }
 
         // ========== TOAST ==========
@@ -612,60 +744,20 @@
                 e.preventDefault();
                 const icon = this.querySelector('i');
                 const isLiked = icon.classList.contains('fa-solid');
+                const count = parseInt(this.textContent.trim().match(/\d+/)?.[0] || 0);
                 if (isLiked) {
                     icon.classList.replace('fa-solid', 'fa-regular');
                     this.classList.remove('liked');
-                    const count = parseInt(this.textContent.trim().match(/\d+/)?.[0] || 0);
                     this.innerHTML = '<i class="fa-regular fa-thumbs-up"></i> ' + (count - 1);
                     showToast('Curtida removida');
                 } else {
                     icon.classList.replace('fa-regular', 'fa-solid');
                     this.classList.add('liked');
-                    const count = parseInt(this.textContent.trim().match(/\d+/)?.[0] || 0);
                     this.innerHTML = '<i class="fa-solid fa-thumbs-up"></i> ' + (count + 1);
                     showToast('Curtido! 💛');
                 }
             });
         });
-
-        // ========== CONFETE NO LOGO (EASTER EGG) ==========
-        const logoCircle = document.getElementById('logoCircle');
-        let clickTimer = null;
-        logoCircle.addEventListener('click', function(e) {
-            if (clickTimer) {
-                // Duplo clique detectado
-                clearTimeout(clickTimer);
-                clickTimer = null;
-                spawnParticles(e);
-            } else {
-                clickTimer = setTimeout(() => { clickTimer = null; }, 300);
-            }
-        });
-
-        function spawnParticles(e) {
-            const rect = logoCircle.getBoundingClientRect();
-            const cx = rect.left + rect.width / 2;
-            const cy = rect.top + rect.height / 2;
-            const colors = ['#FFD700', '#ff8c00', '#fff', '#ff6b6b', '#2ecc71', '#3498db'];
-
-            for (let i = 0; i < 20; i++) {
-                const particle = document.createElement('div');
-                particle.className = 'particle';
-                const angle = Math.random() * Math.PI * 2;
-                const distance = 40 + Math.random() * 80;
-                const tx = Math.cos(angle) * distance;
-                const ty = Math.sin(angle) * distance;
-                particle.style.cssText = `
-                    left: ${cx}px; top: ${cy}px;
-                    background: ${colors[Math.floor(Math.random() * colors.length)]};
-                    --tx: ${tx}px; --ty: ${ty}px;
-                    width: ${4 + Math.random() * 8}px; height: ${4 + Math.random() * 8}px;
-                `;
-                document.body.appendChild(particle);
-                setTimeout(() => particle.remove(), 1000);
-            }
-            showToast('🌟 00brother!');
-        }
     </script>
 </body>
 </html>
