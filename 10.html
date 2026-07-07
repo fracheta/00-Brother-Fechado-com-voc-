@@ -2,239 +2,670 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>00 Brother - Premium Feed</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
-    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
-    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>00brother – Feed</title>
+    <meta name="description" content="00brother - A rede social da sua cidade. Feed de utilidade pública, sem distrações.">
+    <meta name="theme-color" content="#0f0f0f">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+    <!-- Font Awesome 6 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800;14..32,900&display=swap" rel="stylesheet">
+
     <style>
-        /* --- ARQUITETURA DE DESIGN --- */
+        /* ============================================================
+           DESIGN SYSTEM — TOKENS & VARIÁVEIS
+           ============================================================ */
         :root {
-            --primary: #FFD700; 
-            --primary-dark: #ccac00;
-            --bg: #0f0f0f;      
-            --card-bg: rgba(255, 255, 255, 0.05);
-            --glass: rgba(255, 255, 255, 0.1);
+            /* Cores principais */
+            --primary: #FFD700;
+            --primary-glow: rgba(255, 215, 0, 0.25);
+            --primary-dark: #e6c200;
+            --bg: #0f0f0f;
+            --surface: rgba(255, 255, 255, 0.04);
+            --surface-hover: rgba(255, 255, 255, 0.07);
+            --glass: rgba(255, 255, 255, 0.06);
+            --glass-border: rgba(255, 255, 255, 0.08);
             --text-main: #ffffff;
-            --text-dim: #a0a0a0;
-            --border: rgba(255, 255, 255, 0.1);
-            --shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.8);
+            --text-secondary: #b0b0b0;
+            --text-dim: #707070;
+            --danger: #ff4444;
+            --success: #2ecc71;
+            --info: #3498db;
+
+            /* Sombras */
+            --shadow-sm: 0 2px 8px rgba(0,0,0,0.3);
+            --shadow-md: 0 8px 24px rgba(0,0,0,0.4);
+            --shadow-lg: 0 16px 48px rgba(0,0,0,0.6);
+            --shadow-glow: 0 0 40px rgba(255,215,0,0.2);
+
+            /* Bordas & raios */
+            --radius-sm: 10px;
+            --radius-md: 18px;
+            --radius-lg: 24px;
+            --radius-xl: 32px;
+
+            /* Transições */
+            --ease-out-expo: cubic-bezier(0.19, 1, 0.22, 1);
+            --ease-out-back: cubic-bezier(0.34, 1.56, 0.64, 1);
+            --duration-fast: 150ms;
+            --duration-normal: 300ms;
+            --duration-slow: 500ms;
+
+            /* Tipografia */
+            --font-xs: 0.7rem;
+            --font-sm: 0.8rem;
+            --font-md: 0.9rem;
+            --font-lg: 1.1rem;
+            --font-xl: 1.3rem;
+
+            /* Layout */
+            --header-h: 70px;
+            --dock-h: 66px;
+            --safe-bottom: env(safe-area-inset-bottom, 16px);
         }
 
-        * {
+        /* Tema claro automático (respeita preferência do sistema) */
+        @media (prefers-color-scheme: light) {
+            :root {
+                --bg: #f5f5f7;
+                --surface: rgba(0,0,0,0.03);
+                --surface-hover: rgba(0,0,0,0.06);
+                --glass: rgba(255,255,255,0.8);
+                --glass-border: rgba(0,0,0,0.08);
+                --text-main: #1a1a1a;
+                --text-secondary: #555;
+                --text-dim: #999;
+            }
+        }
+
+        /* Alto contraste forçado */
+        body.high-contrast {
+            --bg: #000 !important;
+            --text-main: #fff !important;
+            --surface: #111 !important;
+            --primary: #FFFF00 !important;
+            --glass-border: #fff !important;
+        }
+
+        /* ============================================================
+           RESET & BASE
+           ============================================================ */
+        *, *::before, *::after {
             margin: 0; padding: 0; box-sizing: border-box;
-            font-family: 'Inter', sans-serif;
-            -webkit-tap-highlight-color: transparent;
         }
-
+        html {
+            scroll-behavior: smooth;
+            -webkit-text-size-adjust: 100%;
+        }
         body {
-            background-color: var(--bg);
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background: var(--bg);
             color: var(--text-main);
+            min-height: 100vh;
             overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            line-height: 1.5;
+            padding-bottom: calc(var(--dock-h) + var(--safe-bottom) + 30px);
+            transition: background var(--duration-normal) var(--ease-out-expo);
         }
+        body::before {
+            content: '';
+            position: fixed; inset: 0;
+            background: radial-gradient(ellipse at 50% 0%, rgba(255,215,0,0.06) 0%, transparent 60%);
+            pointer-events: none; z-index: -1;
+        }
+        a { color: inherit; text-decoration: none; }
+        button { cursor: pointer; border: none; background: none; color: inherit; font: inherit; }
+        img { max-width: 100%; display: block; }
 
+        /* ============================================================
+           ACESSIBILIDADE BAR
+           ============================================================ */
+        .a11y-bar {
+            position: fixed; top: 0; left: 0; right: 0; z-index: 2001;
+            background: rgba(0,0,0,0.9); backdrop-filter: blur(10px);
+            color: #ccc; padding: 8px 5%; font-size: var(--font-xs);
+            display: flex; justify-content: flex-end; align-items: center; gap: 10px;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            transform: translateY(-100%); transition: transform var(--duration-normal);
+        }
+        .a11y-bar.visible { transform: translateY(0); }
+        .a11y-bar button {
+            display: inline-flex; align-items: center; gap: 6px;
+            padding: 6px 14px; border-radius: 20px; border: 1px solid #444;
+            font-size: var(--font-xs); font-weight: 500; transition: var(--duration-fast);
+        }
+        .a11y-bar button:hover, .a11y-bar button:focus-visible {
+            background: var(--primary); color: #000; border-color: var(--primary);
+        }
+        .a11y-toggle {
+            position: fixed; bottom: 100px; right: 20px; z-index: 1999;
+            width: 40px; height: 40px; border-radius: 50%; background: var(--surface);
+            border: 1px solid var(--glass-border); color: var(--text-dim);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1rem; backdrop-filter: blur(10px);
+            transition: var(--duration-fast);
+        }
+        .a11y-toggle:hover { background: var(--primary); color: #000; border-color: var(--primary); }
+
+        /* ============================================================
+           HEADER
+           ============================================================ */
         .app-header {
-            position: fixed; top: 0; width: 100%; height: 70px;
-            background: rgba(15, 15, 15, 0.8); backdrop-filter: blur(20px);
-            border-bottom: 1px solid var(--border);
+            position: sticky; top: 0; z-index: 1000;
+            height: var(--header-h); padding: 0 20px;
+            background: rgba(15,15,15,0.8); backdrop-filter: blur(25px) saturate(180%);
+            -webkit-backdrop-filter: blur(25px) saturate(180%);
+            border-bottom: 1px solid var(--glass-border);
             display: flex; justify-content: space-between; align-items: center;
-            padding: 0 20px; z-index: 1000;
+            transition: background var(--duration-normal);
+        }
+        .brand {
+            display: flex; align-items: center; gap: 10px;
+            user-select: none;
+        }
+        .logo-circle {
+            width: 40px; height: 40px; background: var(--primary);
+            border-radius: var(--radius-sm); display: flex; align-items: center;
+            justify-content: center; font-weight: 900; color: #000;
+            font-size: 1.2rem; box-shadow: 0 0 20px var(--primary-glow);
+            transition: transform var(--duration-normal) var(--ease-out-back);
+            position: relative;
+        }
+        .logo-circle:active { transform: scale(0.9); }
+        .brand h1 {
+            font-size: var(--font-xl); font-weight: 800; letter-spacing: -0.5px; line-height: 1.1;
+        }
+        .brand h1 span {
+            display: block; font-size: 0.5rem; font-weight: 500;
+            letter-spacing: 2px; text-transform: uppercase; color: var(--text-dim);
+        }
+        .header-actions { display: flex; gap: 20px; align-items: center; }
+        .header-actions a {
+            color: var(--text-secondary); font-size: 1.1rem; transition: var(--duration-fast);
+            position: relative;
+        }
+        .header-actions a:hover, .header-actions a:focus-visible { color: var(--primary); }
+        .badge-dot {
+            position: absolute; top: -4px; right: -6px; width: 8px; height: 8px;
+            background: var(--danger); border-radius: 50%; border: 2px solid var(--bg);
         }
 
-        .brand { display: flex; align-items: center; gap: 10px; }
-        .brand .logo-circle {
-            width: 35px; height: 35px; background: var(--primary);
-            border-radius: 8px; display: flex; align-items: center;
-            justify-content: center; font-weight: 800; color: #000;
+        /* ============================================================
+           STORIES (CATEGORIAS)
+           ============================================================ */
+        .stories-scroll {
+            padding: 14px 0 8px; overflow-x: auto; display: flex; gap: 12px;
+            padding-left: 20px; scrollbar-width: none;
+            -webkit-overflow-scrolling: touch;
+            mask-image: linear-gradient(to right, black 85%, transparent 100%);
+            -webkit-mask-image: linear-gradient(to right, black 85%, transparent 100%);
         }
-
-        .stories-container {
-            margin-top: 85px; padding: 10px 0; display: flex;
-            overflow-x: auto; gap: 15px; padding-left: 20px; scrollbar-width: none;
-        }
-
-        .story-item {
+        .stories-scroll::-webkit-scrollbar { display: none; }
+        .story-pill {
             display: flex; flex-direction: column; align-items: center;
-            min-width: 75px; cursor: pointer;
+            min-width: 70px; cursor: pointer; text-decoration: none;
+            color: inherit; gap: 6px; transition: transform var(--duration-fast);
+        }
+        .story-pill:active { transform: scale(0.95); }
+        .story-avatar {
+            width: 60px; height: 60px; border-radius: 50%; padding: 2.5px;
+            background: linear-gradient(135deg, var(--primary), #ff8c00, #fff);
+            transition: box-shadow var(--duration-fast);
+        }
+        .story-avatar.alert-gradient { background: linear-gradient(135deg, var(--danger), #ff6b6b, #fff); }
+        .story-avatar.event-gradient { background: linear-gradient(135deg, var(--info), #5dade2, #fff); }
+        .story-avatar.job-gradient { background: linear-gradient(135deg, var(--success), #58d68d, #fff); }
+        .story-inner {
+            width: 100%; height: 100%; background: var(--bg); border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.5rem; transition: background var(--duration-fast);
+        }
+        .story-pill:hover .story-avatar { box-shadow: 0 0 20px rgba(255,215,0,0.3); }
+        .story-pill:hover .story-inner { background: rgba(255,215,0,0.1); }
+        .story-label {
+            font-size: 0.65rem; font-weight: 600; text-align: center;
+            white-space: nowrap; max-width: 70px; overflow: hidden; text-overflow: ellipsis;
+            color: var(--text-secondary);
         }
 
-        .story-ring {
-            width: 68px; height: 68px; border-radius: 50%; padding: 3px;
-            background: linear-gradient(45deg, var(--primary), #ff8c00, #fff);
-            margin-bottom: 8px;
+        /* ============================================================
+           FEED
+           ============================================================ */
+        .feed-container {
+            max-width: 600px; margin: 0 auto; padding: 8px 16px;
+            display: flex; flex-direction: column; gap: 24px;
+        }
+        .post {
+            background: var(--surface); border: 1px solid var(--glass-border);
+            border-radius: var(--radius-lg); overflow: hidden;
+            transition: border-color var(--duration-normal), box-shadow var(--duration-normal);
+            animation: fadeUp 0.5s var(--ease-out-expo) both;
+            contain: layout style;
+        }
+        .post:nth-child(1) { animation-delay: 0s; }
+        .post:nth-child(2) { animation-delay: 0.1s; }
+        .post:nth-child(3) { animation-delay: 0.2s; }
+        .post:nth-child(4) { animation-delay: 0.3s; }
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .post:hover {
+            border-color: rgba(255,215,0,0.3);
+            box-shadow: var(--shadow-md);
+        }
+        .post-header {
+            padding: 14px 18px; display: flex; align-items: center; gap: 12px;
+        }
+        .avatar {
+            width: 44px; height: 44px; border-radius: var(--radius-sm); display: flex;
+            align-items: center; justify-content: center; font-weight: 700;
+            color: #fff; flex-shrink: 0; font-size: 0.8rem;
+        }
+        .avatar.pref { background: #1a1a1a; border: 2px solid var(--primary); color: var(--primary); }
+        .avatar.alert { background: var(--danger); }
+        .avatar.sport { background: #2c3e50; }
+        .avatar.job { background: #1e8449; }
+        .post-meta h4 { font-size: var(--font-md); font-weight: 600; }
+        .post-meta p { font-size: var(--font-xs); color: var(--text-dim); display: flex; align-items: center; gap: 4px; margin-top: 2px; }
+        .verified-icon { color: var(--primary); font-size: 0.7rem; }
+        .post-media img {
+            width: 100%; max-height: 400px; object-fit: cover;
+            transition: transform var(--duration-slow);
+        }
+        .post:hover .post-media img { transform: scale(1.02); }
+        .post-body { padding: 16px 18px; }
+        .category-badge {
+            display: inline-block; padding: 4px 12px; border-radius: 20px;
+            font-size: 0.65rem; font-weight: 700; text-transform: uppercase;
+            letter-spacing: 1px; margin-bottom: 10px;
+            background: rgba(255,215,0,0.12); color: var(--primary);
+        }
+        .category-badge.danger { background: rgba(255,68,68,0.15); color: var(--danger); }
+        .category-badge.success { background: rgba(46,204,113,0.15); color: var(--success); }
+        .category-badge.info { background: rgba(52,152,219,0.15); color: var(--info); }
+        .post-body p { font-size: var(--font-md); line-height: 1.6; }
+        .post-actions {
+            display: flex; gap: 20px; padding: 8px 18px 14px;
+            border-top: 1px solid rgba(255,255,255,0.03);
+            color: var(--text-dim); font-size: var(--font-sm);
+        }
+        .post-actions button {
+            display: inline-flex; align-items: center; gap: 6px;
+            transition: var(--duration-fast); padding: 6px 10px; border-radius: 20px;
+        }
+        .post-actions button:hover { color: var(--primary); background: rgba(255,215,0,0.08); }
+        .post-actions button.liked { color: var(--primary); }
+
+        /* ============================================================
+           DOCK NAV
+           ============================================================ */
+        .dock {
+            position: fixed; bottom: calc(var(--safe-bottom) + 8px); left: 50%;
+            transform: translateX(-50%); width: min(92%, 420px);
+            height: var(--dock-h); background: rgba(20,20,20,0.85);
+            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border); border-radius: 35px;
+            display: flex; justify-content: space-around; align-items: center;
+            z-index: 1000; box-shadow: var(--shadow-lg);
+            padding: 0 8px;
+        }
+        .dock a {
+            display: flex; align-items: center; justify-content: center;
+            width: 44px; height: 44px; border-radius: 50%; color: var(--text-dim);
+            font-size: 1.2rem; transition: all var(--duration-normal) var(--ease-out-back);
+            position: relative;
+        }
+        .dock a.active { color: var(--primary); background: rgba(255,215,0,0.1); }
+        .dock a.center {
+            width: 54px; height: 54px; background: var(--primary); color: #000;
+            margin-top: -28px; border-radius: 50%; font-size: 1.4rem;
+            box-shadow: 0 6px 24px rgba(255,215,0,0.5); border: 3px solid var(--bg);
+        }
+        .dock a.center:active { transform: scale(0.9); }
+        .dock a:hover { color: var(--primary); }
+
+        /* ============================================================
+           TOAST
+           ============================================================ */
+        .toast {
+            position: fixed; top: 80px; left: 50%; transform: translateX(-50%) translateY(-120px);
+            background: var(--primary); color: #000; padding: 12px 24px;
+            border-radius: 30px; font-weight: 700; font-size: var(--font-sm);
+            z-index: 3000; box-shadow: var(--shadow-md);
+            transition: transform var(--duration-normal) var(--ease-out-back);
+            pointer-events: none; opacity: 0;
+        }
+        .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+
+        /* ============================================================
+           PARTICLES (confete no logo)
+           ============================================================ */
+        .particle {
+            position: fixed; pointer-events: none; z-index: 4000;
+            width: 8px; height: 8px; border-radius: 50%; background: var(--primary);
+            animation: particleBurst 1s var(--ease-out-expo) forwards;
+        }
+        @keyframes particleBurst {
+            0% { opacity: 1; transform: translate(0,0) scale(1); }
+            100% { opacity: 0; transform: translate(var(--tx), var(--ty)) scale(0); }
         }
 
-        .story-content {
-            width: 100%; height: 100%; background: var(--bg);
-            border-radius: 50%; display: flex; align-items: center;
-            justify-content: center; font-size: 1.5rem;
+        /* ============================================================
+           RESPONSIVO
+           ============================================================ */
+        @media (max-width: 480px) {
+            .app-header { padding: 0 14px; }
+            .feed-container { padding: 8px 10px; gap: 18px; }
+            .post-body p { font-size: 0.85rem; }
+            .stories-scroll { padding-left: 14px; }
         }
-
-        .main-feed { max-width: 600px; margin: 20px auto; padding: 0 15px 100px; }
-
-        .post-card {
-            background: var(--card-bg); border: 1px solid var(--border);
-            border-radius: 24px; margin-bottom: 30px; overflow: hidden;
-        }
-
-        .post-media img { width: 100%; display: block; }
-
-        .dock-nav {
-            position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
-            width: 90%; max-width: 400px; height: 65px;
-            background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(25px);
-            border: 1px solid var(--border); border-radius: 30px;
-            display: flex; justify-content: space-around; align-items: center; z-index: 2000;
-        }
-
-        .nav-item { color: var(--text-dim); font-size: 1.2rem; cursor: pointer; transition: 0.3s; }
-        .nav-item.active { color: var(--primary); }
-        .nav-item.center-btn {
-            width: 50px; height: 50px; background: var(--primary); color: #000;
-            border-radius: 50%; display: flex; align-items: center;
-            justify-content: center; margin-top: -30px; border: 5px solid var(--bg);
-        }
-
-        #dynamic-content { padding: 20px; margin-top: 20px; animation: fadeIn 0.5s ease; }
-        .alert-item {
-            background: #1a1a1a; border-left: 5px solid var(--primary);
-            padding: 15px; border-radius: 12px; margin-bottom: 15px;
-        }
-
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body>
 
-    <header class="app-header">
-        <div class="brand">
-            <div class="logo-circle">00</div>
-            <h1>Brother</h1>
-        </div>
+    <!-- Barra de acessibilidade (oculta, revelada pelo botão flutuante) -->
+    <div class="a11y-bar" id="a11yBar" role="region" aria-label="Acessibilidade">
+        <span>Acessibilidade:</span>
+        <button id="toggleContrast" aria-label="Alto contraste"><i class="fa-solid fa-circle-half-stroke"></i> Contraste</button>
+        <button id="increaseFont" aria-label="Aumentar fonte"><i class="fa-solid fa-text-height"></i> A+</button>
+        <button id="toggleTheme" aria-label="Alternar tema"><i class="fa-solid fa-moon"></i> Tema</button>
+    </div>
+    <button class="a11y-toggle" id="a11yToggle" aria-label="Opções de acessibilidade" title="Acessibilidade">
+        <i class="fa-solid fa-universal-access"></i>
+    </button>
+
+    <!-- Toast -->
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+    <!-- Header -->
+    <header class="app-header" role="banner">
+        <a href="10.html" class="brand" id="logoBrand" aria-label="00brother - Ir para o início">
+            <div class="logo-circle" id="logoCircle">00</div>
+            <h1>00brother <span>Fechado com você</span></h1>
+        </a>
         <div class="header-actions">
-            <span>🔍</span>
-            <span style="cursor:pointer;" onclick="window.location.href='alertas.html'">🔔</span>
+            <a href="80.html" aria-label="Buscar" title="Buscar"><i class="fa-solid fa-magnifying-glass"></i></a>
+            <a href="70.html" aria-label="Notificações" title="Notificações" style="position:relative;">
+                <i class="fa-solid fa-bell"></i>
+                <span class="badge-dot" aria-hidden="true"></span>
+            </a>
         </div>
     </header>
 
-    <div class="stories-container" id="stories">
-        <div class="story-item" onclick="location.reload()">
-            <div class="story-ring"><div class="story-content">⭐</div></div>
-            <span>Para Você</span>
-        </div>
-        <div class="story-item" onclick="window.location.href='alertas.html'">
-            <div class="story-ring" style="background: #ff4444;"><div class="story-content">🚨</div></div>
-            <span>Alertas</span>
-        </div>
-        <div class="story-item">
-            <div class="story-ring"><div class="story-content">🎭</div></div>
-            <span>Eventos</span>
-        </div>
-        <div class="story-item">
-            <div class="story-ring"><div class="story-content">🚧</div></div>
-            <span>Obras</span>
-        </div>
-    </div>
+    <!-- Stories -->
+    <nav class="stories-scroll" aria-label="Categorias rápidas">
+        <a href="10.html" class="story-pill" aria-label="Para você">
+            <div class="story-avatar"><div class="story-inner">⭐</div></div>
+            <span class="story-label">Para Você</span>
+        </a>
+        <a href="70.html" class="story-pill" aria-label="Alertas">
+            <div class="story-avatar alert-gradient"><div class="story-inner">🚨</div></div>
+            <span class="story-label">Alertas</span>
+        </a>
+        <a href="90.html" class="story-pill" aria-label="Eventos">
+            <div class="story-avatar event-gradient"><div class="story-inner">🎭</div></div>
+            <span class="story-label">Eventos</span>
+        </a>
+        <a href="100.html" class="story-pill" aria-label="Obras">
+            <div class="story-avatar"><div class="story-inner">🚧</div></div>
+            <span class="story-label">Obras</span>
+        </a>
+        <a href="50.html" class="story-pill" aria-label="Vagas">
+            <div class="story-avatar job-gradient"><div class="story-inner">💼</div></div>
+            <span class="story-label">Vagas</span>
+        </a>
+        <a href="110.html" class="story-pill" aria-label="Saúde">
+            <div class="story-avatar"><div class="story-inner">🏥</div></div>
+            <span class="story-label">Saúde</span>
+        </a>
+    </nav>
 
-    <main class="main-feed" id="content-area">
-        <article class="post-card">
-            <div style="padding:15px 20px; display:flex; align-items:center; gap:12px;">
-                <div style="width:40px; height:40px; border-radius:12px; background:#ff4444; display:flex; align-items:center; justify-content:center; font-weight:700;">00</div>
-                <div><h4>Brother Alerta</h4><p style="font-size:0.75rem; color:var(--text-dim);">Zona Norte • há 15 min</p></div>
+    <!-- Feed -->
+    <main class="feed-container" id="feedContainer" role="feed" aria-label="Feed de publicações">
+
+        <!-- Post 1: Prefeitura -->
+        <article class="post" tabindex="0" aria-label="Publicação da Prefeitura: Interdição na Avenida Central">
+            <div class="post-header">
+                <div class="avatar pref"><i class="fa-solid fa-building-columns"></i></div>
+                <div class="post-meta">
+                    <h4>Prefeitura Municipal</h4>
+                    <p><i class="fa-solid fa-circle-check verified-icon"></i> Verificado • há 20 min</p>
+                </div>
+            </div>
+            <div class="post-body">
+                <span class="category-badge danger">Alerta de Trânsito</span>
+                <p><strong>🚧 Interdição na Av. Central</strong> para obras de drenagem. Trecho entre as ruas 7 e 9 ficará fechado de 15 a 20/11. Desvio sinalizado pela rotatória.</p>
+            </div>
+            <div class="post-actions">
+                <button aria-label="Curtir" data-action="like"><i class="fa-regular fa-thumbs-up"></i> 142</button>
+                <button aria-label="Comentar"><i class="fa-regular fa-comment"></i> 23</button>
+                <button aria-label="Compartilhar"><i class="fa-regular fa-share-from-square"></i></button>
+            </div>
+        </article>
+
+        <!-- Post 2: Vagas -->
+        <article class="post" tabindex="0" aria-label="Publicação da Agência do Trabalhador: Feirão de empregos">
+            <div class="post-header">
+                <div class="avatar job"><i class="fa-solid fa-briefcase"></i></div>
+                <div class="post-meta">
+                    <h4>Agência do Trabalhador</h4>
+                    <p>Oficial • há 2h</p>
+                </div>
+            </div>
+            <div class="post-body">
+                <span class="category-badge success">Vagas de Emprego</span>
+                <p><strong>💼 Feirão de empregos reúne 500 vagas</strong> na região central. Comércio e indústria participam. Inscrições abertas até sexta-feira no site da prefeitura.</p>
+            </div>
+            <div class="post-actions">
+                <button aria-label="Curtir" data-action="like"><i class="fa-regular fa-thumbs-up"></i> 89</button>
+                <button aria-label="Comentar"><i class="fa-regular fa-comment"></i> 12</button>
+                <button aria-label="Compartilhar"><i class="fa-regular fa-share-from-square"></i></button>
+            </div>
+        </article>
+
+        <!-- Post 3: Esporte -->
+        <article class="post" tabindex="0" aria-label="Publicação do Grêmio Estudantil: Final do Intercolegial de Futsal">
+            <div class="post-header">
+                <div class="avatar sport"><i class="fa-solid fa-futbol"></i></div>
+                <div class="post-meta">
+                    <h4>Grêmio Estudantil</h4>
+                    <p>Escola Municipal • há 4h</p>
+                </div>
             </div>
             <div class="post-media">
-                <img src="https://images.unsplash.com/photo-1541675154750-0444c7d51e8e?auto=format&fit=crop&w=600&q=80">
+                <img src="https://images.unsplash.com/photo-1579952363873-27f3bade9f55?auto=format&fit=crop&w=600&q=80" alt="Jogadores de futsal em quadra" loading="lazy">
             </div>
-            <div style="padding:20px;">
-                <p><strong>Brother Alerta:</strong> Atenção! Queda de árvore na Rua Principal. Evitem a região. #Segurança</p>
+            <div class="post-body">
+                <span class="category-badge info">Esporte Local</span>
+                <p><strong>⚽ Final do Intercolegial de Futsal</strong> será no ginásio municipal neste sábado. Entrada gratuita com 1kg de alimento. Torcida organizada pelos grêmios!</p>
+            </div>
+            <div class="post-actions">
+                <button aria-label="Curtir" data-action="like"><i class="fa-regular fa-thumbs-up"></i> 315</button>
+                <button aria-label="Comentar"><i class="fa-regular fa-comment"></i> 67</button>
+                <button aria-label="Compartilhar"><i class="fa-regular fa-share-from-square"></i></button>
+            </div>
+        </article>
+
+        <!-- Post 4: Zeladoria -->
+        <article class="post" tabindex="0" aria-label="Publicação de morador: Lâmpada queimada na Rua das Flores">
+            <div class="post-header">
+                <div class="avatar alert"><i class="fa-solid fa-triangle-exclamation"></i></div>
+                <div class="post-meta">
+                    <h4>Morador Zona Norte</h4>
+                    <p>Mural da Comunidade • há 30 min</p>
+                </div>
+            </div>
+            <div class="post-body">
+                <span class="category-badge">Zeladoria Urbana</span>
+                <p><strong>💡 Lâmpada queimada na Rua das Flores</strong> já faz 3 dias. Poste nº 234. Alguém mais já reportou? #BairroUnido</p>
+            </div>
+            <div class="post-actions">
+                <button aria-label="Curtir" data-action="like"><i class="fa-regular fa-thumbs-up"></i> 47</button>
+                <button aria-label="Comentar"><i class="fa-regular fa-comment"></i> 8</button>
+                <button aria-label="Compartilhar"><i class="fa-regular fa-share-from-square"></i></button>
             </div>
         </article>
     </main>
 
-    <nav class="dock-nav">
-        <div class="nav-item active" id="nav-home"><span>🏠</span></div>
-        <div class="nav-item" id="nav-map"><span>📍</span></div>
-        <div class="nav-item center-btn" id="nav-add"><span>➕</span></div>
-        <div class="nav-item" id="nav-vagas"><span>💼</span></div>
-        <div class="nav-item" id="nav-profile"><span>👤</span></div>
+    <!-- Dock Navigation -->
+    <nav class="dock" role="navigation" aria-label="Navegação principal">
+        <a href="10.html" class="active" aria-label="Início" title="Início"><i class="fa-solid fa-house"></i></a>
+        <a href="30.html" aria-label="Mapa da cidade" title="Mapa"><i class="fa-solid fa-map-location-dot"></i></a>
+        <a href="40.html" class="center" aria-label="Nova ocorrência" title="Nova Ocorrência"><i class="fa-solid fa-plus"></i></a>
+        <a href="50.html" aria-label="Vagas de emprego" title="Vagas"><i class="fa-solid fa-briefcase"></i></a>
+        <a href="60.html" aria-label="Perfil do usuário" title="Perfil"><i class="fa-solid fa-user"></i></a>
     </nav>
 
+    <!-- Scripts -->
     <script>
-        const contentArea = document.getElementById('content-area');
-        const stories = document.getElementById('stories');
-        const navItems = document.querySelectorAll('.nav-item');
+        'use strict';
 
-        function setActive(el) {
-            navItems.forEach(nav => nav.classList.remove('active'));
-            el.classList.add('active');
+        // ========== DOCK ATIVO ==========
+        (() => {
+            const current = window.location.pathname.split('/').pop() || '10.html';
+            document.querySelectorAll('.dock a').forEach(link => {
+                link.classList.toggle('active', link.getAttribute('href') === current);
+            });
+        })();
+
+        // ========== TOGGLE ACESSIBILIDADE ==========
+        const a11yBar = document.getElementById('a11yBar');
+        const a11yToggle = document.getElementById('a11yToggle');
+        let a11yVisible = false;
+        a11yToggle.addEventListener('click', () => {
+            a11yVisible = !a11yVisible;
+            a11yBar.classList.toggle('visible', a11yVisible);
+            a11yToggle.innerHTML = a11yVisible ? '<i class="fa-solid fa-xmark"></i>' : '<i class="fa-solid fa-universal-access"></i>';
+        });
+
+        // ========== ALTO CONTRASTE ==========
+        const contrastBtn = document.getElementById('toggleContrast');
+        contrastBtn.addEventListener('click', () => {
+            document.body.classList.toggle('high-contrast');
+            localStorage.setItem('highContrast', document.body.classList.contains('high-contrast'));
+        });
+        if (localStorage.getItem('highContrast') === 'true') document.body.classList.add('high-contrast');
+
+        // ========== TEMA (OVERRIDE DO SISTEMA) ==========
+        const themeBtn = document.getElementById('toggleTheme');
+        themeBtn.addEventListener('click', () => {
+            const isLight = document.documentElement.style.getPropertyValue('--bg') === '#f5f5f7';
+            if (isLight) {
+                document.documentElement.style.setProperty('--bg', '#0f0f0f');
+                document.documentElement.style.setProperty('--text-main', '#ffffff');
+                document.documentElement.style.setProperty('--surface', 'rgba(255,255,255,0.04)');
+                document.documentElement.style.setProperty('--glass', 'rgba(255,255,255,0.06)');
+                document.documentElement.style.setProperty('--glass-border', 'rgba(255,255,255,0.08)');
+                document.documentElement.style.setProperty('--text-secondary', '#b0b0b0');
+                document.documentElement.style.setProperty('--text-dim', '#707070');
+                themeBtn.innerHTML = '<i class="fa-solid fa-moon"></i> Tema';
+                localStorage.setItem('theme', 'dark');
+            } else {
+                document.documentElement.style.setProperty('--bg', '#f5f5f7');
+                document.documentElement.style.setProperty('--text-main', '#1a1a1a');
+                document.documentElement.style.setProperty('--surface', 'rgba(0,0,0,0.03)');
+                document.documentElement.style.setProperty('--glass', 'rgba(255,255,255,0.8)');
+                document.documentElement.style.setProperty('--glass-border', 'rgba(0,0,0,0.08)');
+                document.documentElement.style.setProperty('--text-secondary', '#555');
+                document.documentElement.style.setProperty('--text-dim', '#999');
+                themeBtn.innerHTML = '<i class="fa-solid fa-sun"></i> Tema';
+                localStorage.setItem('theme', 'light');
+            }
+        });
+        // Carregar tema salvo
+        if (localStorage.getItem('theme') === 'light') themeBtn.click();
+
+        // ========== AUMENTO DE FONTE ==========
+        const increaseFontBtn = document.getElementById('increaseFont');
+        let fontSizeLevel = 0;
+        increaseFontBtn.addEventListener('click', () => {
+            fontSizeLevel = (fontSizeLevel + 1) % 4;
+            const sizes = ['100%', '110%', '120%', '130%'];
+            document.documentElement.style.fontSize = sizes[fontSizeLevel];
+            localStorage.setItem('fontSize', fontSizeLevel);
+        });
+        const savedFont = localStorage.getItem('fontSize');
+        if (savedFont) {
+            fontSizeLevel = parseInt(savedFont);
+            const sizes = ['100%', '110%', '120%', '130%'];
+            document.documentElement.style.fontSize = sizes[fontSizeLevel];
         }
 
-        function clearScreen(hideStories = true) {
-            contentArea.innerHTML = '';
-            if(hideStories) stories.style.display = 'none';
-            else stories.style.display = 'flex';
-            window.scrollTo(0,0);
+        // ========== TOAST ==========
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            toast.textContent = msg;
+            toast.classList.add('show');
+            clearTimeout(toast._timeout);
+            toast._timeout = setTimeout(() => toast.classList.remove('show'), 2000);
         }
 
-        // 1. HOME (Recarrega para voltar ao feed)
-        document.getElementById('nav-home').addEventListener('click', function() {
-            location.reload();
+        // ========== LIKE NOS POSTS ==========
+        document.querySelectorAll('[data-action="like"]').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                e.preventDefault();
+                const icon = this.querySelector('i');
+                const isLiked = icon.classList.contains('fa-solid');
+                if (isLiked) {
+                    icon.classList.replace('fa-solid', 'fa-regular');
+                    this.classList.remove('liked');
+                    const count = parseInt(this.textContent.trim().match(/\d+/)?.[0] || 0);
+                    this.innerHTML = '<i class="fa-regular fa-thumbs-up"></i> ' + (count - 1);
+                    showToast('Curtida removida');
+                } else {
+                    icon.classList.replace('fa-regular', 'fa-solid');
+                    this.classList.add('liked');
+                    const count = parseInt(this.textContent.trim().match(/\d+/)?.[0] || 0);
+                    this.innerHTML = '<i class="fa-solid fa-thumbs-up"></i> ' + (count + 1);
+                    showToast('Curtido! 💛');
+                }
+            });
         });
 
-        // 2. MAPA (Dinâmico)
-        document.getElementById('nav-map').addEventListener('click', function() {
-            setActive(this);
-            clearScreen(false);
-            contentArea.innerHTML = `
-                <div id="dynamic-content" style="text-align:center;">
-                    <h2 style="color:var(--primary);">📍 Mapa da Cidade</h2>
-                    <div style="width:100%; height:350px; background:#222; border-radius:24px; margin-top:20px; display:flex; align-items:center; justify-content:center; border:2px dashed #444;">
-                        <p style="color:var(--text-dim);">[ Mapa Interativo em Desenvolvimento ]</p>
-                    </div>
-                </div>`;
+        // ========== CONFETE NO LOGO (EASTER EGG) ==========
+        const logoCircle = document.getElementById('logoCircle');
+        let clickTimer = null;
+        logoCircle.addEventListener('click', function(e) {
+            if (clickTimer) {
+                // Duplo clique detectado
+                clearTimeout(clickTimer);
+                clickTimer = null;
+                spawnParticles(e);
+            } else {
+                clickTimer = setTimeout(() => { clickTimer = null; }, 300);
+            }
         });
 
-        // 3. ADICIONAR (Dinâmico)
-        document.getElementById('nav-add').addEventListener('click', function() {
-            clearScreen(true);
-            contentArea.innerHTML = `
-                <div id="dynamic-content">
-                    <h2 style="color:var(--primary);">➕ Nova Ocorrência</h2>
-                    <p style="margin-bottom:20px; color:var(--text-dim);">O que está acontecendo agora?</p>
-                    <textarea placeholder="Descreva o problema ou evento..." style="width:100%; height:120px; background:#1a1a1a; border:1px solid var(--border); border-radius:15px; padding:15px; color:white; margin-bottom:15px; outline:none;"></textarea>
-                    <button style="width:100%; padding:15px; background:var(--primary); color:black; border:none; border-radius:15px; font-weight:800; cursor:pointer;">PUBLICAR</button>
-                </div>`;
-        });
+        function spawnParticles(e) {
+            const rect = logoCircle.getBoundingClientRect();
+            const cx = rect.left + rect.width / 2;
+            const cy = rect.top + rect.height / 2;
+            const colors = ['#FFD700', '#ff8c00', '#fff', '#ff6b6b', '#2ecc71', '#3498db'];
 
-        // 4. VAGAS (Dinâmico)
-        document.getElementById('nav-vagas').addEventListener('click', function() {
-            setActive(this);
-            clearScreen(false);
-            contentArea.innerHTML = `
-                <div id="dynamic-content">
-                    <h2 style="color:var(--primary);">💼 Oportunidades</h2>
-                    <div class="alert-item">
-                        <h4>Atendente Comercial</h4>
-                        <p style="font-size:0.85rem; color:#bbb;">Loja Centro | Salário: R$ 1.800,00</p>
-                    </div>
-                </div>`;
-        });
-
-        // 5. PERFIL (Dinâmico)
-        document.getElementById('nav-profile').addEventListener('click', function() {
-            setActive(this);
-            clearScreen(true);
-            contentArea.innerHTML = `
-                <div id="dynamic-content" style="text-align:center;">
-                    <div style="width:100px; height:100px; background:var(--primary); border-radius:30px; margin:0 auto 20px; display:flex; align-items:center; justify-content:center; font-size:2rem; color:black; font-weight:800;">GB</div>
-                    <h2>Gabriel Brother</h2>
-                    <p style="color:var(--text-dim);">Cidadão Ouro</p>
-                    <div style="display:flex; justify-content:space-around; margin-top:40px;">
-                        <div><h3 style="color:var(--primary);">12</h3><p style="font-size:0.7rem;">Relatos</p></div>
-                        <div><h3 style="color:var(--primary);">85</h3><p style="font-size:0.7rem;">Apoios</p></div>
-                    </div>
-                </div>`;
-        });
+            for (let i = 0; i < 20; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                const angle = Math.random() * Math.PI * 2;
+                const distance = 40 + Math.random() * 80;
+                const tx = Math.cos(angle) * distance;
+                const ty = Math.sin(angle) * distance;
+                particle.style.cssText = `
+                    left: ${cx}px; top: ${cy}px;
+                    background: ${colors[Math.floor(Math.random() * colors.length)]};
+                    --tx: ${tx}px; --ty: ${ty}px;
+                    width: ${4 + Math.random() * 8}px; height: ${4 + Math.random() * 8}px;
+                `;
+                document.body.appendChild(particle);
+                setTimeout(() => particle.remove(), 1000);
+            }
+            showToast('🌟 00brother!');
+        }
     </script>
 </body>
 </html>
