@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>00brother – Fechado com Você</title>
 
-    <!-- Font Awesome para ícones -->
+    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
     integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA=="
     crossorigin="anonymous" referrerpolicy="no-referrer" />
@@ -16,13 +16,14 @@
     <style>
         :root {
             --primary: #FFD700;
+            --primary-dark: #e6c200;
             --dark: #1a1a1a;
             --light: #f8f9fa;
             --white: #ffffff;
             --gray: #6c757d;
             --gray-light: #e9ecef;
-            --border-radius: 12px;
-            --transition: 0.3s ease;
+            --border-radius: 14px;
+            --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         * {
@@ -36,28 +37,31 @@
             background-color: var(--light);
             color: var(--dark);
             line-height: 1.6;
+            overflow-x: hidden;
         }
 
-        /* Barra de acessibilidade */
+        /* Barra de acessibilidade compacta */
         .a11y-bar {
-            background: #222;
-            color: #eee;
+            background: #1e1e1e;
+            color: #ccc;
             padding: 6px 5%;
             display: flex;
             justify-content: flex-end;
             align-items: center;
-            gap: 12px;
-            font-size: 0.8rem;
+            gap: 10px;
+            font-size: 0.75rem;
             flex-wrap: wrap;
+            border-bottom: 1px solid #333;
         }
         .a11y-bar button {
-            background: transparent;
-            border: 1px solid #666;
-            color: #eee;
-            padding: 4px 12px;
+            background: rgba(255,255,255,0.08);
+            border: 1px solid #555;
+            color: #ddd;
+            padding: 5px 14px;
             border-radius: 20px;
             cursor: pointer;
             font-size: 0.75rem;
+            font-weight: 500;
             transition: var(--transition);
             display: flex;
             align-items: center;
@@ -68,17 +72,37 @@
             color: #000;
             border-color: var(--primary);
         }
-        .high-contrast {
+        /* Modo alto contraste */
+        body.high-contrast {
             --primary: #FFFF00;
             --dark: #000;
             --light: #fff;
             --white: #fff;
             --gray-light: #ccc;
             --gray: #333;
+            background: #fff !important;
         }
-        .high-contrast .service-card,
-        .high-contrast .news-item {
+        body.high-contrast .service-card,
+        body.high-contrast .news-item {
             border: 2px solid #000;
+            background: #fff;
+        }
+        body.high-contrast .hero {
+            background: #FFFF00 !important;
+            color: #000;
+        }
+        body.high-contrast .hero h2,
+        body.high-contrast .hero p {
+            color: #000;
+        }
+        body.high-contrast .cta-button {
+            background: #000;
+            color: #FFFF00;
+            border: 2px solid #000;
+        }
+        body.high-contrast .cta-button.outline {
+            border-color: #000;
+            color: #000;
         }
 
         /* Header */
@@ -88,17 +112,17 @@
             position: sticky;
             top: 0;
             z-index: 1000;
-            box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
             display: flex;
             justify-content: space-between;
             align-items: center;
             flex-wrap: wrap;
-            gap: 10px;
+            gap: 12px;
         }
         .logo-container {
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 10px;
         }
         .logo-container i {
             font-size: 2rem;
@@ -108,12 +132,12 @@
             font-size: 1.5rem;
             font-weight: 800;
             color: var(--dark);
-            letter-spacing: -1px;
+            letter-spacing: -0.5px;
             line-height: 1.2;
         }
         .logo-container h1 span {
             display: block;
-            font-size: 0.65rem;
+            font-size: 0.6rem;
             font-weight: 500;
             letter-spacing: 2px;
             text-transform: uppercase;
@@ -122,98 +146,129 @@
         nav ul {
             display: flex;
             list-style: none;
-            gap: 6px;
+            gap: 4px;
         }
         nav ul li a {
             text-decoration: none;
             color: var(--dark);
             font-weight: 600;
             font-size: 0.85rem;
-            padding: 8px 16px;
+            padding: 10px 18px;
             border-radius: 25px;
             transition: var(--transition);
+            background: transparent;
         }
         nav ul li a:hover {
             background: var(--dark);
             color: var(--primary);
         }
+        @media (max-width: 768px) {
+            nav { display: none; }
+        }
 
-        /* Hero */
+        /* Hero com imagem de fundo real */
         .hero {
-            background: linear-gradient(135deg, rgba(255,215,0,0.95) 0%, rgba(255,215,0,0.8) 100%),
-            url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 600"><circle cx="200" cy="150" r="120" fill="%23e6c200" opacity="0.6"/><circle cx="1000" cy="450" r="180" fill="%23e6c200" opacity="0.5"/></svg>');
+            background: linear-gradient(0deg, rgba(0,0,0,0.65) 0%, rgba(0,0,0,0.35) 100%),
+                        url('https://images.unsplash.com/photo-1449824913935-59a10b8d2000?auto=format&fit=crop&w=1350&q=80');
             background-size: cover;
-            background-position: center;
-            min-height: 85vh;
+            background-position: center 30%;
+            background-attachment: fixed;
+            min-height: 90vh;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             text-align: center;
             padding: 40px 5%;
-            margin-top: 0; /* agora o header é sticky, não fixo */
+            color: #fff;
+            position: relative;
+        }
+        .hero::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(180deg, rgba(255,215,0,0.25) 0%, rgba(255,215,0,0.05) 100%);
+            pointer-events: none;
+        }
+        .hero * {
+            position: relative;
+            z-index: 2;
         }
         .hero h2 {
-            font-size: clamp(2.2rem, 5vw, 3.2rem);
+            font-size: clamp(2.4rem, 5vw, 3.8rem);
             font-weight: 800;
             margin-bottom: 1rem;
-            color: var(--dark);
+            line-height: 1.2;
+            text-shadow: 0 4px 20px rgba(0,0,0,0.4);
         }
         .hero h2 .highlight {
+            background: var(--primary);
             color: #000;
-            background: rgba(255,255,255,0.5);
-            padding: 0 10px;
+            padding: 0 14px;
             border-radius: 8px;
+            display: inline-block;
+            box-shadow: 0 8px 24px rgba(255,215,0,0.5);
         }
         .hero p {
-            font-size: 1.1rem;
-            max-width: 600px;
-            margin-bottom: 2rem;
+            font-size: 1.2rem;
+            max-width: 650px;
+            margin-bottom: 2.5rem;
             font-weight: 400;
+            text-shadow: 0 2px 8px rgba(0,0,0,0.6);
+        }
+        .cta-group {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 16px;
         }
         .cta-button {
-            background-color: var(--dark);
-            color: var(--primary);
-            padding: 15px 40px;
+            background-color: var(--primary);
+            color: #000;
+            padding: 16px 38px;
             border-radius: 50px;
             text-decoration: none;
             font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 1px;
-            transition: transform 0.3s, box-shadow 0.3s;
+            transition: transform 0.3s, box-shadow 0.3s, background 0.3s;
             display: inline-flex;
             align-items: center;
-            gap: 8px;
-            box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+            gap: 10px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            font-size: 0.95rem;
+            border: none;
         }
         .cta-button:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 12px 28px rgba(0,0,0,0.3);
-            background-color: #000;
+            transform: translateY(-4px);
+            box-shadow: 0 18px 36px rgba(0,0,0,0.35);
+            background-color: #fff;
+            color: #000;
         }
         .cta-button.outline {
             background: transparent;
-            border: 2px solid var(--dark);
-            color: var(--dark);
-            margin-left: 12px;
+            border: 2px solid #fff;
+            color: #fff;
+            box-shadow: 0 6px 18px rgba(0,0,0,0.3);
         }
         .cta-button.outline:hover {
-            background: var(--dark);
-            color: var(--primary);
+            background: #fff;
+            color: #000;
+            border-color: #fff;
         }
 
-        /* Seção de serviços / módulos */
+        /* Seção de serviços */
         .services-section {
-            padding: 80px 5%;
-            max-width: 1200px;
+            padding: 90px 5% 60px;
+            max-width: 1300px;
             margin: 0 auto;
         }
         .section-title {
             text-align: center;
-            margin-bottom: 50px;
+            margin-bottom: 55px;
         }
         .section-title h2 {
-            font-size: 2rem;
+            font-size: 2.2rem;
             font-weight: 700;
             position: relative;
             display: inline-block;
@@ -221,95 +276,113 @@
         .section-title h2::after {
             content: '';
             position: absolute;
-            bottom: -8px;
+            bottom: -10px;
             left: 50%;
             transform: translateX(-50%);
-            width: 50px;
-            height: 4px;
+            width: 70px;
+            height: 5px;
             background: var(--primary);
-            border-radius: 2px;
+            border-radius: 5px;
+        }
+        .section-title p {
+            color: var(--gray);
+            margin-top: 16px;
+            font-weight: 400;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
         }
         .services {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 30px;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 28px;
         }
         .service-card {
             background: var(--white);
-            padding: 30px 20px;
+            padding: 32px 20px;
             border-radius: var(--border-radius);
             text-align: center;
             transition: var(--transition);
             border-bottom: 5px solid var(--primary);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.04);
+            position: relative;
+            overflow: hidden;
         }
         .service-card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 12px 28px rgba(0,0,0,0.1);
+            transform: translateY(-10px);
+            box-shadow: 0 18px 36px rgba(0,0,0,0.1);
+            border-bottom-color: #000;
         }
         .service-card i {
-            font-size: 2.5rem;
-            margin-bottom: 15px;
+            font-size: 2.7rem;
+            margin-bottom: 16px;
             display: block;
             color: var(--primary);
             -webkit-text-stroke: 1px var(--dark);
         }
         .service-card h3 {
             font-weight: 700;
-            margin-bottom: 8px;
-            font-size: 1.1rem;
+            margin-bottom: 10px;
+            font-size: 1.15rem;
         }
         .service-card p {
             font-size: 0.85rem;
             color: var(--gray);
+            line-height: 1.5;
         }
         .service-card .tag {
             display: inline-block;
             background: var(--primary);
-            color: var(--dark);
-            padding: 3px 12px;
-            border-radius: 15px;
+            color: #000;
+            padding: 4px 14px;
+            border-radius: 20px;
             font-size: 0.7rem;
             font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 1px;
-            margin-top: 10px;
+            margin-top: 14px;
         }
 
-        /* Radar da cidade (feed preview) */
+        /* Radar da cidade */
         .news-section {
             background-color: var(--white);
-            padding: 60px 5%;
+            padding: 80px 5%;
+            border-top: 1px solid var(--gray-light);
         }
         .news-grid {
-            max-width: 900px;
+            max-width: 950px;
             margin: 0 auto;
             display: flex;
             flex-direction: column;
-            gap: 16px;
+            gap: 20px;
         }
         .news-item {
             display: flex;
             background: var(--light);
             border-radius: var(--border-radius);
             overflow: hidden;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.04);
+            box-shadow: 0 4px 14px rgba(0,0,0,0.04);
             transition: var(--transition);
             flex-wrap: wrap;
         }
         .news-item:hover {
-            box-shadow: 0 8px 22px rgba(0,0,0,0.08);
-            transform: translateY(-2px);
+            box-shadow: 0 12px 30px rgba(0,0,0,0.1);
+            transform: translateY(-3px);
         }
         .news-img {
-            width: 140px;
-            min-height: 140px;
+            width: 150px;
+            min-height: 150px;
             background-size: cover;
             background-position: center;
             flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.8rem;
+            background-color: #f0f0f0;
         }
         .news-content {
-            padding: 20px;
+            padding: 22px;
             flex: 1;
         }
         .news-content .category {
@@ -318,15 +391,16 @@
             text-transform: uppercase;
             letter-spacing: 1px;
             color: #fff;
-            background: var(--dark);
-            padding: 3px 10px;
-            border-radius: 12px;
+            background: #1a1a1a;
+            padding: 4px 12px;
+            border-radius: 14px;
             display: inline-block;
-            margin-bottom: 6px;
+            margin-bottom: 8px;
         }
         .news-content h4 {
             font-weight: 700;
-            margin-bottom: 4px;
+            margin-bottom: 6px;
+            font-size: 1.1rem;
         }
         .news-content p {
             font-size: 0.85rem;
@@ -336,49 +410,54 @@
         /* Footer */
         footer {
             background-color: var(--dark);
-            color: var(--white);
-            padding: 40px 5% 20px;
+            color: #eee;
+            padding: 45px 5% 25px;
             text-align: center;
         }
         .footer-links {
-            margin-bottom: 20px;
+            margin-bottom: 24px;
             display: flex;
             flex-wrap: wrap;
             justify-content: center;
-            gap: 16px;
+            gap: 20px;
         }
         .footer-links a {
             color: var(--primary);
             text-decoration: none;
             font-weight: 500;
+            font-size: 0.9rem;
         }
         .footer-links a:hover {
             text-decoration: underline;
         }
         .lgpd-badge {
             display: inline-block;
-            background: #2a2a2a;
-            color: #ccc;
-            padding: 6px 14px;
-            border-radius: 20px;
+            background: #2c2c2c;
+            color: #bbb;
+            padding: 8px 18px;
+            border-radius: 24px;
             font-size: 0.75rem;
             font-weight: 600;
-            margin-top: 12px;
+            margin-top: 16px;
+            border: 1px solid #444;
+        }
+        .lgpd-badge i {
+            margin-right: 6px;
         }
 
         @media (max-width: 768px) {
-            .hero h2 { font-size: 1.8rem; }
-            nav { display: none; } /* Menu simplificado (pode ser ativado depois) */
+            .hero h2 { font-size: 2rem; }
             .news-item { flex-direction: column; }
-            .news-img { width: 100%; height: 160px; }
+            .news-img { width: 100%; height: 180px; }
+            .cta-group { flex-direction: column; align-items: center; }
         }
     </style>
 </head>
 <body>
 
-    <!-- Barra de acessibilidade rápida -->
+    <!-- Barra de acessibilidade -->
     <div class="a11y-bar">
-        <span style="opacity:0.7;">Acessibilidade:</span>
+        <span style="opacity:0.7;">⚡ Acessibilidade:</span>
         <button id="toggleContrast"><i class="fa-solid fa-circle-half-stroke"></i> Alto Contraste</button>
         <button id="increaseFont"><i class="fa-solid fa-text-height"></i> A+</button>
     </div>
@@ -391,7 +470,7 @@
         </div>
         <nav>
             <ul>
-                <li><a href="#inicio">Início</a></li>
+                <li><a href="#">Início</a></li>
                 <li><a href="#modulos">Módulos</a></li>
                 <li><a href="#radar">Radar</a></li>
                 <li><a href="#contato">Contato</a></li>
@@ -399,21 +478,21 @@
         </nav>
     </header>
 
-    <!-- Hero Section -->
-    <section class="hero" id="inicio">
+    <!-- Hero Section (imagem de fundo de cidade) -->
+    <section class="hero">
         <h2>A cidade inteira <br><span class="highlight">na palma da mão.</span></h2>
         <p>Centralizamos serviços, notícias e a voz do cidadão em uma plataforma <strong>sem distrações</strong>. Aqui, o que importa é a sua cidade.</p>
-        <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 12px;">
-            <a href="#modulos" class="cta-button"><i class="fa-solid fa-rocket"></i> Explorar Plataforma</a>
-            <a href="#contato" class="cta-button outline"><i class="fa-solid fa-building-columns"></i> Sou Gestor</a>
+        <div class="cta-group">
+            <a href="10.html" class="cta-button"><i class="fa-solid fa-rocket"></i> Explorar Plataforma</a>
+            <a href="20.html" class="cta-button outline"><i class="fa-solid fa-building-columns"></i> Sou Gestor</a>
         </div>
     </section>
 
-    <!-- Módulos / Serviços -->
+    <!-- Módulos -->
     <div class="services-section" id="modulos">
         <div class="section-title">
             <h2>O que o 00brother faz por você?</h2>
-            <p style="color:var(--gray); margin-top: 10px;">Módulos pensados para utilidade real, sem vídeos de dancinha.</p>
+            <p>Módulos pensados para utilidade real, sem vídeos de dancinha.</p>
         </div>
         <div class="services">
             <div class="service-card">
@@ -467,7 +546,7 @@
         </div>
     </div>
 
-    <!-- Radar da Cidade (Feed Preview) -->
+    <!-- Radar da Cidade (pré-visualização do feed) -->
     <section class="news-section" id="radar">
         <div class="section-title">
             <h2>Radar da Cidade</h2>
@@ -475,7 +554,7 @@
         </div>
         <div class="news-grid">
             <div class="news-item">
-                <div class="news-img" style="background: linear-gradient(135deg, #FFD700, #e6c200); display: flex; align-items: center; justify-content: center; font-size: 2rem;">🚧</div>
+                <div class="news-img" style="background: linear-gradient(135deg, #FFD700, #e6c200);">🚧</div>
                 <div class="news-content">
                     <span class="category">Alerta de Trânsito</span>
                     <h4>Interdição na Av. Central para obras</h4>
@@ -483,7 +562,7 @@
                 </div>
             </div>
             <div class="news-item">
-                <div class="news-img" style="background: linear-gradient(135deg, #28a745, #20c997); display: flex; align-items: center; justify-content: center; font-size: 2rem;">💼</div>
+                <div class="news-img" style="background: linear-gradient(135deg, #28a745, #20c997);">💼</div>
                 <div class="news-content">
                     <span class="category">Vagas de Emprego</span>
                     <h4>Feirão reúne 500 vagas na região</h4>
@@ -491,7 +570,7 @@
                 </div>
             </div>
             <div class="news-item">
-                <div class="news-img" style="background: linear-gradient(135deg, #17a2b8, #0dcaf0); display: flex; align-items: center; justify-content: center; font-size: 2rem;">⚽</div>
+                <div class="news-img" style="background: linear-gradient(135deg, #17a2b8, #0dcaf0);">⚽</div>
                 <div class="news-content">
                     <span class="category">Esporte Local</span>
                     <h4>Final do Intercolegial de Futsal no ginásio</h4>
@@ -514,7 +593,7 @@
         <span class="lgpd-badge"><i class="fa-solid fa-shield-halved"></i> Em conformidade com a LGPD</span>
     </footer>
 
-    <!-- Scripts simples de acessibilidade -->
+    <!-- Scripts de acessibilidade -->
     <script>
         // Alto contraste
         const contrastBtn = document.getElementById('toggleContrast');
