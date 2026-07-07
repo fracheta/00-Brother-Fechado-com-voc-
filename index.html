@@ -3,282 +3,1060 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>00 Brother - Fechado com Você</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <title>00brother – Fechado Com Você | A Rede Social da Sua Cidade</title>
+
+    <!-- Font Awesome 6 (CDN) para ícones profissionais -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA=="
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
     <style>
-        /* --- ESTILOS GERAIS (Linhas 1-100) --- */
+        /* ========== RESET & VARIÁVEIS ========== */
         :root {
-            --primary: #FFD700; /* Amarelo da logo */
-            --dark: #1a1a1a;    /* Preto da logo */
-            --light: #f4f4f4;
+            --primary: #FFD700;
+            --primary-dark: #e6c200;
+            --dark: #1a1a1a;
+            --dark-secondary: #2a2a2a;
+            --light: #f8f9fa;
             --white: #ffffff;
-            --accent: #ff8c00;
+            --gray: #6c757d;
+            --gray-light: #e9ecef;
+            --success: #28a745;
+            --danger: #dc3545;
+            --info: #17a2b8;
+            --border-radius: 12px;
+            --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.08);
+            --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.12);
+            --shadow-lg: 0 16px 48px rgba(0, 0, 0, 0.16);
+            --font-size-base: 1rem;
+            --max-width: 1200px;
+        }
+
+        /* Modo Alto Contraste (ativado via JS ou preferência do sistema) */
+        body.high-contrast {
+            --primary: #FFFF00;
+            --dark: #000000;
+            --light: #ffffff;
+            --white: #ffffff;
+            --gray-light: #cccccc;
+            --gray: #333333;
+        }
+        body.high-contrast .service-card,
+        body.high-contrast .news-item,
+        body.high-contrast .module-card {
+            border: 2px solid #000;
+            background: #fff;
+            color: #000;
+        }
+        body.high-contrast .hero {
+            background: #FFFF00 !important;
+            color: #000;
+        }
+        body.high-contrast .hero h2,
+        body.high-contrast .hero p {
+            color: #000;
+        }
+        body.high-contrast .cta-button {
+            background: #000;
+            color: #FFFF00;
+            border: 2px solid #000;
         }
 
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Poppins', sans-serif;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            font-size: 16px;
         }
 
         body {
             background-color: var(--light);
             color: var(--dark);
-            line-height: 1.6;
+            line-height: 1.7;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 400;
+            -webkit-font-smoothing: antialiased;
         }
 
-        /* --- HEADER & NAV (Linhas 101-200) --- */
+        /* Skip link para acessibilidade (teclado) */
+        .skip-to-content {
+            position: absolute;
+            top: -40px;
+            left: 0;
+            background: var(--dark);
+            color: var(--primary);
+            padding: 8px 16px;
+            z-index: 9999;
+            text-decoration: none;
+            font-weight: 600;
+            border-radius: 0 0 8px 0;
+            transition: top 0.3s;
+        }
+        .skip-to-content:focus {
+            top: 0;
+        }
+
+        /* ========== BARRA DE ACESSIBILIDADE ========== */
+        .accessibility-bar {
+            background: var(--dark-secondary);
+            color: var(--white);
+            padding: 6px 5%;
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            gap: 16px;
+            font-size: 0.85rem;
+            flex-wrap: wrap;
+        }
+        .accessibility-bar button {
+            background: transparent;
+            border: 1px solid var(--gray-light);
+            color: var(--white);
+            padding: 4px 12px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            font-weight: 500;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .accessibility-bar button:hover {
+            background: var(--primary);
+            color: var(--dark);
+            border-color: var(--primary);
+        }
+        .accessibility-bar button.active {
+            background: var(--primary);
+            color: var(--dark);
+            border-color: var(--primary);
+            font-weight: 700;
+        }
+        .font-size-controls {
+            display: flex;
+            gap: 4px;
+        }
+        .font-size-controls button {
+            width: 30px;
+            height: 30px;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            font-weight: 700;
+        }
+
+        /* ========== HEADER & NAVEGAÇÃO ========== */
         header {
             background-color: var(--primary);
-            padding: 1rem 5%;
-            position: fixed;
-            width: 100%;
+            padding: 0.8rem 5%;
+            position: sticky;
             top: 0;
             z-index: 1000;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            box-shadow: var(--shadow-md);
             display: flex;
             justify-content: space-between;
             align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            transition: var(--transition);
         }
-
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .logo-container .logo-icon {
+            font-size: 2rem;
+            color: var(--dark);
+        }
         .logo-container h1 {
             font-size: 1.5rem;
             color: var(--dark);
-            font-weight: 700;
-            letter-spacing: -1px;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            line-height: 1.2;
         }
-
+        .logo-container h1 span {
+            display: block;
+            font-size: 0.65rem;
+            font-weight: 500;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--dark-secondary);
+        }
+        .logo-container h1 .city-tag {
+            font-size: 0.7rem;
+            font-weight: 400;
+            background: var(--dark);
+            color: var(--primary);
+            padding: 2px 10px;
+            border-radius: 20px;
+            display: inline-block;
+            margin-top: 2px;
+        }
         nav ul {
             display: flex;
             list-style: none;
+            gap: 8px;
+            flex-wrap: wrap;
         }
-
-        nav ul li {
-            margin-left: 20px;
-        }
-
         nav ul li a {
             text-decoration: none;
             color: var(--dark);
             font-weight: 600;
-            font-size: 0.9rem;
-            transition: 0.3s;
+            font-size: 0.85rem;
+            padding: 8px 14px;
+            border-radius: 25px;
+            transition: var(--transition);
+            white-space: nowrap;
+        }
+        nav ul li a:hover,
+        nav ul li a:focus {
+            background: var(--dark);
+            color: var(--primary);
+            outline: none;
+        }
+        /* Mobile menu toggle */
+        .menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.8rem;
+            cursor: pointer;
+            color: var(--dark);
+        }
+        @media (max-width: 900px) {
+            .menu-toggle {
+                display: block;
+            }
+            nav {
+                width: 100%;
+                display: none;
+            }
+            nav.open {
+                display: block;
+            }
+            nav ul {
+                flex-direction: column;
+                gap: 4px;
+            }
+            nav ul li a {
+                display: block;
+                text-align: center;
+                padding: 10px;
+            }
         }
 
-        nav ul li a:hover {
-            color: var(--white);
-        }
-
-        /* --- HERO SECTION (Linhas 201-300) --- */
+        /* ========== HERO SECTION ========== */
         .hero {
-            background: linear-gradient(rgba(255, 215, 0, 0.9), rgba(255, 215, 0, 0.8)), url('https://images.unsplash.com/photo-1449824913935-59a10b8d2000?auto=format&fit=crop&w=1350&q=80');
+            background: linear-gradient(135deg, rgba(26, 26, 26, 0.85) 0%, rgba(26, 26, 26, 0.7) 100%),
+            url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800"><rect fill="%23FFD700" width="1200" height="800"/><circle cx="300" cy="200" r="150" fill="%23e6c200" opacity="0.5"/><circle cx="900" cy="600" r="250" fill="%23e6c200" opacity="0.4"/><circle cx="600" cy="400" r="100" fill="%23ffffff" opacity="0.3"/></svg>');
             background-size: cover;
             background-position: center;
-            height: 80vh;
+            min-height: 85vh;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             text-align: center;
-            padding: 0 5%;
-            margin-top: 60px;
+            padding: 120px 5% 80px;
+            color: var(--white);
+            position: relative;
         }
-
-        .hero h2 {
-            font-size: 3rem;
-            margin-bottom: 1rem;
+        .hero .badge-prefeitura {
+            background: var(--primary);
+            color: var(--dark);
+            padding: 6px 18px;
+            border-radius: 30px;
+            font-weight: 700;
+            font-size: 0.8rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-bottom: 20px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .hero .badge-prefeitura i {
             color: var(--dark);
         }
-
-        .hero p {
-            font-size: 1.2rem;
-            max-width: 600px;
-            margin-bottom: 2rem;
-            font-weight: 400;
+        .hero h2 {
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            margin-bottom: 1rem;
+            font-weight: 800;
+            line-height: 1.2;
         }
-
-        .cta-button {
-            background-color: var(--dark);
+        .hero h2 .highlight {
             color: var(--primary);
-            padding: 15px 40px;
+        }
+        .hero p {
+            font-size: 1.1rem;
+            max-width: 650px;
+            margin-bottom: 2rem;
+            font-weight: 300;
+            opacity: 0.95;
+        }
+        .cta-group {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .cta-button {
+            background-color: var(--primary);
+            color: var(--dark);
+            padding: 14px 36px;
             border-radius: 50px;
             text-decoration: none;
             font-weight: 700;
             text-transform: uppercase;
-            transition: transform 0.3s;
+            letter-spacing: 1px;
+            transition: var(--transition);
+            font-size: 0.9rem;
+            box-shadow: var(--shadow-md);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .cta-button:hover,
+        .cta-button:focus {
+            transform: translateY(-3px);
+            background-color: #fff;
+            box-shadow: var(--shadow-lg);
+            outline: none;
+        }
+        .cta-button.outline {
+            background: transparent;
+            border: 2px solid var(--primary);
+            color: var(--primary);
+        }
+        .cta-button.outline:hover,
+        .cta-button.outline:focus {
+            background: var(--primary);
+            color: var(--dark);
         }
 
-        .cta-button:hover {
-            transform: scale(1.05);
-            background-color: #000;
-        }
-
-        /* --- GRID DE SERVIÇOS (Linhas 301-400) --- */
-        .services {
+        /* ========== SEÇÕES GERAIS ========== */
+        section {
             padding: 80px 5%;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 30px;
-            max-width: 1200px;
+        }
+        .section-header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+        .section-header h2 {
+            font-size: 2.2rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            position: relative;
+            display: inline-block;
+        }
+        .section-header h2::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 4px;
+            background: var(--primary);
+            border-radius: 2px;
+        }
+        .section-header p {
+            color: var(--gray);
+            max-width: 600px;
+            margin: 16px auto 0;
+            font-weight: 400;
+        }
+        .container {
+            max-width: var(--max-width);
             margin: 0 auto;
         }
 
-        .service-card {
+        /* ========== GRID DE SERVIÇOS / MÓDULOS ========== */
+        .modules-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 28px;
+            max-width: var(--max-width);
+            margin: 0 auto;
+        }
+        .module-card {
             background: var(--white);
-            padding: 30px;
-            border-radius: 15px;
+            padding: 32px 24px;
+            border-radius: var(--border-radius);
             text-align: center;
-            transition: 0.3s;
-            border-bottom: 5px solid var(--primary);
+            transition: var(--transition);
+            border-top: 5px solid var(--primary);
+            box-shadow: var(--shadow-sm);
+            position: relative;
+            overflow: hidden;
         }
-
-        .service-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        .module-card:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-lg);
         }
-
-        .service-card i {
-            font-size: 2.5rem;
-            margin-bottom: 15px;
+        .module-card .module-icon {
+            font-size: 2.8rem;
+            margin-bottom: 16px;
             display: block;
+            color: var(--primary);
+            -webkit-text-stroke: 1px var(--dark);
+        }
+        .module-card h3 {
+            font-weight: 700;
+            margin-bottom: 8px;
+            font-size: 1.2rem;
+        }
+        .module-card p {
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+        .module-card .tag {
+            display: inline-block;
+            background: var(--primary);
+            color: var(--dark);
+            padding: 3px 12px;
+            border-radius: 15px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 12px;
+        }
+        .module-card.priority {
+            border-top-color: var(--danger);
+            border-left: 4px solid var(--danger);
+        }
+        .module-card.priority .module-icon {
+            color: var(--danger);
+            -webkit-text-stroke: 1px var(--danger);
         }
 
-        /* --- FEED DE NOTÍCIAS (Linhas 401-450) --- */
+        /* ========== SEÇÃO PREFEITURA (PERFIL OFICIAL) ========== */
+        .prefeitura-showcase {
+            background: var(--dark);
+            color: var(--white);
+            padding: 60px 5%;
+            text-align: center;
+        }
+        .prefeitura-card {
+            background: var(--dark-secondary);
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 32px;
+            border-radius: var(--border-radius);
+            border: 2px solid var(--primary);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+        }
+        .prefeitura-card .verified-badge {
+            background: var(--primary);
+            color: var(--dark);
+            padding: 6px 16px;
+            border-radius: 25px;
+            font-weight: 700;
+            font-size: 0.8rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            letter-spacing: 0.5px;
+        }
+        .prefeitura-card h4 {
+            font-size: 1.3rem;
+            font-weight: 700;
+        }
+        .prefeitura-card .alert-fixed {
+            background: var(--danger);
+            color: #fff;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            width: 100%;
+            text-align: center;
+            margin-top: 8px;
+        }
+
+        /* ========== FEED / NOTÍCIAS ========== */
         .news-section {
             background-color: var(--white);
-            padding: 60px 5%;
         }
-
-        .section-title {
-            text-align: center;
-            margin-bottom: 40px;
-        }
-
         .news-grid {
-            max-width: 1000px;
+            max-width: 800px;
             margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
         }
-
         .news-item {
             display: flex;
             background: var(--light);
-            margin-bottom: 20px;
-            border-radius: 10px;
+            border-radius: var(--border-radius);
             overflow: hidden;
-            align-items: center;
+            align-items: stretch;
+            box-shadow: var(--shadow-sm);
+            transition: var(--transition);
+            flex-wrap: wrap;
         }
-
+        .news-item:hover {
+            box-shadow: var(--shadow-md);
+            transform: translateY(-2px);
+        }
         .news-img {
-            width: 150px;
-            height: 150px;
-            background: #ddd;
+            width: 140px;
+            min-height: 140px;
+            background-size: cover;
+            background-position: center;
+            flex-shrink: 0;
         }
-
         .news-content {
             padding: 20px;
+            flex: 1;
+            min-width: 200px;
+        }
+        .news-content .category-label {
+            display: inline-block;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            padding: 3px 10px;
+            border-radius: 12px;
+            margin-bottom: 8px;
+            background: var(--primary);
+            color: var(--dark);
+        }
+        .news-content h4 {
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+        .news-content p {
+            font-size: 0.85rem;
+            color: var(--gray);
+        }
+        @media (max-width: 600px) {
+            .news-item {
+                flex-direction: column;
+            }
+            .news-img {
+                width: 100%;
+                height: 160px;
+            }
         }
 
-        /* --- FOOTER (Linhas 451-500) --- */
+        /* ========== GAMIFICAÇÃO / MEDALHAS ========== */
+        .gamification-preview {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-top: 30px;
+        }
+        .medal-card {
+            background: var(--white);
+            border-radius: 50%;
+            width: 90px;
+            height: 90px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            box-shadow: var(--shadow-md);
+            font-weight: 700;
+            font-size: 0.7rem;
+            text-align: center;
+            border: 3px solid var(--primary);
+            transition: var(--transition);
+        }
+        .medal-card i {
+            font-size: 1.8rem;
+            color: var(--primary);
+            margin-bottom: 4px;
+        }
+        .medal-card:hover {
+            transform: scale(1.1);
+            border-color: var(--dark);
+        }
+
+        /* ========== CHATBOT FLUTUANTE ========== */
+        .chatbot-float {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            z-index: 999;
+            background: var(--primary);
+            color: var(--dark);
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: var(--shadow-lg);
+            cursor: pointer;
+            font-size: 1.6rem;
+            transition: var(--transition);
+            border: none;
+        }
+        .chatbot-float:hover {
+            transform: scale(1.1);
+            background: #fff;
+            box-shadow: 0 0 0 6px rgba(255, 215, 0, 0.4);
+        }
+        .chatbot-tooltip {
+            position: fixed;
+            bottom: 90px;
+            right: 24px;
+            background: var(--dark);
+            color: #fff;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            z-index: 999;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s;
+            white-space: nowrap;
+        }
+        .chatbot-float:hover + .chatbot-tooltip,
+        .chatbot-tooltip.show {
+            opacity: 1;
+        }
+
+        /* ========== FOOTER ========== */
         footer {
             background-color: var(--dark);
             color: var(--white);
-            padding: 40px 5% 20px;
-            text-align: center;
+            padding: 50px 5% 30px;
         }
-
-        .footer-links {
-            margin-bottom: 20px;
+        .footer-grid {
+            max-width: var(--max-width);
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 30px;
+            margin-bottom: 30px;
         }
-
-        .footer-links a {
+        .footer-grid h5 {
+            font-weight: 700;
+            margin-bottom: 12px;
             color: var(--primary);
-            margin: 0 10px;
-            text-decoration: none;
         }
-
-        @media (max-width: 768px) {
-            .hero h2 { font-size: 2rem; }
-            nav { display: none; } /* Simplificação para mobile */
+        .footer-grid a {
+            color: #ccc;
+            text-decoration: none;
+            display: block;
+            margin-bottom: 6px;
+            font-size: 0.85rem;
+            transition: var(--transition);
+        }
+        .footer-grid a:hover {
+            color: var(--primary);
+            padding-left: 4px;
+        }
+        .footer-bottom {
+            text-align: center;
+            border-top: 1px solid #333;
+            padding-top: 20px;
+            font-size: 0.8rem;
+            color: #888;
+        }
+        .footer-bottom .lgpd-selo {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: #2a2a2a;
+            padding: 6px 14px;
+            border-radius: 20px;
+            margin-top: 10px;
+            font-weight: 600;
         }
     </style>
 </head>
 <body>
 
+    <!-- Skip link -->
+    <a href="#main-content" class="skip-to-content">Pular para o conteúdo principal</a>
+
+    <!-- Barra de acessibilidade -->
+    <div class="accessibility-bar" aria-label="Barra de acessibilidade">
+        <span style="font-size:0.75rem;opacity:0.7;">🔍 Acessibilidade:</span>
+        <button id="contrastToggle" aria-label="Ativar alto contraste" title="Alto Contraste">
+            <i class="fa-solid fa-circle-half-stroke"></i> Contraste
+        </button>
+        <div class="font-size-controls">
+            <button id="fontSizeDown" aria-label="Diminuir fonte" title="Diminuir fonte">A-</button>
+            <button id="fontSizeReset" aria-label="Tamanho normal da fonte" title="Tamanho normal">A</button>
+            <button id="fontSizeUp" aria-label="Aumentar fonte" title="Aumentar fonte">A+</button>
+        </div>
+    </div>
+
+    <!-- Header -->
     <header>
         <div class="logo-container">
-            <h1>00 BROTHER</h1>
+            <span class="logo-icon"><i class="fa-solid fa-handshake"></i></span>
+            <h1>
+                00brother
+                <span>Fechado com você</span>
+                <span class="city-tag"><i class="fa-solid fa-map-pin"></i> Sua Cidade</span>
+            </h1>
         </div>
-        <nav>
+        <button class="menu-toggle" id="menuToggle" aria-label="Menu" aria-expanded="false">
+            <i class="fa-solid fa-bars"></i>
+        </button>
+        <nav id="mainNav" role="navigation" aria-label="Navegação principal">
             <ul>
-                <li><a href="#inicio">Início</a></li>
-                <li><a href="#servicos">Serviços</a></li>
-                <li><a href="#noticias">Notícias</a></li>
+                <li><a href="#solucao">A Solução</a></li>
+                <li><a href="#modulos">Módulos</a></li>
+                <li><a href="#prefeitura">Prefeitura</a></li>
+                <li><a href="#feed">Feed</a></li>
+                <li><a href="#jovem">Jovem</a></li>
                 <li><a href="#contato">Contato</a></li>
             </ul>
         </nav>
     </header>
 
-    <section class="hero" id="inicio">
-        <h2>Fechado com você.</h2>
-        <p>Tudo o que acontece na sua cidade, os serviços que você precisa e a voz que você merece, em um só lugar.</p>
-        <a href="feed.html" class="cta-button">Explorar site</a>
-    </section>
+    <main id="main-content">
+        <!-- Hero -->
+        <section class="hero">
+            <span class="badge-prefeitura">
+                <i class="fa-solid fa-circle-check"></i> Plataforma Oficial do Município
+            </span>
+            <h2>A cidade inteira <br><span class="highlight">na palma da mão.</span></h2>
+            <p>
+                Centralizamos serviços públicos, notícias, cultura, esporte e oportunidades em um só lugar.
+                <strong>Sem dancinhas, sem algoritmos viciantes.</strong> Só o que realmente importa pra você.
+            </p>
+            <div class="cta-group">
+                <a href="#modulos" class="cta-button">
+                    <i class="fa-solid fa-rocket"></i> Explorar Plataforma
+                </a>
+                <a href="#contato" class="cta-button outline">
+                    <i class="fa-solid fa-building-columns"></i> Sou Gestor Público
+                </a>
+            </div>
+        </section>
 
-    <div class="section-title" id="servicos">
-        <br><br>
-        <h2>O que o Brother faz por você?</h2>
-    </div>
+        <!-- O Problema + A Solução -->
+        <section id="solucao">
+            <div class="container">
+                <div class="section-header">
+                    <h2>🧠 O Problema</h2>
+                    <p>Informação pública fragmentada, fake news e redes sociais que priorizam entretenimento vazio afastam o cidadão da sua própria cidade.</p>
+                </div>
+                <div style="display:flex;flex-wrap:wrap;gap:24px;justify-content:center;max-width:900px;margin:0 auto 60px;">
+                    <div style="flex:1;min-width:200px;background:var(--white);padding:24px;border-radius:12px;box-shadow:var(--shadow-sm);text-align:center;">
+                        <i class="fa-solid fa-triangle-exclamation" style="font-size:2rem;color:var(--danger);"></i>
+                        <h4 style="margin-top:8px;">Canais confusos</h4>
+                        <p style="font-size:0.85rem;color:var(--gray);">O cidadão não sabe onde achar informações oficiais.</p>
+                    </div>
+                    <div style="flex:1;min-width:200px;background:var(--white);padding:24px;border-radius:12px;box-shadow:var(--shadow-sm);text-align:center;">
+                        <i class="fa-solid fa-clock" style="font-size:2rem;color:var(--danger);"></i>
+                        <h4 style="margin-top:8px;">Acesso lento</h4>
+                        <p style="font-size:0.85rem;color:var(--gray);">Serviços básicos de saúde e transporte são difíceis de localizar.</p>
+                    </div>
+                    <div style="flex:1;min-width:200px;background:var(--white);padding:24px;border-radius:12px;box-shadow:var(--shadow-sm);text-align:center;">
+                        <i class="fa-solid fa-users-slash" style="font-size:2rem;color:var(--danger);"></i>
+                        <h4 style="margin-top:8px;">Comunidade apagada</h4>
+                        <p style="font-size:0.85rem;color:var(--gray);">Esporte amador e cultura local perdem visibilidade.</p>
+                    </div>
+                </div>
 
-    <section class="services">
-        <div class="service-card">
-            <h3>📢 Denúncias</h3>
-            <p>Viu um problema na sua rua? Relate aqui e acompanhe a solução em tempo real.</p>
-        </div>
-        <div class="service-card">
-            <h3>🏥 Saúde Local</h3>
-            <p>Confira filas em postos, horários de atendimento e farmácias de plantão.</p>
-        </div>
-        <div class="service-card">
-            <h3>🚌 Transporte</h3>
-            <p>Horários de ônibus atualizados e alertas de trânsito na palma da mão.</p>
-        </div>
-        <div class="service-card">
-            <h3>💼 Empregos</h3>
-            <p>Vagas exclusivas para moradores da região. Valorize o comércio local.</p>
-        </div>
-    </section>
-
-    <section class="news-section" id="noticias">
-        <div class="section-title">
-            <h2>Radar da Cidade</h2>
-        </div>
-        <div class="news-grid">
-            <div class="news-item">
-                <div class="news-img" style="background: url('https://via.placeholder.com/150/FFD700/000000?text=Obras') center/cover;"></div>
-                <div class="news-content">
-                    <h4>Nova Praça será inaugurada no Centro</h4>
-                    <p>A prefeitura confirmou a entrega para o próximo domingo com show gratuito...</p>
+                <div class="section-header">
+                    <h2>💡 A Solução 00brother</h2>
+                    <p>Uma plataforma hiperlocal que organiza a cidade, limpa o ruído e engaja o cidadão de forma saudável — com gamificação cívica e protagonismo jovem.</p>
                 </div>
             </div>
-            <div class="news-item">
-                <div class="news-img" style="background: url('https://via.placeholder.com/150/FFD700/000000?text=Alerta') center/cover;"></div>
-                <div class="news-content">
-                    <h4>Manutenção na rede de água amanhã</h4>
-                    <p>Bairros da zona norte podem ficar sem abastecimento das 08h às 14h.</p>
+        </section>
+
+        <!-- Módulos / Funcionalidades -->
+        <section id="modulos" style="background:var(--light);">
+            <div class="container">
+                <div class="section-header">
+                    <h2>🛠️ Funcionalidades</h2>
+                    <p>Tudo que você precisa, categorizado e acessível, sem distrações.</p>
+                </div>
+                <div class="modules-grid">
+                    <div class="module-card">
+                        <span class="module-icon"><i class="fa-solid fa-newspaper"></i></span>
+                        <h3>Feed de Utilidade Pública</h3>
+                        <p>Publicações com categorização obrigatória: Vagas, Trânsito, Clima, Saúde, Cultura e Esporte.</p>
+                        <span class="tag">Sem vídeos curtos</span>
+                    </div>
+                    <div class="module-card priority">
+                        <span class="module-icon"><i class="fa-solid fa-building-shield"></i></span>
+                        <h3>Perfil Oficial da Prefeitura</h3>
+                        <p>Alertas de urgência fixados no topo com selo verificado. Comunicação direta e sem ruído.</p>
+                        <span class="tag">Prioridade Algorítmica</span>
+                    </div>
+                    <div class="module-card">
+                        <span class="module-icon"><i class="fa-solid fa-map-location-dot"></i></span>
+                        <h3>Mapa Interativo</h3>
+                        <p>Postos de saúde, farmácias de plantão, feiras livres, transporte público e rotas de coleta.</p>
+                        <span class="tag">Georreferenciado</span>
+                    </div>
+                    <div class="module-card">
+                        <span class="module-icon"><i class="fa-solid fa-wrench"></i></span>
+                        <h3>Zeladoria Urbana</h3>
+                        <p>Fluxo Direto (com protocolo) + Mural da Comunidade (fórum de bairro). Sua voz tem canal oficial.</p>
+                        <span class="tag">Ouvidoria Integrada</span>
+                    </div>
+                    <div class="module-card">
+                        <span class="module-icon"><i class="fa-solid fa-graduation-cap"></i></span>
+                        <h3>Protagonismo Jovem</h3>
+                        <p>Cobertura de jogos intercolegiais, grêmios estudantis e campeonatos municipais em espaço exclusivo.</p>
+                        <span class="tag">Módulo Escolar</span>
+                    </div>
+                    <div class="module-card">
+                        <span class="module-icon"><i class="fa-solid fa-medal"></i></span>
+                        <h3>Gamificação Cívica</h3>
+                        <p>Medalhas virtuais e destaque no ecossistema escolar para jovens que participam ativamente da cidade.</p>
+                        <span class="tag">Engajamento saudável</span>
+                    </div>
+                    <div class="module-card">
+                        <span class="module-icon"><i class="fa-solid fa-robot"></i></span>
+                        <h3>Chatbot Comunitário</h3>
+                        <p>Assistente IA para tirar dúvidas sobre serviços, horários de ônibus e documentos necessários.</p>
+                        <span class="tag">Resposta instantânea</span>
+                    </div>
+                    <div class="module-card">
+                        <span class="module-icon"><i class="fa-solid fa-shield-halved"></i></span>
+                        <h3>Moderação Híbrida</h3>
+                        <p>IA + curadoria comunitária contra fake news, discurso de ódio e propaganda político-partidária.</p>
+                        <span class="tag">LGPD &amp; Segurança</span>
+                    </div>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
 
+        <!-- Perfil da Prefeitura -->
+        <section id="prefeitura" class="prefeitura-showcase">
+            <div class="section-header" style="color:#fff;">
+                <h2 style="color:#fff;">🏛️ Prefeitura Conectada</h2>
+                <p style="color:#ccc;">Comunicação oficial com selo verificado e prioridade no feed.</p>
+            </div>
+            <div class="prefeitura-card">
+                <span class="verified-badge">
+                    <i class="fa-solid fa-circle-check"></i> Conta Oficial Verificada
+                </span>
+                <h4>Prefeitura Municipal</h4>
+                <p style="font-size:0.9rem;opacity:0.8;">Publicações institucionais e alertas de urgência aparecem fixados no topo do feed.</p>
+                <div class="alert-fixed">
+                    <i class="fa-solid fa-bullhorn"></i> ⚠️ Alerta: Campanha de vacinação neste sábado nas UBSs centrais.
+                </div>
+                <p style="font-size:0.75rem;margin-top:8px;opacity:0.6;">Publicação prioritária • Fixada no topo</p>
+            </div>
+        </section>
+
+        <!-- Feed / Radar da Cidade -->
+        <section id="feed" class="news-section">
+            <div class="container">
+                <div class="section-header">
+                    <h2>📱 Radar da Cidade</h2>
+                    <p>Feed limpo, organizado por categorias obrigatórias. Sem distrações.</p>
+                </div>
+                <div class="news-grid">
+                    <div class="news-item">
+                        <div class="news-img" style="background: linear-gradient(135deg, #FFD700, #e6c200); display:flex; align-items:center; justify-content:center; font-size:2rem;">🚧</div>
+                        <div class="news-content">
+                            <span class="category-label">Alerta de Trânsito</span>
+                            <h4>Interdição na Av. Central para obras</h4>
+                            <p>Trecho entre as ruas 7 e 9 ficará interditado de 15 a 20 de novembro. Desvio sinalizado.</p>
+                        </div>
+                    </div>
+                    <div class="news-item">
+                        <div class="news-img" style="background: linear-gradient(135deg, #28a745, #20c997); display:flex; align-items:center; justify-content:center; font-size:2rem;">💼</div>
+                        <div class="news-content">
+                            <span class="category-label">Vagas de Emprego</span>
+                            <h4>Feirão de empregos reúne 500 vagas na região</h4>
+                            <p>Comércio local e indústria participam. Inscrições abertas até sexta-feira no site da prefeitura.</p>
+                        </div>
+                    </div>
+                    <div class="news-item">
+                        <div class="news-img" style="background: linear-gradient(135deg, #17a2b8, #0dcaf0); display:flex; align-items:center; justify-content:center; font-size:2rem;">⚽</div>
+                        <div class="news-content">
+                            <span class="category-label">Esporte Local</span>
+                            <h4>Intercolegial: Final de futsal será no ginásio municipal</h4>
+                            <p>Grêmios estudantis organizam torcida. Entrada gratuita com 1kg de alimento.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Módulo Jovem + Gamificação -->
+        <section id="jovem" style="background:var(--white);">
+            <div class="container">
+                <div class="section-header">
+                    <h2>🌟 Protagonismo Jovem & Gamificação</h2>
+                    <p>Engajamento saudável que transforma participação cívica em reconhecimento real.</p>
+                </div>
+                <div style="display:flex;flex-wrap:wrap;gap:32px;align-items:center;justify-content:center;max-width:900px;margin:0 auto;">
+                    <div style="flex:1;min-width:250px;background:var(--light);padding:28px;border-radius:16px;text-align:center;">
+                        <i class="fa-solid fa-trophy" style="font-size:3rem;color:var(--primary);"></i>
+                        <h4 style="margin-top:12px;">Medalhas Virtuais</h4>
+                        <p style="font-size:0.9rem;color:var(--gray);">Acumule conquistas ao reportar problemas, participar de enquetes e divulgar ações positivas.</p>
+                    </div>
+                    <div style="flex:1;min-width:250px;background:var(--light);padding:28px;border-radius:16px;text-align:center;">
+                        <i class="fa-solid fa-ranking-star" style="font-size:3rem;color:var(--primary);"></i>
+                        <h4 style="margin-top:12px;">Ranking Estudantil</h4>
+                        <p style="font-size:0.9rem;color:var(--gray);">Grêmios e escolas aparecem em destaque conforme a participação da comunidade.</p>
+                    </div>
+                </div>
+                <div class="gamification-preview">
+                    <div class="medal-card"><i class="fa-solid fa-seedling"></i> Cidadão Verde</div>
+                    <div class="medal-card"><i class="fa-solid fa-hand-holding-heart"></i> Solidário</div>
+                    <div class="medal-card"><i class="fa-solid fa-comments"></i> Voz Ativa</div>
+                    <div class="medal-card"><i class="fa-solid fa-bullhorn"></i> Repórter do Bairro</div>
+                    <div class="medal-card"><i class="fa-solid fa-star"></i> Destaque Escolar</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Modelo de Negócio / CTA Gestor -->
+        <section id="contato" style="background:var(--dark);color:var(--white);text-align:center;">
+            <div class="container">
+                <div class="section-header" style="color:#fff;">
+                    <h2 style="color:#fff;">🚀 Modelo Piloto para Municípios</h2>
+                    <p style="color:#ccc;">Licenciamento B2G/SaaS Multi-Tenant com período de validação gratuita de 3 a 6 meses. Sua cidade pode ser a próxima.</p>
+                </div>
+                <p style="max-width:600px;margin:0 auto 30px;font-size:0.95rem;opacity:0.85;">
+                    Plataforma personalizada com cores e brasão do município. Métricas de engajamento real para embasar a contratação definitiva.
+                </p>
+                <a href="mailto:contato@00brother.com" class="cta-button" style="display:inline-flex;">
+                    <i class="fa-solid fa-paper-plane"></i> Solicitar Piloto Gratuito
+                </a>
+                <p style="font-size:0.7rem;margin-top:20px;opacity:0.5;">
+                    Exemplo: <strong>00brother fechado com você Londrina</strong> • <strong>00brother fechado com você Arapongas</strong>
+                </p>
+            </div>
+        </section>
+    </main>
+
+    <!-- Chatbot flutuante -->
+    <button class="chatbot-float" aria-label="Chatbot Comunitário – Tire dúvidas" title="Chatbot 00brother">
+        <i class="fa-solid fa-robot"></i>
+    </button>
+    <div class="chatbot-tooltip" id="chatbotTooltip">💬 Tire dúvidas sobre serviços da cidade!</div>
+
+    <!-- Footer -->
     <footer>
-        <div class="footer-links">
-            <a href="#">Privacidade</a>
-            <a href="#">Termos de Uso</a>
-            <a href="#">Seja um Parceiro</a>
+        <div class="footer-grid">
+            <div>
+                <h5><i class="fa-solid fa-handshake"></i> 00brother</h5>
+                <p style="font-size:0.85rem;color:#aaa;">Fechado com você. A rede social oficial da sua cidade.</p>
+            </div>
+            <div>
+                <h5>Links Úteis</h5>
+                <a href="#">Termos de Uso</a>
+                <a href="#">Política de Privacidade (LGPD)</a>
+                <a href="#">Consentimento Parental</a>
+                <a href="#">Seja um Parceiro</a>
+            </div>
+            <div>
+                <h5>Módulos</h5>
+                <a href="#">Feed de Utilidade</a>
+                <a href="#">Zeladoria Urbana</a>
+                <a href="#">Mapa Interativo</a>
+                <a href="#">Protagonismo Jovem</a>
+            </div>
+            <div>
+                <h5>Contato</h5>
+                <a href="mailto:contato@00brother.com"><i class="fa-solid fa-envelope"></i> contato@00brother.com</a>
+                <a href="#"><i class="fa-solid fa-phone"></i> (XX) XXXX-XXXX</a>
+            </div>
         </div>
-        <p>&copy; 2024 00 Brother - Fechado com Você. Todos os direitos reservados.</p>
+        <div class="footer-bottom">
+            <p>&copy; 2024 00brother – Fechado Com Você. Todos os direitos reservados.</p>
+            <span class="lgpd-selo">
+                <i class="fa-solid fa-shield-halved"></i> Em conformidade com a LGPD
+            </span>
+        </div>
     </footer>
 
+    <!-- SCRIPTS -->
+    <script>
+        // Toggle menu mobile
+        const menuToggle = document.getElementById('menuToggle');
+        const mainNav = document.getElementById('mainNav');
+        menuToggle.addEventListener('click', () => {
+            mainNav.classList.toggle('open');
+            const expanded = mainNav.classList.contains('open');
+            menuToggle.setAttribute('aria-expanded', expanded);
+            menuToggle.innerHTML = expanded ? '<i class="fa-solid fa-xmark"></i>' : '<i class="fa-solid fa-bars"></i>';
+        });
+
+        // Fechar menu ao clicar em um link (mobile)
+        document.querySelectorAll('#mainNav a').forEach(link => {
+            link.addEventListener('click', () => {
+                if (window.innerWidth <= 900) {
+                    mainNav.classList.remove('open');
+                    menuToggle.setAttribute('aria-expanded', 'false');
+                    menuToggle.innerHTML = '<i class="fa-solid fa-bars"></i>';
+                }
+            });
+        });
+
+        // Toggle Alto Contraste
+        const contrastToggle = document.getElementById('contrastToggle');
+        contrastToggle.addEventListener('click', () => {
+            document.body.classList.toggle('high-contrast');
+            contrastToggle.classList.toggle('active');
+            // Salva preferência
+            if (document.body.classList.contains('high-contrast')) {
+                localStorage.setItem('highContrast', 'true');
+            } else {
+                localStorage.removeItem('highContrast');
+            }
+        });
+
+        // Carregar preferência de contraste
+        if (localStorage.getItem('highContrast') === 'true') {
+            document.body.classList.add('high-contrast');
+            contrastToggle.classList.add('active');
+        }
+
+        // Controle de tamanho de fonte
+        let currentFontSize = 100;
+        const html = document.documentElement;
+        document.getElementById('fontSizeUp').addEventListener('click', () => {
+            if (currentFontSize < 140) {
+                currentFontSize += 10;
+                html.style.fontSize = currentFontSize + '%';
+            }
+        });
+        document.getElementById('fontSizeDown').addEventListener('click', () => {
+            if (currentFontSize > 70) {
+                currentFontSize -= 10;
+                html.style.fontSize = currentFontSize + '%';
+            }
+        });
+        document.getElementById('fontSizeReset').addEventListener('click', () => {
+            currentFontSize = 100;
+            html.style.fontSize = '100%';
+        });
+
+        // Tooltip do chatbot (aparece após 3s e depois esconde)
+        const tooltip = document.getElementById('chatbotTooltip');
+        setTimeout(() => {
+            tooltip.classList.add('show');
+            setTimeout(() => tooltip.classList.remove('show'), 6000);
+        }, 3000);
+    </script>
 </body>
 </html>
