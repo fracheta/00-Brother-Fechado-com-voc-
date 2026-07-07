@@ -9,17 +9,14 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
-    <!-- Font Awesome 6 -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <!-- Google Fonts (Inter com eixo variável) -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800;14..32,900&display=swap" rel="stylesheet">
 
     <style>
         /* ============================================================
-           DESIGN SYSTEM — TOKENS & VARIÁVEIS (2025)
+           DESIGN SYSTEM — TOKENS & VARIÁVEIS
            ============================================================ */
         :root {
-            /* Cores */
             --primary: #FFD700;
             --primary-glow: rgba(255, 215, 0, 0.25);
             --primary-glass: rgba(255, 215, 0, 0.08);
@@ -37,128 +34,76 @@
             --success: #2ecc71;
             --info: #3498db;
 
-            /* Sombras */
             --shadow-xs: 0 1px 3px rgba(0,0,0,0.3);
             --shadow-sm: 0 4px 12px rgba(0,0,0,0.4);
             --shadow-md: 0 8px 28px rgba(0,0,0,0.5);
             --shadow-lg: 0 20px 60px rgba(0,0,0,0.7);
             --shadow-glow: 0 0 40px rgba(255,215,0,0.2);
-            --shadow-glow-strong: 0 0 80px rgba(255,215,0,0.4);
 
-            /* Bordas */
-            --radius-xs: 6px;
             --radius-sm: 10px;
             --radius-md: 16px;
             --radius-lg: 24px;
-            --radius-xl: 32px;
             --radius-full: 9999px;
 
-            /* Transições */
             --ease-out-expo: cubic-bezier(0.19, 1, 0.22, 1);
             --ease-out-back: cubic-bezier(0.34, 1.56, 0.64, 1);
-            --ease-spring: cubic-bezier(0.34, 1.8, 0.64, 1);
-            --duration-instant: 80ms;
             --duration-fast: 180ms;
             --duration-normal: 350ms;
             --duration-slow: 600ms;
 
-            /* Tipografia fluida */
             --text-body: clamp(0.875rem, 0.85rem + 0.1vw, 0.95rem);
             --text-small: clamp(0.7rem, 0.68rem + 0.08vw, 0.8rem);
 
-            /* Layout */
             --header-h: 72px;
             --sidebar-w: 260px;
             --feed-max-w: 660px;
             --widget-w: 290px;
             --safe-bottom: env(safe-area-inset-bottom, 16px);
-            --safe-top: env(safe-area-inset-top, 0px);
         }
 
-        /* Tema claro */
         @media (prefers-color-scheme: light) {
             :root {
                 --bg: #f0f2f5;
-                --bg-elevated: rgba(0,0,0,0.02);
-                --surface: rgba(0,0,0,0.03);
-                --surface-hover: rgba(0,0,0,0.06);
-                --glass: rgba(255,255,255,0.7);
-                --glass-strong: rgba(255,255,255,0.9);
-                --glass-border: rgba(0,0,0,0.08);
                 --text-main: #1a1a1a;
                 --text-secondary: #555;
                 --text-dim: #999;
-                --primary-glow: rgba(255,215,0,0.4);
+                --surface: rgba(0,0,0,0.03);
+                --glass-border: rgba(0,0,0,0.08);
             }
         }
-
-        /* Alto contraste */
         body.high-contrast {
-            --bg: #000 !important;
-            --text-main: #fff !important;
-            --surface: #111 !important;
-            --primary: #FFFF00 !important;
-            --glass-border: #fff !important;
-            --primary-glow: rgba(255,255,0,0.6) !important;
+            --bg: #000; --text-main: #fff; --surface: #111;
+            --primary: #FFFF00; --glass-border: #fff;
         }
 
-        /* ============================================================
-           RESET & BASE
-           ============================================================ */
         *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
         html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
         body {
             font-family: 'Inter', system-ui, -apple-system, sans-serif;
-            background: var(--bg);
-            color: var(--text-main);
-            min-height: 100vh;
-            overflow-x: hidden;
-            -webkit-font-smoothing: antialiased;
-            line-height: 1.6;
+            background: var(--bg); color: var(--text-main);
+            min-height: 100vh; overflow-x: hidden;
+            -webkit-font-smoothing: antialiased; line-height: 1.6;
             transition: background var(--duration-normal) var(--ease-out-expo);
             font-size: var(--text-body);
         }
         body::after {
-            content: '';
-            position: fixed; inset: 0;
+            content: ''; position: fixed; inset: 0;
             background: radial-gradient(ellipse at 30% 0%, rgba(255,215,0,0.05) 0%, transparent 50%),
                         radial-gradient(ellipse at 70% 100%, rgba(255,140,0,0.03) 0%, transparent 50%);
             pointer-events: none; z-index: -1;
             animation: ambientGlow 12s ease-in-out infinite alternate;
         }
-        @keyframes ambientGlow {
-            0% { opacity: 0.7; }
-            100% { opacity: 1; }
-        }
+        @keyframes ambientGlow { 0% { opacity: 0.7; } 100% { opacity: 1; } }
         a { color: inherit; text-decoration: none; }
         button { cursor: pointer; border: none; background: none; color: inherit; font: inherit; }
         img { max-width: 100%; display: block; }
         ::selection { background: var(--primary); color: #000; }
 
-        /* Reduz animações se preferência do usuário */
-        @media (prefers-reduced-motion: reduce) {
-            *, *::before, *::after {
-                animation-duration: 0.01ms !important;
-                animation-iteration-count: 1 !important;
-                transition-duration: 0.01ms !important;
-            }
-        }
-
-        /* ============================================================
-           SCROLLBAR ESTILIZADA
-           ============================================================ */
+        /* Scrollbar */
         ::-webkit-scrollbar { width: 6px; }
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 3px; }
         ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.3); }
-
-        /* ============================================================
-           CANVAS PARTICLES (background)
-           ============================================================ */
-        #particlesCanvas {
-            position: fixed; inset: 0; z-index: -2; pointer-events: none;
-            opacity: 0.35;
-        }
 
         /* ============================================================
            HEADER
@@ -170,78 +115,46 @@
             -webkit-backdrop-filter: blur(30px) saturate(200%);
             border-bottom: 1px solid var(--glass-border);
             display: flex; justify-content: space-between; align-items: center;
-            transition: background var(--duration-normal), box-shadow var(--duration-normal);
         }
-        .app-header.scrolled { box-shadow: var(--shadow-md); }
-        .brand {
-            display: flex; align-items: center; gap: 12px; user-select: none;
-        }
+        .brand { display: flex; align-items: center; gap: 12px; user-select: none; }
         .logo-circle {
-            width: 44px; height: 44px; background: var(--primary);
-            border-radius: var(--radius-sm); display: flex; align-items: center;
-            justify-content: center; font-weight: 900; color: #000;
-            font-size: 1.2rem; box-shadow: 0 0 24px var(--primary-glow);
-            transition: transform var(--duration-normal) var(--ease-spring), box-shadow var(--duration-normal);
-            position: relative; overflow: hidden;
+            width: 44px; height: 44px; background: var(--primary); border-radius: var(--radius-sm);
+            display: flex; align-items: center; justify-content: center; font-weight: 900;
+            color: #000; font-size: 1.2rem; box-shadow: 0 0 24px var(--primary-glow);
         }
-        .logo-circle::after {
-            content: '';
-            position: absolute; inset: -20%; background: radial-gradient(circle, rgba(255,255,255,0.8) 0%, transparent 70%);
-            opacity: 0; transition: opacity var(--duration-fast);
-        }
-        .logo-circle:hover::after { opacity: 0.4; }
-        .logo-circle:hover { transform: scale(1.08); box-shadow: 0 0 40px var(--primary-glow); }
-        .logo-circle:active { transform: scale(0.94); }
-        .brand h1 {
-            font-size: clamp(1.2rem, 1.1rem + 0.3vw, 1.4rem);
-            font-weight: 800; letter-spacing: -0.5px; line-height: 1.1;
-        }
-        .brand h1 span {
-            display: block; font-size: 0.5rem; font-weight: 500;
-            letter-spacing: 2.5px; text-transform: uppercase; color: var(--text-dim);
-        }
+        .brand h1 { font-size: clamp(1.2rem, 1.1rem + 0.3vw, 1.4rem); font-weight: 800; letter-spacing: -0.5px; line-height: 1.1; }
+        .brand h1 span { display: block; font-size: 0.5rem; font-weight: 500; letter-spacing: 2.5px; text-transform: uppercase; color: var(--text-dim); }
         .header-actions { display: flex; gap: 20px; align-items: center; }
         .header-actions a, .header-actions button {
             color: var(--text-secondary); font-size: 1.15rem; transition: var(--duration-fast);
-            position: relative; width: 38px; height: 38px; display: flex;
-            align-items: center; justify-content: center; border-radius: 50%;
+            width: 38px; height: 38px; display: flex; align-items: center; justify-content: center;
+            border-radius: 50%;
         }
-        .header-actions a:hover, .header-actions button:hover {
-            color: var(--primary); background: var(--primary-glass);
-        }
+        .header-actions a:hover, .header-actions button:hover { color: var(--primary); background: var(--primary-glass); }
         .badge-dot {
             position: absolute; top: 4px; right: 4px; width: 9px; height: 9px;
             background: var(--danger); border-radius: 50%; border: 2px solid var(--bg);
             animation: pulseBadge 2s ease-in-out infinite;
         }
-        @keyframes pulseBadge {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.3); }
-        }
+        @keyframes pulseBadge { 0%,100% { transform: scale(1); } 50% { transform: scale(1.3); } }
         .menu-toggle { display: none; }
 
         /* ============================================================
-           SIDEBAR
+           LAYOUT PRINCIPAL
            ============================================================ */
+        .app-layout { display: flex; min-height: 100vh; padding-top: var(--header-h); }
         .sidebar {
-            width: var(--sidebar-w); flex-shrink: 0;
-            padding: 20px 14px; border-right: 1px solid var(--glass-border);
-            background: rgba(15,15,15,0.3); backdrop-filter: blur(10px);
-            display: flex; flex-direction: column; gap: 4px;
-            position: sticky; top: var(--header-h);
-            height: calc(100vh - var(--header-h));
+            width: var(--sidebar-w); flex-shrink: 0; padding: 20px 14px;
+            border-right: 1px solid var(--glass-border); background: rgba(15,15,15,0.3);
+            backdrop-filter: blur(10px); display: flex; flex-direction: column; gap: 4px;
+            position: sticky; top: var(--header-h); height: calc(100vh - var(--header-h));
             overflow-y: auto; z-index: 500;
-            transition: transform var(--duration-normal) var(--ease-out-expo);
         }
-        .sidebar-nav-label {
-            font-size: 0.6rem; text-transform: uppercase; letter-spacing: 2.5px;
-            color: var(--text-dim); padding: 10px 14px 6px; font-weight: 700;
-        }
+        .sidebar-nav-label { font-size: 0.6rem; text-transform: uppercase; letter-spacing: 2.5px; color: var(--text-dim); padding: 10px 14px 6px; font-weight: 700; }
         .sidebar a {
             display: flex; align-items: center; gap: 14px; padding: 11px 16px;
-            border-radius: var(--radius-md); color: var(--text-secondary);
-            font-weight: 500; font-size: 0.88rem; transition: var(--duration-fast);
-            position: relative;
+            border-radius: var(--radius-md); color: var(--text-secondary); font-weight: 500;
+            font-size: 0.88rem; transition: var(--duration-fast); position: relative;
         }
         .sidebar a::before {
             content: ''; position: absolute; left: 0; top: 50%; transform: translateY(-50%);
@@ -249,49 +162,32 @@
             transition: height var(--duration-fast) var(--ease-out-expo);
         }
         .sidebar a:hover { background: var(--surface-hover); color: var(--primary); }
-        .sidebar a.active {
-            background: var(--primary-glass); color: var(--primary); font-weight: 700;
-        }
+        .sidebar a.active { background: var(--primary-glass); color: var(--primary); font-weight: 700; }
         .sidebar a.active::before { height: 24px; }
         .sidebar a i { width: 22px; text-align: center; font-size: 1.1rem; }
         .sidebar .new-post-btn {
-            background: linear-gradient(135deg, var(--primary), #ffaa00);
-            color: #000; justify-content: center; font-weight: 700;
-            margin-top: 14px; border-radius: var(--radius-lg); padding: 14px;
-            font-size: 0.95rem; gap: 8px; box-shadow: 0 8px 24px rgba(255,215,0,0.3);
-            transition: all var(--duration-normal) var(--ease-spring);
+            background: linear-gradient(135deg, var(--primary), #ffaa00); color: #000;
+            justify-content: center; font-weight: 700; margin-top: 14px;
+            border-radius: var(--radius-lg); padding: 14px; font-size: 0.95rem;
+            gap: 8px; box-shadow: 0 8px 24px rgba(255,215,0,0.3);
         }
-        .sidebar .new-post-btn:hover {
-            transform: translateY(-3px); box-shadow: 0 12px 32px rgba(255,215,0,0.5);
-            filter: brightness(1.1);
-        }
-
-        /* ============================================================
-           MAIN AREA
-           ============================================================ */
-        .app-layout {
-            display: flex; min-height: 100vh; padding-top: var(--header-h);
-        }
-        .main-area {
-            flex: 1; display: flex; justify-content: center; padding: 28px 36px;
-            gap: 36px; min-width: 0;
-        }
+        .main-area { flex: 1; display: flex; justify-content: center; padding: 28px 36px; gap: 36px; min-width: 0; }
         .feed-wrapper { flex: 1; max-width: var(--feed-max-w); min-width: 0; }
 
         /* ============================================================
-           STORIES
+           STORIES (agora com filtro ativo)
            ============================================================ */
         .stories-scroll {
             padding: 4px 0 20px; overflow-x: auto; display: flex; gap: 16px;
-            scrollbar-width: none;
-            mask-image: linear-gradient(to right, black 92%, transparent 100%);
+            scrollbar-width: none; mask-image: linear-gradient(to right, black 92%, transparent 100%);
             -webkit-mask-image: linear-gradient(to right, black 92%, transparent 100%);
         }
         .stories-scroll::-webkit-scrollbar { display: none; }
         .story-pill {
             display: flex; flex-direction: column; align-items: center;
             min-width: 74px; cursor: pointer; text-decoration: none;
-            color: inherit; gap: 6px; transition: transform var(--duration-fast);
+            color: inherit; gap: 6px; transition: transform var(--duration-fast), opacity var(--duration-fast);
+            background: none; border: none; font: inherit;
         }
         .story-pill:active { transform: scale(0.94); }
         .story-avatar {
@@ -309,20 +205,9 @@
             display: flex; align-items: center; justify-content: center;
             font-size: 1.5rem; transition: background var(--duration-fast);
         }
-        .story-pill:hover .story-avatar {
-            box-shadow: 0 0 28px rgba(255,215,0,0.4); transform: scale(1.06);
-        }
-        .story-pill:hover .story-inner { background: var(--primary-glass); }
-        .story-label {
-            font-size: 0.65rem; font-weight: 600; text-align: center;
-            white-space: nowrap; max-width: 74px; overflow: hidden; text-overflow: ellipsis;
-            color: var(--text-secondary);
-        }
-        .story-pill.unread .story-avatar { animation: storyPulse 2s ease-in-out infinite; }
-        @keyframes storyPulse {
-            0%, 100% { box-shadow: 0 0 0 0 rgba(255,215,0,0.5); }
-            50% { box-shadow: 0 0 0 10px rgba(255,215,0,0); }
-        }
+        .story-pill:hover .story-avatar { box-shadow: 0 0 28px rgba(255,215,0,0.4); transform: scale(1.06); }
+        .story-pill.active-filter .story-avatar { box-shadow: 0 0 0 4px var(--primary); }
+        .story-label { font-size: 0.65rem; font-weight: 600; text-align: center; white-space: nowrap; max-width: 74px; overflow: hidden; text-overflow: ellipsis; color: var(--text-secondary); }
 
         /* ============================================================
            POSTS
@@ -333,30 +218,20 @@
             border-radius: var(--radius-lg); overflow: hidden;
             transition: border-color var(--duration-normal), box-shadow var(--duration-normal), transform var(--duration-normal);
             animation: postIn 0.5s var(--ease-out-expo) both;
-            contain: layout style;
-            backdrop-filter: blur(10px);
+            contain: layout style; backdrop-filter: blur(10px);
             -webkit-backdrop-filter: blur(10px);
         }
         .post:nth-child(1) { animation-delay: 0s; }
         .post:nth-child(2) { animation-delay: 0.12s; }
         .post:nth-child(3) { animation-delay: 0.24s; }
         .post:nth-child(4) { animation-delay: 0.36s; }
-        @keyframes postIn {
-            from { opacity: 0; transform: translateY(30px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        .post:hover {
-            border-color: rgba(255,215,0,0.35);
-            box-shadow: var(--shadow-md), 0 0 60px rgba(255,215,0,0.05);
-            transform: translateY(-2px);
-        }
-        .post-header {
-            padding: 14px 20px; display: flex; align-items: center; gap: 12px;
-        }
+        @keyframes postIn { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+        .post:hover { border-color: rgba(255,215,0,0.35); box-shadow: var(--shadow-md), 0 0 60px rgba(255,215,0,0.05); transform: translateY(-2px); }
+        .post-header { padding: 14px 20px; display: flex; align-items: center; gap: 12px; }
         .avatar {
             width: 46px; height: 46px; border-radius: var(--radius-sm); display: flex;
-            align-items: center; justify-content: center; font-weight: 700;
-            color: #fff; flex-shrink: 0; font-size: 0.8rem;
+            align-items: center; justify-content: center; font-weight: 700; color: #fff;
+            flex-shrink: 0; font-size: 0.8rem;
         }
         .avatar.pref { background: #1a1a1a; border: 2px solid var(--primary); color: var(--primary); box-shadow: 0 0 16px var(--primary-glow); }
         .avatar.alert { background: var(--danger); }
@@ -365,13 +240,7 @@
         .post-meta h4 { font-size: 0.95rem; font-weight: 600; }
         .post-meta p { font-size: var(--text-small); color: var(--text-dim); display: flex; align-items: center; gap: 4px; margin-top: 2px; }
         .verified-icon { color: var(--primary); font-size: 0.7rem; }
-        .post-media {
-            position: relative; overflow: hidden;
-        }
-        .post-media img {
-            width: 100%; max-height: 420px; object-fit: cover;
-            transition: transform 0.7s var(--ease-out-expo);
-        }
+        .post-media img { width: 100%; max-height: 420px; object-fit: cover; transition: transform 0.7s var(--ease-out-expo); }
         .post:hover .post-media img { transform: scale(1.03); }
         .post-body { padding: 18px 20px; }
         .category-badge {
@@ -391,36 +260,29 @@
         }
         .post-actions button {
             display: inline-flex; align-items: center; gap: 7px;
-            transition: var(--duration-fast); padding: 8px 14px; border-radius: var(--radius-full);
-            font-weight: 500;
+            transition: var(--duration-fast); padding: 8px 14px; border-radius: var(--radius-full); font-weight: 500;
         }
         .post-actions button:hover { color: var(--primary); background: var(--primary-glass); }
         .post-actions button.liked { color: var(--primary); }
-        .post-actions button.liked i { animation: likePop 0.4s var(--ease-spring); }
-        @keyframes likePop {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.4); }
-            100% { transform: scale(1); }
-        }
+        .post-actions button.liked i { animation: likePop 0.4s var(--ease-out-back); }
+        @keyframes likePop { 0% { transform: scale(1); } 50% { transform: scale(1.4); } 100% { transform: scale(1); } }
+
+        /* Oculta posts que não correspondem ao filtro */
+        .post.hidden-post { display: none; }
 
         /* ============================================================
-           WIDGET PANEL
+           WIDGETS
            ============================================================ */
         .widget-panel {
             width: var(--widget-w); flex-shrink: 0; display: flex; flex-direction: column; gap: 18px;
             position: sticky; top: calc(var(--header-h) + 28px);
-            align-self: flex-start; max-height: calc(100vh - var(--header-h) - 56px);
-            overflow-y: auto;
+            align-self: flex-start; max-height: calc(100vh - var(--header-h) - 56px); overflow-y: auto;
         }
         .widget-card {
             background: var(--surface); border: 1px solid var(--glass-border);
-            border-radius: var(--radius-lg); padding: 22px;
-            backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+            border-radius: var(--radius-lg); padding: 22px; backdrop-filter: blur(10px);
         }
-        .widget-card h4 {
-            font-size: 0.8rem; font-weight: 700; margin-bottom: 14px;
-            color: var(--text-secondary); text-transform: uppercase; letter-spacing: 1.5px;
-        }
+        .widget-card h4 { font-size: 0.8rem; font-weight: 700; margin-bottom: 14px; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 1.5px; }
         .weather-row { display: flex; align-items: center; gap: 14px; font-size: 2.2rem; }
         .weather-row .icon { color: var(--primary); font-size: 2.4rem; }
         .weather-row .temp { font-weight: 800; }
@@ -434,80 +296,13 @@
         .quick-links a i { width: 20px; text-align: center; color: var(--primary); }
 
         /* ============================================================
-           TOAST
-           ============================================================ */
-        .toast-container {
-            position: fixed; top: calc(var(--header-h) + 16px); right: 24px;
-            z-index: 4000; display: flex; flex-direction: column; gap: 10px;
-            pointer-events: none;
-        }
-        .toast {
-            background: var(--glass-strong); backdrop-filter: blur(30px);
-            border: 1px solid var(--glass-border); color: var(--text-main);
-            padding: 14px 22px; border-radius: var(--radius-lg);
-            font-weight: 600; font-size: 0.85rem; box-shadow: var(--shadow-lg);
-            animation: toastIn 0.4s var(--ease-spring) forwards;
-            pointer-events: auto; max-width: 360px;
-        }
-        .toast.removing { animation: toastOut 0.3s var(--ease-out-expo) forwards; }
-        @keyframes toastIn {
-            from { opacity: 0; transform: translateX(120%) scale(0.9); }
-            to { opacity: 1; transform: translateX(0) scale(1); }
-        }
-        @keyframes toastOut {
-            from { opacity: 1; transform: translateX(0) scale(1); }
-            to { opacity: 0; transform: translateX(120%) scale(0.9); }
-        }
-
-        /* ============================================================
-           ACESSIBILIDADE
-           ============================================================ */
-        .a11y-fab {
-            position: fixed; bottom: 28px; right: 28px; z-index: 1999;
-            width: 48px; height: 48px; border-radius: 50%; background: var(--surface);
-            border: 1px solid var(--glass-border); color: var(--text-dim);
-            display: flex; align-items: center; justify-content: center;
-            font-size: 1.2rem; backdrop-filter: blur(10px);
-            transition: all var(--duration-fast); box-shadow: var(--shadow-sm);
-        }
-        .a11y-fab:hover { background: var(--primary); color: #000; border-color: var(--primary); transform: scale(1.1); box-shadow: var(--shadow-glow-strong); }
-        .a11y-panel {
-            position: fixed; top: 0; left: 0; right: 0; z-index: 2001;
-            background: rgba(0,0,0,0.95); backdrop-filter: blur(20px);
-            color: #ccc; padding: 14px 5%; font-size: var(--text-small);
-            display: flex; justify-content: center; flex-wrap: wrap; align-items: center; gap: 12px;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
-            transform: translateY(-100%); transition: transform var(--duration-normal) var(--ease-out-expo);
-        }
-        .a11y-panel.visible { transform: translateY(0); }
-        .a11y-panel button {
-            display: inline-flex; align-items: center; gap: 6px;
-            padding: 8px 16px; border-radius: var(--radius-full); border: 1px solid #555;
-            font-size: 0.75rem; font-weight: 500; transition: var(--duration-fast);
-            color: #ddd;
-        }
-        .a11y-panel button:hover, .a11y-panel button.active {
-            background: var(--primary); color: #000; border-color: var(--primary);
-        }
-
-        /* ============================================================
            RESPONSIVO
            ============================================================ */
-        @media (max-width: 1200px) {
-            .widget-panel { display: none; }
-            .main-area { padding: 24px 20px; }
-        }
+        @media (max-width: 1200px) { .widget-panel { display: none; } .main-area { padding: 24px 20px; } }
         @media (max-width: 768px) {
-            .sidebar {
-                position: fixed; top: var(--header-h); left: 0; bottom: 0;
-                transform: translateX(-100%); z-index: 1500;
-                background: rgba(15,15,15,0.97); width: 280px;
-            }
+            .sidebar { position: fixed; top: var(--header-h); left: 0; bottom: 0; transform: translateX(-100%); z-index: 1500; background: rgba(15,15,15,0.97); width: 280px; }
             .sidebar.mobile-open { transform: translateX(0); }
-            .sidebar-overlay {
-                display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5);
-                z-index: 1400;
-            }
+            .sidebar-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 1400; }
             .sidebar-overlay.active { display: block; }
             .menu-toggle { display: flex; }
             .main-area { padding: 16px 10px; }
@@ -515,70 +310,29 @@
             .post-body { padding: 14px 16px; }
             .post-header { padding: 12px 16px; }
             .post-actions { padding: 8px 16px 12px; gap: 14px; }
-            .stories-scroll { gap: 10px; padding-bottom: 14px; }
-            .story-avatar { width: 56px; height: 56px; }
-            .story-label { font-size: 0.6rem; max-width: 56px; }
-            .toast-container { right: 10px; left: 10px; align-items: stretch; }
-            .toast { max-width: 100%; }
-        }
-        @media (max-width: 480px) {
-            .app-header { padding: 0 12px; }
-            .brand h1 { font-size: 1.1rem; }
-            .header-actions { gap: 12px; }
         }
     </style>
 </head>
 <body>
 
-    <!-- Canvas de partículas (fundo animado) -->
-    <canvas id="particlesCanvas" aria-hidden="true"></canvas>
-
-    <!-- Painel de acessibilidade -->
-    <div class="a11y-panel" id="a11yPanel" role="region" aria-label="Acessibilidade">
-        <span style="font-weight:700;color:#fff;">Acessibilidade:</span>
-        <button id="toggleContrast" aria-label="Alto contraste"><i class="fa-solid fa-circle-half-stroke"></i> Contraste</button>
-        <button id="increaseFont" aria-label="Aumentar fonte"><i class="fa-solid fa-text-height"></i> A+</button>
-        <button id="toggleTheme" aria-label="Alternar tema"><i class="fa-solid fa-moon"></i> Tema</button>
-        <button id="toggleFocus" aria-label="Modo foco"><i class="fa-solid fa-expand"></i> Foco</button>
-    </div>
-    <button class="a11y-fab" id="a11yFab" aria-label="Opções de acessibilidade" title="Acessibilidade">
-        <i class="fa-solid fa-universal-access"></i>
-    </button>
-
-    <!-- Toast container -->
-    <div class="toast-container" id="toastContainer" role="status" aria-live="polite"></div>
-
-    <!-- Overlay sidebar mobile -->
-    <div class="sidebar-overlay" id="sidebarOverlay"></div>
-
-    <!-- Header -->
     <header class="app-header" id="appHeader" role="banner">
         <div style="display:flex; align-items:center; gap:16px;">
-            <button class="menu-toggle" id="menuToggle" aria-label="Abrir menu" title="Menu">
-                <i class="fa-solid fa-bars"></i>
-            </button>
+            <button class="menu-toggle" id="menuToggle" aria-label="Abrir menu"><i class="fa-solid fa-bars"></i></button>
             <a href="10.html" class="brand" aria-label="00brother - Ir para o início">
-                <div class="logo-circle" id="logoCircle">00</div>
+                <div class="logo-circle">00</div>
                 <h1>00brother <span>Fechado com você</span></h1>
             </a>
         </div>
         <div class="header-actions">
-            <button popovertarget="searchPopover" aria-label="Buscar" title="Buscar">
-                <i class="fa-solid fa-magnifying-glass"></i>
-            </button>
-            <a href="70.html" aria-label="Notificações" title="Notificações" style="position:relative;">
-                <i class="fa-solid fa-bell"></i>
-                <span class="badge-dot" aria-hidden="true"></span>
-            </a>
+            <button popovertarget="searchPopover" aria-label="Buscar"><i class="fa-solid fa-magnifying-glass"></i></button>
+            <a href="70.html" aria-label="Notificações" style="position:relative;"><i class="fa-solid fa-bell"></i><span class="badge-dot" aria-hidden="true"></span></a>
         </div>
     </header>
 
-    <!-- Popover de busca (API nativa) -->
     <div id="searchPopover" popover style="position:fixed;top:80px;left:50%;transform:translateX(-50%);background:var(--glass-strong);backdrop-filter:blur(30px);border:1px solid var(--glass-border);border-radius:var(--radius-lg);padding:16px;width:min(400px,90vw);z-index:5000;color:var(--text-main);">
         <input type="text" placeholder="Buscar na cidade..." style="width:100%;padding:12px 16px;border-radius:var(--radius-full);border:1px solid var(--glass-border);background:var(--surface);color:var(--text-main);font-size:0.9rem;outline:none;">
     </div>
 
-    <!-- Layout principal -->
     <div class="app-layout">
         <aside class="sidebar" id="sidebar" role="navigation" aria-label="Menu principal">
             <span class="sidebar-nav-label">Navegação</span>
@@ -594,91 +348,70 @@
             <a href="60.html"><i class="fa-solid fa-user"></i> Meu Perfil</a>
             <a href="40.html" class="new-post-btn"><i class="fa-solid fa-plus"></i> Nova Ocorrência</a>
         </aside>
+        <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
         <main class="main-area">
             <div class="feed-wrapper">
-                <nav class="stories-scroll" aria-label="Categorias rápidas">
-                    <a href="10.html" class="story-pill" aria-label="Para você"><div class="story-avatar"><div class="story-inner">⭐</div></div><span class="story-label">Para Você</span></a>
-                    <a href="70.html" class="story-pill unread" aria-label="Alertas"><div class="story-avatar alert"><div class="story-inner">🚨</div></div><span class="story-label">Alertas</span></a>
-                    <a href="90.html" class="story-pill" aria-label="Eventos"><div class="story-avatar event"><div class="story-inner">🎭</div></div><span class="story-label">Eventos</span></a>
-                    <a href="100.html" class="story-pill" aria-label="Obras"><div class="story-avatar"><div class="story-inner">🚧</div></div><span class="story-label">Obras</span></a>
-                    <a href="50.html" class="story-pill" aria-label="Vagas"><div class="story-avatar job"><div class="story-inner">💼</div></div><span class="story-label">Vagas</span></a>
-                    <a href="110.html" class="story-pill unread" aria-label="Saúde"><div class="story-avatar health"><div class="story-inner">🏥</div></div><span class="story-label">Saúde</span></a>
-                </nav>
+                <!-- Stories com filtro -->
+                <div class="stories-scroll" id="storiesContainer">
+                    <button class="story-pill active-filter" data-filter="all">
+                        <div class="story-avatar"><div class="story-inner">⭐</div></div>
+                        <span class="story-label">Para Você</span>
+                    </button>
+                    <button class="story-pill" data-filter="alerta">
+                        <div class="story-avatar alert"><div class="story-inner">🚨</div></div>
+                        <span class="story-label">Alertas</span>
+                    </button>
+                    <button class="story-pill" data-filter="evento">
+                        <div class="story-avatar event"><div class="story-inner">🎭</div></div>
+                        <span class="story-label">Eventos</span>
+                    </button>
+                    <button class="story-pill" data-filter="obras">
+                        <div class="story-avatar"><div class="story-inner">🚧</div></div>
+                        <span class="story-label">Obras</span>
+                    </button>
+                    <button class="story-pill" data-filter="vagas">
+                        <div class="story-avatar job"><div class="story-inner">💼</div></div>
+                        <span class="story-label">Vagas</span>
+                    </button>
+                    <button class="story-pill" data-filter="saude">
+                        <div class="story-avatar health"><div class="story-inner">🏥</div></div>
+                        <span class="story-label">Saúde</span>
+                    </button>
+                </div>
 
-                <div class="feed-container" role="feed" aria-label="Feed de publicações">
-                    <!-- Post 1 -->
-                    <article class="post" tabindex="0" aria-label="Publicação da Prefeitura: Interdição na Avenida Central">
-                        <div class="post-header">
-                            <div class="avatar pref"><i class="fa-solid fa-building-columns"></i></div>
-                            <div class="post-meta"><h4>Prefeitura Municipal</h4><p><i class="fa-solid fa-circle-check verified-icon"></i> Verificado • há 20 min</p></div>
-                        </div>
-                        <div class="post-body">
-                            <span class="category-badge danger">Alerta de Trânsito</span>
-                            <p><strong>🚧 Interdição na Av. Central</strong> para obras de drenagem. Trecho entre as ruas 7 e 9 ficará fechado de 15 a 20/11. Desvio sinalizado pela rotatória.</p>
-                        </div>
-                        <div class="post-actions">
-                            <button aria-label="Curtir" data-action="like"><i class="fa-regular fa-thumbs-up"></i> 142</button>
-                            <button aria-label="Comentar"><i class="fa-regular fa-comment"></i> 23</button>
-                            <button aria-label="Compartilhar"><i class="fa-regular fa-share-from-square"></i></button>
-                        </div>
+                <!-- Feed com data-category -->
+                <div class="feed-container" id="feedContainer" role="feed">
+                    <article class="post" data-category="alerta" tabindex="0">
+                        <div class="post-header"><div class="avatar pref"><i class="fa-solid fa-building-columns"></i></div><div class="post-meta"><h4>Prefeitura Municipal</h4><p><i class="fa-solid fa-circle-check verified-icon"></i> Verificado • há 20 min</p></div></div>
+                        <div class="post-body"><span class="category-badge danger">Alerta de Trânsito</span><p><strong>🚧 Interdição na Av. Central</strong> para obras de drenagem. Trecho entre as ruas 7 e 9 ficará fechado de 15 a 20/11. Desvio sinalizado pela rotatória.</p></div>
+                        <div class="post-actions"><button data-action="like"><i class="fa-regular fa-thumbs-up"></i> 142</button><button><i class="fa-regular fa-comment"></i> 23</button><button><i class="fa-regular fa-share-from-square"></i></button></div>
                     </article>
-
-                    <!-- Post 2 -->
-                    <article class="post" tabindex="0" aria-label="Publicação da Agência do Trabalhador: Feirão de empregos">
-                        <div class="post-header">
-                            <div class="avatar job"><i class="fa-solid fa-briefcase"></i></div>
-                            <div class="post-meta"><h4>Agência do Trabalhador</h4><p>Oficial • há 2h</p></div>
-                        </div>
-                        <div class="post-body">
-                            <span class="category-badge success">Vagas de Emprego</span>
-                            <p><strong>💼 Feirão de empregos reúne 500 vagas</strong> na região central. Comércio e indústria participam. Inscrições abertas até sexta-feira no site da prefeitura.</p>
-                        </div>
-                        <div class="post-actions">
-                            <button aria-label="Curtir" data-action="like"><i class="fa-regular fa-thumbs-up"></i> 89</button>
-                            <button aria-label="Comentar"><i class="fa-regular fa-comment"></i> 12</button>
-                            <button aria-label="Compartilhar"><i class="fa-regular fa-share-from-square"></i></button>
-                        </div>
+                    <article class="post" data-category="vagas" tabindex="0">
+                        <div class="post-header"><div class="avatar job"><i class="fa-solid fa-briefcase"></i></div><div class="post-meta"><h4>Agência do Trabalhador</h4><p>Oficial • há 2h</p></div></div>
+                        <div class="post-body"><span class="category-badge success">Vagas de Emprego</span><p><strong>💼 Feirão de empregos reúne 500 vagas</strong> na região central. Comércio e indústria participam. Inscrições abertas até sexta-feira no site da prefeitura.</p></div>
+                        <div class="post-actions"><button data-action="like"><i class="fa-regular fa-thumbs-up"></i> 89</button><button><i class="fa-regular fa-comment"></i> 12</button><button><i class="fa-regular fa-share-from-square"></i></button></div>
                     </article>
-
-                    <!-- Post 3 -->
-                    <article class="post" tabindex="0" aria-label="Publicação do Grêmio Estudantil: Final do Intercolegial de Futsal">
-                        <div class="post-header">
-                            <div class="avatar sport"><i class="fa-solid fa-futbol"></i></div>
-                            <div class="post-meta"><h4>Grêmio Estudantil</h4><p>Escola Municipal • há 4h</p></div>
-                        </div>
-                        <div class="post-media"><img src="https://images.unsplash.com/photo-1579952363873-27f3bade9f55?auto=format&fit=crop&w=600&q=80" alt="Jogadores de futsal em quadra" loading="lazy"></div>
-                        <div class="post-body">
-                            <span class="category-badge info">Esporte Local</span>
-                            <p><strong>⚽ Final do Intercolegial de Futsal</strong> será no ginásio municipal neste sábado. Entrada gratuita com 1kg de alimento. Torcida organizada pelos grêmios!</p>
-                        </div>
-                        <div class="post-actions">
-                            <button aria-label="Curtir" data-action="like"><i class="fa-regular fa-thumbs-up"></i> 315</button>
-                            <button aria-label="Comentar"><i class="fa-regular fa-comment"></i> 67</button>
-                            <button aria-label="Compartilhar"><i class="fa-regular fa-share-from-square"></i></button>
-                        </div>
+                    <article class="post" data-category="evento" tabindex="0">
+                        <div class="post-header"><div class="avatar sport"><i class="fa-solid fa-futbol"></i></div><div class="post-meta"><h4>Grêmio Estudantil</h4><p>Escola Municipal • há 4h</p></div></div>
+                        <div class="post-media"><img src="https://images.unsplash.com/photo-1579952363873-27f3bade9f55?auto=format&fit=crop&w=600&q=80" alt="Futsal"></div>
+                        <div class="post-body"><span class="category-badge info">Esporte Local</span><p><strong>⚽ Final do Intercolegial de Futsal</strong> será no ginásio municipal neste sábado. Entrada gratuita com 1kg de alimento. Torcida organizada pelos grêmios!</p></div>
+                        <div class="post-actions"><button data-action="like"><i class="fa-regular fa-thumbs-up"></i> 315</button><button><i class="fa-regular fa-comment"></i> 67</button><button><i class="fa-regular fa-share-from-square"></i></button></div>
                     </article>
-
-                    <!-- Post 4 -->
-                    <article class="post" tabindex="0" aria-label="Publicação de morador: Lâmpada queimada na Rua das Flores">
-                        <div class="post-header">
-                            <div class="avatar alert"><i class="fa-solid fa-triangle-exclamation"></i></div>
-                            <div class="post-meta"><h4>Morador Zona Norte</h4><p>Mural da Comunidade • há 30 min</p></div>
-                        </div>
-                        <div class="post-body">
-                            <span class="category-badge">Zeladoria Urbana</span>
-                            <p><strong>💡 Lâmpada queimada na Rua das Flores</strong> já faz 3 dias. Poste nº 234. Alguém mais já reportou? #BairroUnido</p>
-                        </div>
-                        <div class="post-actions">
-                            <button aria-label="Curtir" data-action="like"><i class="fa-regular fa-thumbs-up"></i> 47</button>
-                            <button aria-label="Comentar"><i class="fa-regular fa-comment"></i> 8</button>
-                            <button aria-label="Compartilhar"><i class="fa-regular fa-share-from-square"></i></button>
-                        </div>
+                    <article class="post" data-category="obras" tabindex="0">
+                        <div class="post-header"><div class="avatar alert"><i class="fa-solid fa-triangle-exclamation"></i></div><div class="post-meta"><h4>Morador Zona Norte</h4><p>Mural da Comunidade • há 30 min</p></div></div>
+                        <div class="post-body"><span class="category-badge">Zeladoria Urbana</span><p><strong>💡 Lâmpada queimada na Rua das Flores</strong> já faz 3 dias. Poste nº 234. Alguém mais já reportou? #BairroUnido</p></div>
+                        <div class="post-actions"><button data-action="like"><i class="fa-regular fa-thumbs-up"></i> 47</button><button><i class="fa-regular fa-comment"></i> 8</button><button><i class="fa-regular fa-share-from-square"></i></button></div>
+                    </article>
+                    <!-- Post extra de saúde (exemplo) -->
+                    <article class="post" data-category="saude" tabindex="0">
+                        <div class="post-header"><div class="avatar pref"><i class="fa-solid fa-hospital"></i></div><div class="post-meta"><h4>Secretaria de Saúde</h4><p><i class="fa-solid fa-circle-check verified-icon"></i> Verificado • há 1h</p></div></div>
+                        <div class="post-body"><span class="category-badge">Saúde Pública</span><p><strong>🏥 Campanha de vacinação</strong> neste sábado nas UBSs centrais. Das 8h às 17h. Não esqueça a carteirinha!</p></div>
+                        <div class="post-actions"><button data-action="like"><i class="fa-regular fa-thumbs-up"></i> 202</button><button><i class="fa-regular fa-comment"></i> 45</button><button><i class="fa-regular fa-share-from-square"></i></button></div>
                     </article>
                 </div>
             </div>
-
-            <aside class="widget-panel" aria-label="Widgets laterais">
+            <aside class="widget-panel" aria-label="Widgets">
                 <div class="widget-card"><h4>🌤️ Clima na Cidade</h4><div class="weather-row"><span class="icon"><i class="fa-solid fa-sun"></i></span><span class="temp">28°C</span></div><p style="font-size:0.8rem;color:var(--text-dim);margin-top:4px;">Parcialmente nublado • Londrina</p></div>
                 <div class="widget-card"><h4>⚡ Acesso Rápido</h4><div class="quick-links"><a href="30.html"><i class="fa-solid fa-location-dot"></i> Farmácias de Plantão</a><a href="30.html"><i class="fa-solid fa-bus"></i> Horários de Ônibus</a><a href="40.html"><i class="fa-solid fa-circle-exclamation"></i> Reportar Problema</a><a href="110.html"><i class="fa-solid fa-syringe"></i> Vacinação</a></div></div>
                 <div class="widget-card" style="text-align:center;padding:18px;"><p style="font-size:0.75rem;color:var(--text-dim);">© 2026 00brother<br>Fechado com você.</p></div>
@@ -686,143 +419,43 @@
         </main>
     </div>
 
-    <!-- Scripts -->
     <script>
         'use strict';
-
-        // ========== CANVAS PARTICLES ==========
-        (function() {
-            const canvas = document.getElementById('particlesCanvas');
-            const ctx = canvas.getContext('2d');
-            let particles = [];
-            let animationId;
-            const maxParticles = 50;
-
-            function resize() {
-                canvas.width = window.innerWidth;
-                canvas.height = window.innerHeight;
-            }
-            window.addEventListener('resize', resize);
-            resize();
-
-            class Particle {
-                constructor() {
-                    this.reset();
-                    this.y = Math.random() * canvas.height;
-                }
-                reset() {
-                    this.x = Math.random() * canvas.width;
-                    this.y = -10;
-                    this.size = Math.random() * 3 + 1;
-                    this.speed = Math.random() * 0.5 + 0.2;
-                    this.opacity = Math.random() * 0.5 + 0.1;
-                    this.drift = Math.random() * 0.4 - 0.2;
-                }
-                update() {
-                    this.y += this.speed;
-                    this.x += this.drift;
-                    if (this.y > canvas.height + 10) { this.reset(); this.y = -10; }
-                    if (this.x < 0) this.x = canvas.width;
-                    if (this.x > canvas.width) this.x = 0;
-                }
-                draw() {
-                    ctx.beginPath();
-                    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-                    ctx.fillStyle = `rgba(255,215,0,${this.opacity})`;
-                    ctx.fill();
-                }
-            }
-
-            for (let i = 0; i < maxParticles; i++) {
-                particles.push(new Particle());
-            }
-
-            function animate() {
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
-                particles.forEach(p => { p.update(); p.draw(); });
-                animationId = requestAnimationFrame(animate);
-            }
-            animate();
-
-            // Pausar se reduzir movimento
-            const mq = window.matchMedia('(prefers-reduced-motion: reduce)');
-            if (mq.matches) { cancelAnimationFrame(animationId); canvas.style.display = 'none'; }
-        })();
 
         // ========== SIDEBAR MOBILE ==========
         const sidebar = document.getElementById('sidebar');
         const overlay = document.getElementById('sidebarOverlay');
         const menuToggle = document.getElementById('menuToggle');
-
         function openSidebar() { sidebar.classList.add('mobile-open'); overlay.classList.add('active'); document.body.style.overflow = 'hidden'; }
         function closeSidebar() { sidebar.classList.remove('mobile-open'); overlay.classList.remove('active'); document.body.style.overflow = ''; }
         menuToggle.addEventListener('click', () => sidebar.classList.contains('mobile-open') ? closeSidebar() : openSidebar());
         overlay.addEventListener('click', closeSidebar);
-        sidebar.querySelectorAll('a').forEach(link => { link.addEventListener('click', () => { if (window.innerWidth <= 768) closeSidebar(); }); });
+        sidebar.querySelectorAll('a').forEach(link => link.addEventListener('click', () => { if (window.innerWidth <= 768) closeSidebar(); }));
 
-        // Sidebar ativo
-        (() => {
-            const current = window.location.pathname.split('/').pop() || '10.html';
-            sidebar.querySelectorAll('a').forEach(link => link.classList.toggle('active', link.getAttribute('href') === current));
-        })();
+        // ========== FILTRO POR STORIES ==========
+        const storyPills = document.querySelectorAll('.story-pill');
+        const posts = document.querySelectorAll('.post');
 
-        // ========== ACESSIBILIDADE ==========
-        const a11yPanel = document.getElementById('a11yPanel');
-        const a11yFab = document.getElementById('a11yFab');
-        let a11yVisible = false;
-        a11yFab.addEventListener('click', () => { a11yVisible = !a11yVisible; a11yPanel.classList.toggle('visible', a11yVisible); a11yFab.querySelector('i').className = a11yVisible ? 'fa-solid fa-xmark' : 'fa-solid fa-universal-access'; });
-        document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && a11yVisible) { a11yVisible = false; a11yPanel.classList.remove('visible'); a11yFab.querySelector('i').className = 'fa-solid fa-universal-access'; } });
-
-        // Contraste
-        const contrastBtn = document.getElementById('toggleContrast');
-        contrastBtn.addEventListener('click', () => { document.body.classList.toggle('high-contrast'); contrastBtn.classList.toggle('active'); localStorage.setItem('highContrast', document.body.classList.contains('high-contrast')); });
-        if (localStorage.getItem('highContrast') === 'true') { document.body.classList.add('high-contrast'); contrastBtn.classList.add('active'); }
-
-        // Tema
-        const themeBtn = document.getElementById('toggleTheme');
-        themeBtn.addEventListener('click', () => {
-            const isLight = getComputedStyle(document.documentElement).getPropertyValue('--bg').trim() === '#f0f2f5';
-            const styles = isLight ? ['#0f0f0f','#ffffff','rgba(255,255,255,0.04)','rgba(255,255,255,0.08)','#b0b0b0','#707070'] : ['#f0f2f5','#1a1a1a','rgba(0,0,0,0.03)','rgba(0,0,0,0.08)','#555','#999'];
-            ['--bg','--text-main','--surface','--glass-border','--text-secondary','--text-dim'].forEach((v,i) => document.documentElement.style.setProperty(v, styles[i]));
-            themeBtn.innerHTML = isLight ? '<i class="fa-solid fa-moon"></i> Tema' : '<i class="fa-solid fa-sun"></i> Tema';
-            localStorage.setItem('theme', isLight ? 'dark' : 'light');
-        });
-        if (localStorage.getItem('theme') === 'light') themeBtn.click();
-
-        // Modo foco
-        const focusBtn = document.getElementById('toggleFocus');
-        let focusMode = false;
-        focusBtn.addEventListener('click', () => {
-            focusMode = !focusMode;
-            focusBtn.classList.toggle('active', focusMode);
-            sidebar.style.display = focusMode ? 'none' : '';
-            document.querySelector('.widget-panel') && (document.querySelector('.widget-panel').style.display = focusMode ? 'none' : '');
-            document.querySelector('.stories-scroll') && (document.querySelector('.stories-scroll').style.display = focusMode ? 'none' : '');
-            document.querySelector('.main-area').style.padding = focusMode ? '28px 0' : '';
-            showToast(focusMode ? 'Modo foco ativado 🎯' : 'Modo foco desativado');
-        });
-
-        // Fonte
-        const fontBtn = document.getElementById('increaseFont');
-        let fontLevel = 0;
-        fontBtn.addEventListener('click', () => { fontLevel = (fontLevel + 1) % 4; document.documentElement.style.setProperty('--text-body', ['0.875rem','0.95rem','1.05rem','1.2rem'][fontLevel]); document.documentElement.style.setProperty('--text-small', ['0.7rem','0.75rem','0.85rem','0.95rem'][fontLevel]); localStorage.setItem('fontSize', fontLevel); });
-        const savedFont = localStorage.getItem('fontSize');
-        if (savedFont) { fontLevel = parseInt(savedFont); fontBtn.click(); }
-
-        // ========== TOAST SYSTEM ==========
-        function showToast(msg, duration = 2500) {
-            const container = document.getElementById('toastContainer');
-            const toast = document.createElement('div');
-            toast.className = 'toast'; toast.textContent = msg;
-            container.appendChild(toast);
-            const remove = () => { toast.classList.add('removing'); setTimeout(() => toast.remove(), 300); };
-            setTimeout(remove, duration);
-            toast.addEventListener('click', remove);
-            // Limitar a 3 toasts simultâneos
-            while (container.children.length > 3) { container.firstChild.remove(); }
+        function filterPosts(category) {
+            posts.forEach(post => {
+                if (category === 'all' || post.dataset.category === category) {
+                    post.classList.remove('hidden-post');
+                } else {
+                    post.classList.add('hidden-post');
+                }
+            });
         }
 
-        // ========== LIKE NOS POSTS ==========
+        storyPills.forEach(pill => {
+            pill.addEventListener('click', () => {
+                storyPills.forEach(p => p.classList.remove('active-filter'));
+                pill.classList.add('active-filter');
+                const filter = pill.dataset.filter;
+                filterPosts(filter);
+            });
+        });
+
+        // ========== LIKE ==========
         document.querySelectorAll('[data-action="like"]').forEach(btn => {
             btn.addEventListener('click', function(e) {
                 e.preventDefault();
@@ -834,26 +467,17 @@
                     icon.classList.replace('fa-solid', 'fa-regular');
                     this.classList.remove('liked');
                     this.innerHTML = '<i class="fa-regular fa-thumbs-up"></i> ' + Math.max(0, count - 1);
-                    showToast('Curtida removida');
                 } else {
                     icon.classList.replace('fa-regular', 'fa-solid');
                     this.classList.add('liked');
                     this.innerHTML = '<i class="fa-solid fa-thumbs-up"></i> ' + (count + 1);
-                    showToast('Curtido! 💛');
                 }
             });
         });
 
-        // ========== HEADER SCROLL SHADOW ==========
-        const header = document.getElementById('appHeader');
-        window.addEventListener('scroll', () => { header.classList.toggle('scrolled', window.scrollY > 10); });
-
-        // ========== POPOVER API FECHAR NO CLICK FORA ==========
-        document.addEventListener('click', (e) => {
-            const popover = document.getElementById('searchPopover');
-            if (popover.matches(':popover-open') && !popover.contains(e.target) && e.target !== document.querySelector('[popovertarget="searchPopover"]')) {
-                popover.hidePopover();
-            }
+        // ========== SCROLL DO HEADER ==========
+        window.addEventListener('scroll', () => {
+            document.getElementById('appHeader').classList.toggle('scrolled', window.scrollY > 10);
         });
     </script>
 </body>
