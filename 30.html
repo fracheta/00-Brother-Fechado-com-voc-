@@ -266,6 +266,58 @@
         .legend-dot.correios { background: #f1c40f; }
         .legend-dot.parque { background: #27ae60; }
 
+        /* ============================================================
+           SEÇÃO DE ACESSO RÁPIDO (NOVO)
+           ============================================================ */
+        .quick-access {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 16px;
+            margin-top: 4px;
+        }
+        .quick-access-card {
+            background: var(--surface);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-md);
+            padding: 20px 16px;
+            text-align: center;
+            cursor: pointer;
+            transition: all var(--duration-fast);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            color: var(--text-secondary);
+            text-decoration: none;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+        .quick-access-card:hover {
+            background: var(--surface-hover);
+            border-color: var(--primary);
+            color: var(--primary);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 24px rgba(255,215,0,0.15);
+        }
+        .quick-access-card i {
+            font-size: 2rem;
+            color: var(--primary);
+            transition: transform var(--duration-fast);
+        }
+        .quick-access-card:hover i {
+            transform: scale(1.1);
+        }
+        .quick-access-card span {
+            font-weight: 600;
+            font-size: 0.85rem;
+            line-height: 1.3;
+        }
+        .quick-access-card small {
+            font-size: 0.7rem;
+            color: var(--text-dim);
+            display: block;
+        }
+
         .widget-panel {
             width: var(--widget-w); flex-shrink: 0; display: flex; flex-direction: column; gap: 18px;
             position: sticky; top: calc(var(--header-h) + 28px);
@@ -317,6 +369,7 @@
             .map-header { padding: 14px 18px; }
             .map-filters button { padding: 6px 12px; font-size: 0.7rem; }
             #mapContainer { min-height: 400px; }
+            .quick-access { grid-template-columns: repeat(2, 1fr); gap: 10px; }
             .toast-container { right: 10px; left: 10px; align-items: stretch; }
             .toast { max-width: 100%; }
         }
@@ -404,6 +457,31 @@
                         <span><span class="legend-dot parque"></span> Parque</span>
                     </div>
                 </div>
+
+                <!-- ==================== NOVA SEÇÃO DE ACESSO RÁPIDO ==================== -->
+                <div class="quick-access" id="quickAccess">
+                    <div class="quick-access-card" data-filter="farmacia" role="button" tabindex="0" aria-label="Filtrar farmácias no mapa">
+                        <i class="fa-solid fa-prescription-bottle-medical"></i>
+                        <span>Farmácias de Plantão</span>
+                        <small>Clique para ver no mapa</small>
+                    </div>
+                    <div class="quick-access-card" data-filter="onibus" role="button" tabindex="0" aria-label="Filtrar pontos de ônibus no mapa">
+                        <i class="fa-solid fa-bus"></i>
+                        <span>Horários de Ônibus</span>
+                        <small>Clique para ver no mapa</small>
+                    </div>
+                    <a href="40.html" class="quick-access-card" aria-label="Ir para página de reportar problema">
+                        <i class="fa-solid fa-circle-exclamation"></i>
+                        <span>Reportar Problema</span>
+                        <small>Nova ocorrência</small>
+                    </a>
+                    <a href="110.html" class="quick-access-card" aria-label="Ir para página de vacinação">
+                        <i class="fa-solid fa-syringe"></i>
+                        <span>Vacinação</span>
+                        <small>Saúde pública</small>
+                    </a>
+                </div>
+                <!-- ================================================================= -->
             </div>
 
             <aside class="widget-panel" aria-label="Widgets laterais">
@@ -424,23 +502,18 @@
             let particles = [];
             let animationId;
             const maxParticles = 50;
-
             function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
             window.addEventListener('resize', resize);
             resize();
-
             class Particle {
                 constructor() { this.reset(); this.y = Math.random() * canvas.height; }
                 reset() { this.x = Math.random() * canvas.width; this.y = -10; this.size = Math.random() * 3 + 1; this.speed = Math.random() * 0.5 + 0.2; this.opacity = Math.random() * 0.5 + 0.1; this.drift = Math.random() * 0.4 - 0.2; }
                 update() { this.y += this.speed; this.x += this.drift; if (this.y > canvas.height + 10) { this.reset(); this.y = -10; } if (this.x < 0) this.x = canvas.width; if (this.x > canvas.width) this.x = 0; }
                 draw() { ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2); ctx.fillStyle = `rgba(255,215,0,${this.opacity})`; ctx.fill(); }
             }
-
             for (let i = 0; i < maxParticles; i++) particles.push(new Particle());
-
             function animate() { ctx.clearRect(0, 0, canvas.width, canvas.height); particles.forEach(p => { p.update(); p.draw(); }); animationId = requestAnimationFrame(animate); }
             animate();
-
             const mq = window.matchMedia('(prefers-reduced-motion: reduce)');
             if (mq.matches) { cancelAnimationFrame(animationId); canvas.style.display = 'none'; }
         })();
@@ -519,8 +592,6 @@
         (function() {
             const arapongasLat = -23.4195;
             const arapongasLng = -51.4244;
-
-            // Modo claro: tile layer padrão OpenStreetMap
             const map = L.map('mapContainer').setView([arapongasLat, arapongasLng], 14);
 
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -528,7 +599,6 @@
                 maxZoom: 19
             }).addTo(map);
 
-            // Ícones e cores
             const iconColors = {
                 farmacia: '#2ecc71',
                 hospital: '#e74c3c',
@@ -554,45 +624,31 @@
             }
 
             const icons = {};
-            Object.keys(iconColors).forEach(tipo => {
-                icons[tipo] = createIcon(iconColors[tipo]);
-            });
+            Object.keys(iconColors).forEach(tipo => { icons[tipo] = createIcon(iconColors[tipo]); });
 
-            // Pontos de interesse expandidos com fotos (imagens genéricas do Unsplash)
             const pontos = [
-                // Hospitais
                 { lat: -23.4150, lng: -51.4280, tipo: 'hospital', nome: 'Hospital Regional de Arapongas', desc: 'Atendimento 24h • Pronto-socorro', img: 'https://images.unsplash.com/photo-1586773860418-d37222d8fce3?auto=format&fit=crop&w=400&q=80' },
                 { lat: -23.4180, lng: -51.4300, tipo: 'hospital', nome: 'Santa Casa de Arapongas', desc: 'Urgência e emergência', img: 'https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?auto=format&fit=crop&w=400&q=80' },
-                // Farmácias
                 { lat: -23.4220, lng: -51.4200, tipo: 'farmacia', nome: 'Farmácia São Paulo', desc: 'Plantão 24h • Av. Arapongas, 1234', img: 'https://images.unsplash.com/photo-1587854692152-cbe660dbde88?auto=format&fit=crop&w=400&q=80' },
                 { lat: -23.4165, lng: -51.4250, tipo: 'farmacia', nome: 'DrogaRaia', desc: 'Aberto até 23h • Rua Juriti, 567', img: 'https://images.unsplash.com/photo-1559526323-9c2d5c2e8b2a?auto=format&fit=crop&w=400&q=80' },
                 { lat: -23.4200, lng: -51.4180, tipo: 'farmacia', nome: 'Farmácia Nissei', desc: 'Plantão • Rua Sabiá, 890', img: 'https://images.unsplash.com/photo-1624628639857-6c9eb5b8d8e7?auto=format&fit=crop&w=400&q=80' },
                 { lat: -23.4100, lng: -51.4210, tipo: 'farmacia', nome: 'Farmácia Pague Menos', desc: 'Aberto 24h • Av. Maracanã, 450', img: 'https://images.unsplash.com/photo-1590080875519-7b4f3f15e4c3?auto=format&fit=crop&w=400&q=80' },
-                // Ônibus
                 { lat: -23.4250, lng: -51.4320, tipo: 'onibus', nome: 'Terminal Rodoviário', desc: 'Linhas intermunicipais e interestaduais', img: 'https://images.unsplash.com/photo-1544620347-c4fd4a3c0a5a?auto=format&fit=crop&w=400&q=80' },
                 { lat: -23.4120, lng: -51.4220, tipo: 'onibus', nome: 'Terminal Urbano Central', desc: 'Integração de linhas municipais', img: 'https://images.unsplash.com/photo-1570125909232-eb26371b1ed7?auto=format&fit=crop&w=400&q=80' },
-                // Eventos
                 { lat: -23.4190, lng: -51.4350, tipo: 'evento', nome: 'Praça da Matriz', desc: 'Show gratuito domingo às 18h 🎶', img: 'https://images.unsplash.com/photo-1501281668745-f7f57925c3b4?auto=format&fit=crop&w=400&q=80' },
                 { lat: -23.4170, lng: -51.4150, tipo: 'evento', nome: 'Centro de Eventos', desc: 'Feira de Artesanato • Sáb e Dom', img: 'https://images.unsplash.com/photo-1518895949257-7621c3b2b5f6?auto=format&fit=crop&w=400&q=80' },
-                // Obras
                 { lat: -23.4215, lng: -51.4275, tipo: 'obras', nome: 'Av. Central • Drenagem', desc: 'Interdição parcial até 20/11 🚧', img: 'https://images.unsplash.com/photo-1594402281535-1b0f4a2c0b0e?auto=format&fit=crop&w=400&q=80' },
                 { lat: -23.4130, lng: -51.4190, tipo: 'obras', nome: 'Rua das Flores', desc: 'Recapeamento asfáltico • Trânsito lento', img: 'https://images.unsplash.com/photo-1619689393467-3e39e4a860b9?auto=format&fit=crop&w=400&q=80' },
-                // Escolas
                 { lat: -23.4110, lng: -51.4290, tipo: 'escola', nome: 'Escola Municipal Monteiro Lobato', desc: 'Ensino fundamental I e II', img: 'https://images.unsplash.com/photo-1497633762265-9d179a990aa6?auto=format&fit=crop&w=400&q=80' },
                 { lat: -23.4235, lng: -51.4160, tipo: 'escola', nome: 'Colégio Estadual Carlos Drummond', desc: 'Ensino médio e técnico', img: 'https://images.unsplash.com/photo-1503676260728-1c00da094a0b?auto=format&fit=crop&w=400&q=80' },
-                // Restaurantes
                 { lat: -23.4175, lng: -51.4230, tipo: 'restaurante', nome: 'Restaurante Sabor da Terra', desc: 'Comida caseira • Aberto todos os dias', img: 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=400&q=80' },
                 { lat: -23.4205, lng: -51.4215, tipo: 'restaurante', nome: 'Pizzaria Forno a Lenha', desc: 'Rodízio aos sábados', img: 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=400&q=80' },
                 { lat: -23.4140, lng: -51.4260, tipo: 'restaurante', nome: 'Café Colonial Arapongas', desc: 'Café colonial com produtos locais', img: 'https://images.unsplash.com/photo-1504630083234-14187a9df0f5?auto=format&fit=crop&w=400&q=80' },
-                // Parques
                 { lat: -23.4090, lng: -51.4180, tipo: 'parque', nome: 'Parque das Nações', desc: 'Pista de caminhada, playground', img: 'https://images.unsplash.com/photo-1596997000103-e597b3ca50df?auto=format&fit=crop&w=400&q=80' },
                 { lat: -23.4260, lng: -51.4300, tipo: 'parque', nome: 'Jardim Petrópolis', desc: 'Novo parquinho inclusivo', img: 'https://images.unsplash.com/photo-1588668214407-6e7e1f9a7e7f?auto=format&fit=crop&w=400&q=80' },
-                // Bancos
                 { lat: -23.4185, lng: -51.4240, tipo: 'banco', nome: 'Banco do Brasil', desc: 'Agência centro', img: 'https://images.unsplash.com/photo-1501167786227-4cba60f6d58f?auto=format&fit=crop&w=400&q=80' },
                 { lat: -23.4210, lng: -51.4190, tipo: 'banco', nome: 'Caixa Econômica Federal', desc: 'Agência centro', img: 'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&w=400&q=80' },
-                // Correios
                 { lat: -23.4192, lng: -51.4225, tipo: 'correios', nome: 'Agência dos Correios', desc: 'Encomendas e serviços postais', img: 'https://images.unsplash.com/photo-1586110741476-3b44b5ff1e5e?auto=format&fit=crop&w=400&q=80' },
-                // Delegacia
                 { lat: -23.4155, lng: -51.4310, tipo: 'delegacia', nome: 'Delegacia de Polícia Civil', desc: 'Registro de ocorrências', img: 'https://images.unsplash.com/photo-1581376121647-2f0c8bdf2f0f?auto=format&fit=crop&w=400&q=80' }
             ];
 
@@ -614,26 +670,48 @@
                     .addTo(markerGroups[p.tipo]);
             });
 
-            // Filtros
-            const filterButtons = document.querySelectorAll('.map-filters button');
-            filterButtons.forEach(btn => {
-                btn.addEventListener('click', () => {
+            // Função para ativar filtro e rolar até o mapa
+            function activateFilter(filterType) {
+                const filterBtn = document.querySelector(`.map-filters button[data-filter="${filterType}"]`);
+                if (filterBtn) {
                     filterButtons.forEach(b => b.classList.remove('active'));
-                    btn.classList.add('active');
-                    const filter = btn.dataset.filter;
-
+                    filterBtn.classList.add('active');
                     Object.keys(markerGroups).forEach(tipo => {
-                        if (filter === 'all' || filter === tipo) {
+                        if (filterType === 'all' || filterType === tipo) {
                             map.addLayer(markerGroups[tipo]);
                         } else {
                             map.removeLayer(markerGroups[tipo]);
                         }
                     });
+                }
+                // Scroll suave até o mapa
+                document.getElementById('mapContainer').scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
 
-                    if (filter === 'all') {
-                        map.setView([arapongasLat, arapongasLng], 14);
-                    }
+            // Filtros do cabeçalho
+            const filterButtons = document.querySelectorAll('.map-filters button');
+            filterButtons.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const filter = btn.dataset.filter;
+                    activateFilter(filter);
                     showToast(`Mostrando: ${btn.textContent.trim()}`);
+                });
+            });
+
+            // ========== NOVOS CARDS DE ACESSO RÁPIDO ==========
+            const quickCards = document.querySelectorAll('.quick-access-card[data-filter]');
+            quickCards.forEach(card => {
+                card.addEventListener('click', () => {
+                    const filter = card.dataset.filter;
+                    activateFilter(filter);
+                    showToast(`Mostrando: ${card.querySelector('span').textContent.trim()}`);
+                });
+                // Acessibilidade: tecla Enter ou Espaço
+                card.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        card.click();
+                    }
                 });
             });
 
