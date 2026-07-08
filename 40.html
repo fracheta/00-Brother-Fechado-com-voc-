@@ -3,14 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>00brother – Meu Perfil</title>
-    <meta name="description" content="00brother - Seu perfil na rede social da cidade. Gerencie suas informações, posts e interações.">
+    <title>00brother – Nova Ocorrência</title>
+    <meta name="description" content="00brother - Reporte problemas na sua cidade. Iluminação, buracos, água, segurança e muito mais.">
     <meta name="theme-color" content="#0f0f0f">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800;14..32,900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
 
     <style>
         :root {
@@ -100,8 +101,8 @@
         body::after {
             content: '';
             position: fixed; inset: 0;
-            background: radial-gradient(ellipse at 50% 20%, rgba(255,215,0,0.06) 0%, transparent 60%),
-                        radial-gradient(ellipse at 80% 80%, rgba(52,152,219,0.04) 0%, transparent 50%);
+            background: radial-gradient(ellipse at 30% 0%, rgba(255,215,0,0.05) 0%, transparent 50%),
+                        radial-gradient(ellipse at 70% 100%, rgba(255,140,0,0.03) 0%, transparent 50%);
             pointer-events: none; z-index: -1;
             animation: ambientGlow 12s ease-in-out infinite alternate;
         }
@@ -179,181 +180,63 @@
         .sidebar .new-post-btn:hover { transform: translateY(-3px); box-shadow: 0 12px 32px rgba(255,215,0,0.5); filter: brightness(1.1); }
 
         .app-layout { display: flex; min-height: 100vh; padding-top: var(--header-h); }
-        .main-area { flex: 1; display: flex; justify-content: center; padding: 0; gap: 0; min-width: 0; }
-        .profile-wrapper { flex: 1; max-width: 900px; min-width: 0; }
+        .main-area { flex: 1; display: flex; justify-content: center; padding: 28px 36px; gap: 36px; min-width: 0; }
+        .form-wrapper { flex: 1; max-width: 700px; min-width: 0; }
 
-        /* ============================================================
-           PROFILE HEADER
-           ============================================================ */
-        .profile-cover {
-            width: 100%; height: clamp(160px, 18vw, 240px);
-            background: linear-gradient(135deg, #1a1a2e, #16213e, #0f3460);
-            position: relative; overflow: hidden;
-        }
-        .profile-cover::after {
-            content: '';
-            position: absolute; inset: 0;
-            background: radial-gradient(ellipse at 70% 30%, rgba(255,215,0,0.15) 0%, transparent 60%);
-        }
-        .profile-cover-pattern {
-            position: absolute; inset: 0; opacity: 0.05;
-            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.4'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
-        }
-        .profile-avatar-wrapper {
-            display: flex; justify-content: center; margin-top: -56px;
-            position: relative; z-index: 2;
-        }
-        .profile-avatar {
-            width: 110px; height: 110px; border-radius: 50%;
-            border: 4px solid var(--bg);
-            background: linear-gradient(135deg, var(--primary), #ffaa00);
-            display: flex; align-items: center; justify-content: center;
-            font-size: 2.8rem; font-weight: 800; color: #000;
-            box-shadow: var(--shadow-lg), 0 0 40px var(--primary-glow);
-            position: relative; overflow: hidden;
-        }
-        .profile-avatar img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; }
-        .profile-avatar-edit {
-            position: absolute; bottom: 4px; right: 4px;
-            width: 30px; height: 30px; border-radius: 50%;
-            background: var(--surface); border: 2px solid var(--glass-border);
-            display: flex; align-items: center; justify-content: center;
-            font-size: 0.75rem; color: var(--text-secondary);
-            transition: all var(--duration-fast); cursor: pointer;
-        }
-        .profile-avatar-edit:hover { background: var(--primary); color: #000; border-color: var(--primary); }
-
-        .profile-info {
-            text-align: center; padding: 16px 24px 24px;
-        }
-        .profile-name { font-size: 1.5rem; font-weight: 800; margin-bottom: 2px; }
-        .profile-username { color: var(--text-dim); font-size: 0.85rem; margin-bottom: 8px; }
-        .profile-bio { color: var(--text-secondary); font-size: 0.9rem; max-width: 500px; margin: 0 auto 14px; line-height: 1.5; }
-        .profile-location {
-            display: inline-flex; align-items: center; gap: 6px;
-            font-size: 0.8rem; color: var(--text-dim);
-            background: var(--surface); padding: 6px 14px; border-radius: var(--radius-full);
-            border: 1px solid var(--glass-border);
-        }
-        .profile-location i { color: var(--primary); font-size: 0.7rem; }
-
-        /* ============================================================
-           PROFILE STATS
-           ============================================================ */
-        .profile-stats {
-            display: flex; justify-content: center; gap: 32px;
-            padding: 16px 24px; border-top: 1px solid var(--glass-border);
-            border-bottom: 1px solid var(--glass-border);
-        }
-        .profile-stat {
-            text-align: center; cursor: pointer; transition: all var(--duration-fast);
-            padding: 4px 12px; border-radius: var(--radius-sm);
-        }
-        .profile-stat:hover { background: var(--surface-hover); }
-        .profile-stat .number {
-            font-size: 1.3rem; font-weight: 800; color: var(--primary);
-        }
-        .profile-stat .label { font-size: 0.7rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: 1px; }
-
-        /* ============================================================
-           PROFILE TABS
-           ============================================================ */
-        .profile-tabs {
-            display: flex; gap: 4px; padding: 16px 24px 0;
-            border-bottom: 1px solid var(--glass-border);
-            overflow-x: auto;
-        }
-        .profile-tab {
-            padding: 10px 20px; font-size: 0.85rem; font-weight: 600;
-            color: var(--text-dim); border-bottom: 2px solid transparent;
-            transition: all var(--duration-fast); cursor: pointer; white-space: nowrap;
-        }
-        .profile-tab:hover { color: var(--text-secondary); }
-        .profile-tab.active { color: var(--primary); border-bottom-color: var(--primary); }
-
-        /* ============================================================
-           PROFILE CONTENT
-           ============================================================ */
-        .profile-content {
-            padding: 24px;
-            max-width: 700px; margin: 0 auto;
-        }
-        .profile-section { display: none; }
-        .profile-section.active { display: block; }
-
-        /* ============================================================
-           POSTS NO PERFIL
-           ============================================================ */
-        .post {
+        .form-card {
             background: var(--surface); border: 1px solid var(--glass-border);
             border-radius: var(--radius-lg); overflow: hidden;
-            transition: border-color var(--duration-normal), box-shadow var(--duration-normal), transform var(--duration-normal);
-            animation: postIn 0.5s var(--ease-out-expo) both;
-            contain: layout style;
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            margin-bottom: 20px;
+            backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+            box-shadow: var(--shadow-md);
         }
-        .post:nth-child(1) { animation-delay: 0s; }
-        .post:nth-child(2) { animation-delay: 0.12s; }
-        .post:nth-child(3) { animation-delay: 0.24s; }
-        @keyframes postIn { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
-        .post:hover {
-            border-color: rgba(255,215,0,0.35);
-            box-shadow: var(--shadow-md), 0 0 60px rgba(255,215,0,0.05);
-            transform: translateY(-2px);
+        .form-header {
+            padding: 20px 24px; border-bottom: 1px solid var(--glass-border);
+            display: flex; align-items: center; gap: 14px;
         }
-        .post-header { padding: 14px 20px; display: flex; align-items: center; gap: 12px; }
-        .avatar { width: 46px; height: 46px; border-radius: var(--radius-sm); display: flex; align-items: center; justify-content: center; font-weight: 700; color: #fff; flex-shrink: 0; font-size: 0.8rem; }
-        .avatar.pref { background: #1a1a1a; border: 2px solid var(--primary); color: var(--primary); box-shadow: 0 0 16px var(--primary-glow); }
-        .avatar.alert { background: var(--danger); }
-        .post-meta h4 { font-size: 0.95rem; font-weight: 600; }
-        .post-meta p { font-size: var(--text-small); color: var(--text-dim); display: flex; align-items: center; gap: 4px; margin-top: 2px; }
-        .verified-icon { color: var(--primary); font-size: 0.7rem; }
-        .post-media { position: relative; overflow: hidden; }
-        .post-media img { width: 100%; max-height: 420px; object-fit: cover; transition: transform 0.7s var(--ease-out-expo); }
-        .post:hover .post-media img { transform: scale(1.03); }
-        .post-body { padding: 18px 20px; }
-        .category-badge { display: inline-block; padding: 5px 14px; border-radius: var(--radius-full); font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1.2px; margin-bottom: 10px; background: var(--primary-glass); color: var(--primary); }
-        .category-badge.danger { background: rgba(255,68,68,0.15); color: var(--danger); }
-        .category-badge.success { background: rgba(46,204,113,0.15); color: var(--success); }
-        .category-badge.info { background: rgba(52,152,219,0.15); color: var(--info); }
-        .post-body p { font-size: var(--text-body); line-height: 1.65; }
-        .post-actions { display: flex; gap: 22px; padding: 10px 20px 16px; border-top: 1px solid rgba(255,255,255,0.03); color: var(--text-dim); font-size: var(--text-small); }
-        .post-actions button { display: inline-flex; align-items: center; gap: 7px; transition: var(--duration-fast); padding: 8px 14px; border-radius: var(--radius-full); font-weight: 500; }
-        .post-actions button:hover { color: var(--primary); background: var(--primary-glass); }
-        .post-actions button.liked { color: var(--primary); }
-        .post-actions button.liked i { animation: likePop 0.4s var(--ease-spring); }
-        @keyframes likePop { 0% { transform: scale(1); } 50% { transform: scale(1.4); } 100% { transform: scale(1); } }
-
-        /* Configurações */
-        .settings-group { margin-bottom: 28px; }
-        .settings-group h3 { font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1.5px; color: var(--text-dim); margin-bottom: 14px; }
-        .settings-field { margin-bottom: 16px; }
-        .settings-field label { display: block; font-size: 0.8rem; font-weight: 600; color: var(--text-secondary); margin-bottom: 6px; }
-        .settings-field input, .settings-field textarea {
-            width: 100%; padding: 10px 14px; border-radius: var(--radius-sm);
-            border: 1px solid var(--glass-border); background: var(--surface);
+        .form-header i { font-size: 1.5rem; color: var(--primary); }
+        .form-header h2 { font-size: 1.2rem; font-weight: 700; }
+        .form-body { padding: 24px; display: flex; flex-direction: column; gap: 20px; }
+        .form-group { display: flex; flex-direction: column; gap: 6px; }
+        .form-group label { font-size: 0.8rem; font-weight: 600; color: var(--text-secondary); display: flex; align-items: center; gap: 6px; }
+        .form-group label i { color: var(--primary); width: 16px; text-align: center; }
+        .form-group select, .form-group input, .form-group textarea {
+            padding: 12px 16px; border-radius: var(--radius-sm);
+            border: 1px solid var(--glass-border); background: var(--bg);
             color: var(--text-main); font-family: inherit; font-size: 0.9rem;
             outline: none; transition: border-color var(--duration-fast);
+            width: 100%;
         }
-        .settings-field input:focus, .settings-field textarea:focus { border-color: var(--primary); }
-        .settings-field textarea { resize: vertical; min-height: 80px; }
-        .btn-primary {
-            display: inline-flex; align-items: center; gap: 8px;
-            padding: 10px 24px; border-radius: var(--radius-full);
+        .form-group select option { background: var(--bg); color: var(--text-main); }
+        .form-group textarea { resize: vertical; min-height: 120px; }
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: var(--primary); }
+        .form-row { display: flex; gap: 16px; }
+        .form-row .form-group { flex: 1; }
+        .file-upload-area {
+            border: 2px dashed var(--glass-border); border-radius: var(--radius-md);
+            padding: 20px; text-align: center; cursor: pointer;
+            transition: all var(--duration-fast); color: var(--text-dim);
+        }
+        .file-upload-area:hover { border-color: var(--primary); background: var(--primary-glass); color: var(--primary); }
+        .file-upload-area i { font-size: 2rem; margin-bottom: 8px; display: block; }
+        .btn-submit {
             background: linear-gradient(135deg, var(--primary), #ffaa00);
-            color: #000; font-weight: 700; font-size: 0.9rem;
-            transition: all var(--duration-fast); box-shadow: 0 4px 16px rgba(255,215,0,0.3);
+            color: #000; padding: 14px 32px; border-radius: var(--radius-full);
+            font-weight: 700; font-size: 1rem; display: inline-flex; align-items: center;
+            gap: 10px; justify-content: center; transition: all var(--duration-fast);
+            box-shadow: 0 8px 24px rgba(255,215,0,0.3); width: 100%;
         }
-        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(255,215,0,0.5); filter: brightness(1.1); }
-        .btn-outline {
-            display: inline-flex; align-items: center; gap: 8px;
-            padding: 10px 24px; border-radius: var(--radius-full);
-            border: 1px solid var(--glass-border); color: var(--text-secondary);
-            font-weight: 600; font-size: 0.9rem; transition: all var(--duration-fast);
+        .btn-submit:hover { transform: translateY(-2px); box-shadow: 0 12px 32px rgba(255,215,0,0.5); filter: brightness(1.1); }
+        .btn-submit:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+        #miniMap { height: 200px; border-radius: var(--radius-sm); border: 1px solid var(--glass-border); margin-top: 6px; }
+        .location-buttons { display: flex; gap: 10px; margin-top: 6px; }
+        .btn-location {
+            display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px;
+            border-radius: var(--radius-full); border: 1px solid var(--glass-border);
+            font-size: 0.8rem; font-weight: 500; color: var(--text-secondary);
+            transition: all var(--duration-fast);
         }
-        .btn-outline:hover { border-color: var(--primary); color: var(--primary); background: var(--primary-glass); }
+        .btn-location:hover { border-color: var(--primary); color: var(--primary); background: var(--primary-glass); }
 
         .toast-container { position: fixed; top: calc(var(--header-h) + 16px); right: 24px; z-index: 4000; display: flex; flex-direction: column; gap: 10px; pointer-events: none; }
         .toast { background: var(--glass-strong); backdrop-filter: blur(30px); border: 1px solid var(--glass-border); color: var(--text-main); padding: 14px 22px; border-radius: var(--radius-lg); font-weight: 600; font-size: 0.85rem; box-shadow: var(--shadow-lg); animation: toastIn 0.4s var(--ease-spring) forwards; pointer-events: auto; max-width: 360px; }
@@ -368,22 +251,14 @@
         .a11y-panel button { display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px; border-radius: var(--radius-full); border: 1px solid #555; font-size: 0.75rem; font-weight: 500; transition: var(--duration-fast); color: #ddd; }
         .a11y-panel button:hover, .a11y-panel button.active { background: var(--primary); color: #000; border-color: var(--primary); }
 
-        @media (max-width: 900px) {
-            .profile-content { padding: 16px; }
-            .profile-stats { gap: 20px; }
-        }
         @media (max-width: 768px) {
             .sidebar { position: fixed; top: var(--header-h); left: 0; bottom: 0; transform: translateX(-100%); z-index: 1500; background: rgba(15,15,15,0.97); width: 280px; }
             .sidebar.mobile-open { transform: translateX(0); }
             .sidebar-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 1400; }
             .sidebar-overlay.active { display: block; }
             .menu-toggle { display: flex; }
-            .profile-avatar { width: 90px; height: 90px; font-size: 2.2rem; }
-            .profile-avatar-wrapper { margin-top: -40px; }
-            .profile-name { font-size: 1.3rem; }
-            .profile-stats { gap: 16px; flex-wrap: wrap; }
-            .profile-tabs { gap: 0; padding: 12px 16px 0; }
-            .profile-tab { padding: 8px 14px; font-size: 0.78rem; }
+            .main-area { padding: 16px 10px; }
+            .form-row { flex-direction: column; }
             .toast-container { right: 10px; left: 10px; align-items: stretch; }
             .toast { max-width: 100%; }
         }
@@ -391,9 +266,6 @@
             .app-header { padding: 0 12px; }
             .brand h1 { font-size: 1.1rem; }
             .header-actions { gap: 12px; }
-            .profile-cover { height: 120px; }
-            .profile-avatar { width: 72px; height: 72px; font-size: 1.8rem; }
-            .profile-avatar-wrapper { margin-top: -32px; }
         }
     </style>
 </head>
@@ -452,200 +324,85 @@
             <a href="100.html"><i class="fa-solid fa-road-barrier"></i> Obras</a>
             <a href="110.html"><i class="fa-solid fa-hospital"></i> Saúde</a>
             <a href="120.html"><i class="fa-solid fa-graduation-cap"></i> Escolas</a>
-            <a href="60.html" class="active"><i class="fa-solid fa-user"></i> Meu Perfil</a>
-            <a href="40.html" class="new-post-btn"><i class="fa-solid fa-plus"></i> Nova Ocorrência</a>
+            <a href="60.html"><i class="fa-solid fa-user"></i> Meu Perfil</a>
+            <a href="40.html" class="active new-post-btn"><i class="fa-solid fa-plus"></i> Nova Ocorrência</a>
         </aside>
 
         <main class="main-area">
-            <div class="profile-wrapper">
-                <!-- Capa -->
-                <div class="profile-cover">
-                    <div class="profile-cover-pattern"></div>
-                </div>
+            <div class="form-wrapper">
+                <div class="form-card">
+                    <div class="form-header">
+                        <i class="fa-solid fa-circle-exclamation"></i>
+                        <h2>Reportar Nova Ocorrência</h2>
+                    </div>
+                    <div class="form-body">
+                        <div class="form-group">
+                            <label for="tipo"><i class="fa-solid fa-tag"></i> Tipo de Ocorrência *</label>
+                            <select id="tipo" required>
+                                <option value="">Selecione...</option>
+                                <option value="iluminacao">💡 Iluminação Pública</option>
+                                <option value="buraco">🕳️ Buraco na Rua</option>
+                                <option value="agua-esgoto">💧 Água / Esgoto</option>
+                                <option value="sinalizacao">🚦 Sinalização de Trânsito</option>
+                                <option value="limpeza">🗑️ Limpeza Urbana</option>
+                                <option value="seguranca">🛡️ Segurança Pública</option>
+                                <option value="arvore">🌳 Árvore / Poda</option>
+                                <option value="transporte">🚌 Transporte Coletivo</option>
+                                <option value="outro">📌 Outro</option>
+                            </select>
+                        </div>
 
-                <!-- Avatar -->
-                <div class="profile-avatar-wrapper">
-                    <div class="profile-avatar" id="profileAvatar">
-                        <span>JM</span>
-                        <button class="profile-avatar-edit" aria-label="Editar foto" title="Editar foto">
-                            <i class="fa-solid fa-camera"></i>
+                        <div class="form-group">
+                            <label for="titulo"><i class="fa-solid fa-pen"></i> Título *</label>
+                            <input type="text" id="titulo" placeholder="Ex: Poste apagado na Rua das Flores" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="descricao"><i class="fa-solid fa-align-left"></i> Descrição *</label>
+                            <textarea id="descricao" placeholder="Descreva o problema com detalhes: local, horário, situação..." required></textarea>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="endereco"><i class="fa-solid fa-location-dot"></i> Endereço *</label>
+                                <input type="text" id="endereco" placeholder="Rua, número, bairro" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="ponto-referencia"><i class="fa-solid fa-map-pin"></i> Ponto de Referência</label>
+                                <input type="text" id="ponto-referencia" placeholder="Próximo a...">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label><i class="fa-solid fa-map"></i> Localização no Mapa</label>
+                            <div id="miniMap"></div>
+                            <div class="location-buttons">
+                                <button type="button" class="btn-location" id="btnLocation"><i class="fa-solid fa-location-crosshairs"></i> Usar minha localização</button>
+                                <span style="font-size:0.75rem;color:var(--text-dim);display:flex;align-items:center;">Clique no mapa para marcar o local</span>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label><i class="fa-solid fa-camera"></i> Anexar Foto (até 3)</label>
+                            <div class="file-upload-area" id="fileUploadArea">
+                                <i class="fa-solid fa-cloud-arrow-up"></i>
+                                <span>Clique ou arraste as imagens aqui</span>
+                                <small style="display:block;margin-top:4px;">JPG, PNG ou WEBP (máx. 5MB cada)</small>
+                            </div>
+                            <input type="file" id="fileInput" accept="image/*" multiple style="display:none;">
+                            <div id="previewContainer" style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;"></div>
+                        </div>
+
+                        <button type="submit" class="btn-submit" id="btnSubmit">
+                            <i class="fa-solid fa-paper-plane"></i> Enviar Ocorrência
                         </button>
-                    </div>
-                </div>
-
-                <!-- Informações -->
-                <div class="profile-info">
-                    <h2 class="profile-name">João Marcondes</h2>
-                    <p class="profile-username">@joaomarcondes</p>
-                    <p class="profile-bio">Morador da Zona Norte, apaixonado por Arapongas. Sempre de olho nas melhorias da cidade e compartilhando informações úteis com a comunidade. 🌳💛</p>
-                    <span class="profile-location">
-                        <i class="fa-solid fa-location-dot"></i> Arapongas, Paraná
-                    </span>
-                </div>
-
-                <!-- Estatísticas -->
-                <div class="profile-stats">
-                    <div class="profile-stat">
-                        <div class="number">48</div>
-                        <div class="label">Posts</div>
-                    </div>
-                    <div class="profile-stat">
-                        <div class="number">2.3k</div>
-                        <div class="label">Curtidas</div>
-                    </div>
-                    <div class="profile-stat">
-                        <div class="number">156</div>
-                        <div class="label">Comentários</div>
-                    </div>
-                    <div class="profile-stat">
-                        <div class="number">892</div>
-                        <div class="label">Compartilhamentos</div>
-                    </div>
-                </div>
-
-                <!-- Tabs -->
-                <div class="profile-tabs" id="profileTabs">
-                    <button class="profile-tab active" data-tab="posts">📝 Meus Posts</button>
-                    <button class="profile-tab" data-tab="curtidas">💛 Curtidas</button>
-                    <button class="profile-tab" data-tab="config">⚙️ Configurações</button>
-                    <button class="profile-tab" data-tab="privacidade">🔒 Privacidade</button>
-                </div>
-
-                <!-- Conteúdo -->
-                <div class="profile-content">
-                    <!-- Seção Posts -->
-                    <div class="profile-section active" id="section-posts">
-                        <article class="post">
-                            <div class="post-header">
-                                <div class="avatar pref"><span>JM</span></div>
-                                <div class="post-meta"><h4>João Marcondes</h4><p>há 2 horas</p></div>
-                            </div>
-                            <div class="post-body">
-                                <span class="category-badge success">Zeladoria Urbana</span>
-                                <p><strong>💡 Poste da Rua das Flores foi consertado!</strong> Depois de reportar aqui no 00brother, a prefeitura resolveu em 48h. Plataforma fazendo a diferença! <strong>#CidadeQueFunciona</strong></p>
-                            </div>
-                            <div class="post-actions">
-                                <button aria-label="Curtir" data-action="like"><i class="fa-regular fa-thumbs-up"></i> 34</button>
-                                <button aria-label="Comentar"><i class="fa-regular fa-comment"></i> 8</button>
-                                <button aria-label="Compartilhar"><i class="fa-regular fa-share-from-square"></i></button>
-                            </div>
-                        </article>
-
-                        <article class="post">
-                            <div class="post-header">
-                                <div class="avatar pref"><span>JM</span></div>
-                                <div class="post-meta"><h4>João Marcondes</h4><p>há 1 dia</p></div>
-                            </div>
-                            <div class="post-media"><img src="https://images.unsplash.com/photo-1588668214407-6e7e1f9a7e7f?auto=format&fit=crop&w=600&q=80" alt="Ipês floridos" loading="lazy"></div>
-                            <div class="post-body">
-                                <span class="category-badge info">Beleza Natural</span>
-                                <p><strong>🌸 Ipês da Av. Maracanã estão um espetáculo!</strong> Passei agora de manhã e tive que registrar. Nossa cidade é linda demais! Quem mais ama essa época do ano?</p>
-                            </div>
-                            <div class="post-actions">
-                                <button aria-label="Curtir" data-action="like"><i class="fa-regular fa-thumbs-up"></i> 127</button>
-                                <button aria-label="Comentar"><i class="fa-regular fa-comment"></i> 23</button>
-                                <button aria-label="Compartilhar"><i class="fa-regular fa-share-from-square"></i> 45</button>
-                            </div>
-                        </article>
-
-                        <article class="post">
-                            <div class="post-header">
-                                <div class="avatar pref"><span>JM</span></div>
-                                <div class="post-meta"><h4>João Marcondes</h4><p>há 3 dias</p></div>
-                            </div>
-                            <div class="post-body">
-                                <span class="category-badge success">Dica da Comunidade</span>
-                                <p><strong>🍽️ Recomendação: Restaurante Sabor da Terra!</strong> Almocei lá hoje e estava delicioso. Comida caseira, preço justo e atendimento nota 10. Fica na Rua Juriti, 456. Quem já foi?</p>
-                            </div>
-                            <div class="post-actions">
-                                <button aria-label="Curtir" data-action="like"><i class="fa-regular fa-thumbs-up"></i> 89</button>
-                                <button aria-label="Comentar"><i class="fa-regular fa-comment"></i> 31</button>
-                                <button aria-label="Compartilhar"><i class="fa-regular fa-share-from-square"></i> 12</button>
-                            </div>
-                        </article>
-                    </div>
-
-                    <!-- Seção Curtidas -->
-                    <div class="profile-section" id="section-curtidas">
-                        <p style="color:var(--text-dim);text-align:center;padding:40px 0;">
-                            <i class="fa-solid fa-heart" style="font-size:2rem;color:var(--danger);display:block;margin-bottom:12px;"></i>
-                            Posts que você curtiu aparecerão aqui.
-                        </p>
-                    </div>
-
-                    <!-- Seção Configurações -->
-                    <div class="profile-section" id="section-config">
-                        <div class="settings-group">
-                            <h3>Informações Pessoais</h3>
-                            <div class="settings-field">
-                                <label for="name">Nome completo</label>
-                                <input type="text" id="name" value="João Marcondes">
-                            </div>
-                            <div class="settings-field">
-                                <label for="username">Nome de usuário</label>
-                                <input type="text" id="username" value="@joaomarcondes">
-                            </div>
-                            <div class="settings-field">
-                                <label for="bio">Bio</label>
-                                <textarea id="bio">Morador da Zona Norte, apaixonado por Arapongas. Sempre de olho nas melhorias da cidade.</textarea>
-                            </div>
-                            <div class="settings-field">
-                                <label for="location">Localização</label>
-                                <input type="text" id="location" value="Arapongas, Paraná">
-                            </div>
-                        </div>
-
-                        <div class="settings-group">
-                            <h3>Preferências de Notificação</h3>
-                            <div class="settings-field" style="display:flex;align-items:center;justify-content:space-between;">
-                                <span>Alertas da cidade</span>
-                                <input type="checkbox" checked style="width:auto;accent-color:var(--primary);">
-                            </div>
-                            <div class="settings-field" style="display:flex;align-items:center;justify-content:space-between;">
-                                <span>Eventos próximos</span>
-                                <input type="checkbox" checked style="width:auto;accent-color:var(--primary);">
-                            </div>
-                            <div class="settings-field" style="display:flex;align-items:center;justify-content:space-between;">
-                                <span>Vagas de emprego</span>
-                                <input type="checkbox" style="width:auto;accent-color:var(--primary);">
-                            </div>
-                        </div>
-
-                        <button class="btn-primary" onclick="showToast('✅ Configurações salvas com sucesso!')">
-                            <i class="fa-solid fa-check"></i> Salvar alterações
-                        </button>
-                    </div>
-
-                    <!-- Seção Privacidade -->
-                    <div class="profile-section" id="section-privacidade">
-                        <div class="settings-group">
-                            <h3>Controle de Privacidade</h3>
-                            <div class="settings-field" style="display:flex;align-items:center;justify-content:space-between;">
-                                <span>Perfil visível para todos</span>
-                                <input type="checkbox" checked style="width:auto;accent-color:var(--primary);">
-                            </div>
-                            <div class="settings-field" style="display:flex;align-items:center;justify-content:space-between;">
-                                <span>Receber mensagens de desconhecidos</span>
-                                <input type="checkbox" style="width:auto;accent-color:var(--primary);">
-                            </div>
-                            <div class="settings-field" style="display:flex;align-items:center;justify-content:space-between;">
-                                <span>Compartilhar localização</span>
-                                <input type="checkbox" checked style="width:auto;accent-color:var(--primary);">
-                            </div>
-                        </div>
-
-                        <div class="settings-group">
-                            <h3>Zona de Perigo</h3>
-                            <button class="btn-outline" style="color:var(--danger);border-color:var(--danger);" onclick="showToast('⚠️ Solicitação de exclusão enviada. Verifique seu e-mail.')">
-                                <i class="fa-solid fa-trash-can"></i> Solicitar exclusão da conta
-                            </button>
-                        </div>
                     </div>
                 </div>
             </div>
         </main>
     </div>
 
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
     <script>
         'use strict';
 
@@ -687,7 +444,7 @@
         sidebar.querySelectorAll('a').forEach(link => { link.addEventListener('click', () => { if (window.innerWidth <= 768) closeSidebar(); }); });
 
         (() => {
-            const current = window.location.pathname.split('/').pop() || '60.html';
+            const current = window.location.pathname.split('/').pop() || '40.html';
             sidebar.querySelectorAll('a').forEach(link => link.classList.toggle('active', link.getAttribute('href') === current));
         })();
 
@@ -736,42 +493,6 @@
             while (container.children.length > 3) { container.firstChild.remove(); }
         }
 
-        // ========== PROFILE TABS ==========
-        const tabs = document.querySelectorAll('.profile-tab');
-        const sections = document.querySelectorAll('.profile-section');
-        tabs.forEach(tab => {
-            tab.addEventListener('click', () => {
-                tabs.forEach(t => t.classList.remove('active'));
-                tab.classList.add('active');
-                sections.forEach(s => s.classList.remove('active'));
-                const target = tab.dataset.tab;
-                const section = document.getElementById('section-' + target);
-                if (section) section.classList.add('active');
-            });
-        });
-
-        // ========== LIKE NOS POSTS ==========
-        document.querySelectorAll('[data-action="like"]').forEach(btn => {
-            btn.addEventListener('click', function(e) {
-                e.preventDefault();
-                const icon = this.querySelector('i');
-                const isLiked = icon.classList.contains('fa-solid');
-                const match = this.textContent.match(/\d+/);
-                let count = match ? parseInt(match[0]) : 0;
-                if (isLiked) {
-                    icon.classList.replace('fa-solid', 'fa-regular');
-                    this.classList.remove('liked');
-                    this.innerHTML = '<i class="fa-regular fa-thumbs-up"></i> ' + Math.max(0, count - 1);
-                    showToast('Curtida removida');
-                } else {
-                    icon.classList.replace('fa-regular', 'fa-solid');
-                    this.classList.add('liked');
-                    this.innerHTML = '<i class="fa-solid fa-thumbs-up"></i> ' + (count + 1);
-                    showToast('Curtido! 💛');
-                }
-            });
-        });
-
         const header = document.getElementById('appHeader');
         window.addEventListener('scroll', () => { header.classList.toggle('scrolled', window.scrollY > 10); });
 
@@ -782,9 +503,133 @@
             }
         });
 
-        // Editar avatar
-        document.querySelector('.profile-avatar-edit').addEventListener('click', () => {
-            showToast('📷 Funcionalidade de upload em breve!');
+        // ========== MINI MAPA ==========
+        let userMarker = null;
+        const arapongasLat = -23.4195;
+        const arapongasLng = -51.4244;
+        const miniMap = L.map('miniMap').setView([arapongasLat, arapongasLng], 14);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; OpenStreetMap',
+            maxZoom: 19
+        }).addTo(miniMap);
+
+        miniMap.on('click', function(e) {
+            if (userMarker) { miniMap.removeLayer(userMarker); }
+            userMarker = L.marker([e.latlng.lat, e.latlng.lng]).addTo(miniMap);
+            document.getElementById('endereco').value = `Lat: ${e.latlng.lat.toFixed(5)}, Lng: ${e.latlng.lng.toFixed(5)}`;
+            showToast('📍 Local marcado no mapa!');
+        });
+
+        document.getElementById('btnLocation').addEventListener('click', function() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(pos => {
+                    const lat = pos.coords.latitude;
+                    const lng = pos.coords.longitude;
+                    miniMap.setView([lat, lng], 16);
+                    if (userMarker) { miniMap.removeLayer(userMarker); }
+                    userMarker = L.marker([lat, lng]).addTo(miniMap);
+                    document.getElementById('endereco').value = `Lat: ${lat.toFixed(5)}, Lng: ${lng.toFixed(5)}`;
+                    showToast('📍 Sua localização foi marcada!');
+                }, () => {
+                    showToast('Não foi possível obter sua localização');
+                });
+            } else {
+                showToast('Geolocalização não suportada pelo seu navegador');
+            }
+        });
+
+        setTimeout(() => { miniMap.invalidateSize(); }, 300);
+
+        // ========== UPLOAD DE IMAGENS ==========
+        const fileUploadArea = document.getElementById('fileUploadArea');
+        const fileInput = document.getElementById('fileInput');
+        const previewContainer = document.getElementById('previewContainer');
+        let selectedFiles = [];
+
+        fileUploadArea.addEventListener('click', () => fileInput.click());
+        fileInput.addEventListener('change', handleFiles);
+
+        fileUploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            fileUploadArea.style.borderColor = 'var(--primary)';
+        });
+        fileUploadArea.addEventListener('dragleave', () => {
+            fileUploadArea.style.borderColor = 'var(--glass-border)';
+        });
+        fileUploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            fileUploadArea.style.borderColor = 'var(--glass-border)';
+            const files = Array.from(e.dataTransfer.files);
+            addFiles(files);
+        });
+
+        function handleFiles(e) {
+            const files = Array.from(e.target.files);
+            addFiles(files);
+        }
+
+        function addFiles(files) {
+            if (selectedFiles.length + files.length > 3) {
+                showToast('⚠️ Máximo de 3 imagens permitidas');
+                return;
+            }
+            files.forEach(file => {
+                if (!file.type.match('image.*')) {
+                    showToast('⚠️ Apenas imagens são permitidas');
+                    return;
+                }
+                if (file.size > 5 * 1024 * 1024) {
+                    showToast('⚠️ Cada imagem deve ter no máximo 5MB');
+                    return;
+                }
+                selectedFiles.push(file);
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const img = document.createElement('img');
+                    img.src = e.target.result;
+                    img.style.width = '80px';
+                    img.style.height = '80px';
+                    img.style.objectFit = 'cover';
+                    img.style.borderRadius = 'var(--radius-sm)';
+                    img.style.border = '1px solid var(--glass-border)';
+                    previewContainer.appendChild(img);
+                };
+                reader.readAsDataURL(file);
+            });
+        }
+
+        // ========== ENVIO DO FORMULÁRIO ==========
+        document.getElementById('btnSubmit').addEventListener('click', function(e) {
+            e.preventDefault();
+            const tipo = document.getElementById('tipo').value;
+            const titulo = document.getElementById('titulo').value.trim();
+            const descricao = document.getElementById('descricao').value.trim();
+            const endereco = document.getElementById('endereco').value.trim();
+
+            if (!tipo || !titulo || !descricao || !endereco) {
+                showToast('⚠️ Preencha todos os campos obrigatórios');
+                return;
+            }
+
+            // Simulação de envio
+            this.disabled = true;
+            this.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Enviando...';
+
+            setTimeout(() => {
+                showToast('✅ Ocorrência enviada com sucesso! Acompanhe em seu perfil.');
+                this.disabled = false;
+                this.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Enviar Ocorrência';
+                // Limpar formulário
+                document.getElementById('tipo').value = '';
+                document.getElementById('titulo').value = '';
+                document.getElementById('descricao').value = '';
+                document.getElementById('endereco').value = '';
+                document.getElementById('ponto-referencia').value = '';
+                if (userMarker) { miniMap.removeLayer(userMarker); userMarker = null; }
+                previewContainer.innerHTML = '';
+                selectedFiles = [];
+                miniMap.setView([arapongasLat, arapongasLng], 14);
+            }, 1500);
         });
     </script>
 </body>
