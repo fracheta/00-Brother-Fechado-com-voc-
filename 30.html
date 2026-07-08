@@ -4,22 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>00brother – Mapa da Cidade</title>
-    <meta name="description" content="00brother - Mapa interativo de Arapongas. Encontre farmácias, hospitais, pontos de ônibus e muito mais.">
+    <meta name="description" content="00brother - Mapa interativo de Arapongas. Encontre farmácias, hospitais, escolas, pontos de ônibus e muito mais.">
     <meta name="theme-color" content="#0f0f0f">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
-    <!-- Font Awesome 6 -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <!-- Google Fonts (Inter) -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800;14..32,900&display=swap" rel="stylesheet">
-    <!-- Leaflet CSS -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
 
     <style>
-        /* ============================================================
-           DESIGN SYSTEM — TOKENS & VARIÁVEIS (2025)
-           ============================================================ */
         :root {
             --primary: #FFD700;
             --primary-glow: rgba(255, 215, 0, 0.25);
@@ -64,7 +58,6 @@
             --safe-bottom: env(safe-area-inset-bottom, 16px);
             --safe-top: env(safe-area-inset-top, 0px);
         }
-
         @media (prefers-color-scheme: light) {
             :root {
                 --bg: #f0f2f5;
@@ -110,36 +103,21 @@
             pointer-events: none; z-index: -1;
             animation: ambientGlow 12s ease-in-out infinite alternate;
         }
-        @keyframes ambientGlow {
-            0% { opacity: 0.7; }
-            100% { opacity: 1; }
-        }
+        @keyframes ambientGlow { 0% { opacity: 0.7; } 100% { opacity: 1; } }
         a { color: inherit; text-decoration: none; }
         button { cursor: pointer; border: none; background: none; color: inherit; font: inherit; }
         img { max-width: 100%; display: block; }
         ::selection { background: var(--primary); color: #000; }
 
-        @media (prefers-reduced-motion: reduce) {
-            *, *::before, *::after {
-                animation-duration: 0.01ms !important;
-                animation-iteration-count: 1 !important;
-                transition-duration: 0.01ms !important;
-            }
-        }
+        @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; } }
 
         ::-webkit-scrollbar { width: 6px; }
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 3px; }
         ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.3); }
 
-        #particlesCanvas {
-            position: fixed; inset: 0; z-index: -2; pointer-events: none;
-            opacity: 0.25;
-        }
+        #particlesCanvas { position: fixed; inset: 0; z-index: -2; pointer-events: none; opacity: 0.25; }
 
-        /* ============================================================
-           HEADER
-           ============================================================ */
         .app-header {
             position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
             height: var(--header-h); padding: 0 24px;
@@ -159,116 +137,56 @@
             transition: transform var(--duration-normal) var(--ease-spring), box-shadow var(--duration-normal);
             position: relative; overflow: hidden;
         }
-        .logo-circle::after {
-            content: '';
-            position: absolute; inset: -20%; background: radial-gradient(circle, rgba(255,255,255,0.8) 0%, transparent 70%);
-            opacity: 0; transition: opacity var(--duration-fast);
-        }
+        .logo-circle::after { content: ''; position: absolute; inset: -20%; background: radial-gradient(circle, rgba(255,255,255,0.8) 0%, transparent 70%); opacity: 0; transition: opacity var(--duration-fast); }
         .logo-circle:hover::after { opacity: 0.4; }
         .logo-circle:hover { transform: scale(1.08); box-shadow: 0 0 40px var(--primary-glow); }
         .logo-circle:active { transform: scale(0.94); }
-        .brand h1 {
-            font-size: clamp(1.2rem, 1.1rem + 0.3vw, 1.4rem);
-            font-weight: 800; letter-spacing: -0.5px; line-height: 1.1;
-        }
-        .brand h1 span {
-            display: block; font-size: 0.5rem; font-weight: 500;
-            letter-spacing: 2.5px; text-transform: uppercase; color: var(--text-dim);
-        }
+        .brand h1 { font-size: clamp(1.2rem, 1.1rem + 0.3vw, 1.4rem); font-weight: 800; letter-spacing: -0.5px; line-height: 1.1; }
+        .brand h1 span { display: block; font-size: 0.5rem; font-weight: 500; letter-spacing: 2.5px; text-transform: uppercase; color: var(--text-dim); }
         .header-actions { display: flex; gap: 20px; align-items: center; }
-        .header-actions a, .header-actions button {
-            color: var(--text-secondary); font-size: 1.15rem; transition: var(--duration-fast);
-            position: relative; width: 38px; height: 38px; display: flex;
-            align-items: center; justify-content: center; border-radius: 50%;
-        }
-        .header-actions a:hover, .header-actions button:hover {
-            color: var(--primary); background: var(--primary-glass);
-        }
-        .badge-dot {
-            position: absolute; top: 4px; right: 4px; width: 9px; height: 9px;
-            background: var(--danger); border-radius: 50%; border: 2px solid var(--bg);
-            animation: pulseBadge 2s ease-in-out infinite;
-        }
-        @keyframes pulseBadge {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.3); }
-        }
+        .header-actions a, .header-actions button { color: var(--text-secondary); font-size: 1.15rem; transition: var(--duration-fast); position: relative; width: 38px; height: 38px; display: flex; align-items: center; justify-content: center; border-radius: 50%; }
+        .header-actions a:hover, .header-actions button:hover { color: var(--primary); background: var(--primary-glass); }
+        .badge-dot { position: absolute; top: 4px; right: 4px; width: 9px; height: 9px; background: var(--danger); border-radius: 50%; border: 2px solid var(--bg); animation: pulseBadge 2s ease-in-out infinite; }
+        @keyframes pulseBadge { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.3); } }
         .menu-toggle { display: none; }
 
-        /* ============================================================
-           SIDEBAR
-           ============================================================ */
         .sidebar {
-            width: var(--sidebar-w); flex-shrink: 0;
-            padding: 20px 14px; border-right: 1px solid var(--glass-border);
-            background: rgba(15,15,15,0.3); backdrop-filter: blur(10px);
-            display: flex; flex-direction: column; gap: 4px;
-            position: sticky; top: var(--header-h);
-            height: calc(100vh - var(--header-h));
-            overflow-y: auto; z-index: 500;
-            transition: transform var(--duration-normal) var(--ease-out-expo);
+            width: var(--sidebar-w); flex-shrink: 0; padding: 20px 14px;
+            border-right: 1px solid var(--glass-border); background: rgba(15,15,15,0.3);
+            backdrop-filter: blur(10px); display: flex; flex-direction: column; gap: 4px;
+            position: sticky; top: var(--header-h); height: calc(100vh - var(--header-h));
+            overflow-y: auto; z-index: 500; transition: transform var(--duration-normal) var(--ease-out-expo);
         }
-        .sidebar-nav-label {
-            font-size: 0.6rem; text-transform: uppercase; letter-spacing: 2.5px;
-            color: var(--text-dim); padding: 10px 14px 6px; font-weight: 700;
-        }
-        .sidebar a {
-            display: flex; align-items: center; gap: 14px; padding: 11px 16px;
-            border-radius: var(--radius-md); color: var(--text-secondary);
-            font-weight: 500; font-size: 0.88rem; transition: var(--duration-fast);
-            position: relative;
-        }
-        .sidebar a::before {
-            content: ''; position: absolute; left: 0; top: 50%; transform: translateY(-50%);
-            width: 3px; height: 0; background: var(--primary); border-radius: 0 3px 3px 0;
-            transition: height var(--duration-fast) var(--ease-out-expo);
-        }
+        .sidebar-nav-label { font-size: 0.6rem; text-transform: uppercase; letter-spacing: 2.5px; color: var(--text-dim); padding: 10px 14px 6px; font-weight: 700; }
+        .sidebar a { display: flex; align-items: center; gap: 14px; padding: 11px 16px; border-radius: var(--radius-md); color: var(--text-secondary); font-weight: 500; font-size: 0.88rem; transition: var(--duration-fast); position: relative; }
+        .sidebar a::before { content: ''; position: absolute; left: 0; top: 50%; transform: translateY(-50%); width: 3px; height: 0; background: var(--primary); border-radius: 0 3px 3px 0; transition: height var(--duration-fast) var(--ease-out-expo); }
         .sidebar a:hover { background: var(--surface-hover); color: var(--primary); }
-        .sidebar a.active {
-            background: var(--primary-glass); color: var(--primary); font-weight: 700;
-        }
+        .sidebar a.active { background: var(--primary-glass); color: var(--primary); font-weight: 700; }
         .sidebar a.active::before { height: 24px; }
         .sidebar a i { width: 22px; text-align: center; font-size: 1.1rem; }
         .sidebar .new-post-btn {
-            background: linear-gradient(135deg, var(--primary), #ffaa00);
-            color: #000; justify-content: center; font-weight: 700;
-            margin-top: 14px; border-radius: var(--radius-lg); padding: 14px;
-            font-size: 0.95rem; gap: 8px; box-shadow: 0 8px 24px rgba(255,215,0,0.3);
+            background: linear-gradient(135deg, var(--primary), #ffaa00); color: #000;
+            justify-content: center; font-weight: 700; margin-top: 14px; border-radius: var(--radius-lg);
+            padding: 14px; font-size: 0.95rem; gap: 8px; box-shadow: 0 8px 24px rgba(255,215,0,0.3);
             transition: all var(--duration-normal) var(--ease-spring);
         }
-        .sidebar .new-post-btn:hover {
-            transform: translateY(-3px); box-shadow: 0 12px 32px rgba(255,215,0,0.5);
-            filter: brightness(1.1);
-        }
+        .sidebar .new-post-btn:hover { transform: translateY(-3px); box-shadow: 0 12px 32px rgba(255,215,0,0.5); filter: brightness(1.1); }
 
-        /* ============================================================
-           MAIN AREA
-           ============================================================ */
         .app-layout { display: flex; min-height: 100vh; padding-top: var(--header-h); }
         .main-area { flex: 1; display: flex; justify-content: center; padding: 28px 36px; gap: 36px; min-width: 0; }
 
-        /* ============================================================
-           MAP CONTAINER
-           ============================================================ */
-        .map-wrapper {
-            flex: 1; max-width: 900px; min-width: 0;
-            display: flex; flex-direction: column; gap: 20px;
-        }
+        .map-wrapper { flex: 1; max-width: 900px; min-width: 0; display: flex; flex-direction: column; gap: 20px; }
         .map-card {
             background: var(--surface); border: 1px solid var(--glass-border);
             border-radius: var(--radius-lg); overflow: hidden;
             backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
-            box-shadow: var(--shadow-md);
-            flex: 1; display: flex; flex-direction: column;
+            box-shadow: var(--shadow-md); flex: 1; display: flex; flex-direction: column;
         }
         .map-header {
             padding: 18px 24px; border-bottom: 1px solid var(--glass-border);
-            display: flex; justify-content: space-between; align-items: center;
-            flex-wrap: wrap; gap: 12px;
+            display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;
         }
-        .map-header h2 {
-            font-size: 1.2rem; font-weight: 700; display: flex; align-items: center; gap: 10px;
-        }
+        .map-header h2 { font-size: 1.2rem; font-weight: 700; display: flex; align-items: center; gap: 10px; }
         .map-header h2 i { color: var(--primary); }
         .map-filters { display: flex; gap: 8px; flex-wrap: wrap; }
         .map-filters button {
@@ -281,53 +199,73 @@
             background: var(--primary-glass); color: var(--primary); border-color: var(--primary);
         }
         .map-filters button.active { background: var(--primary); color: #000; border-color: var(--primary); }
-        #mapContainer {
-            flex: 1; min-height: 520px; width: 100%;
-            position: relative; z-index: 1;
-        }
-        .leaflet-container {
-            background: #1a1a1a !important;
-            font-family: 'Inter', sans-serif !important;
-        }
-        /* Custom marker popup */
+
+        #mapContainer { flex: 1; min-height: 520px; width: 100%; position: relative; z-index: 1; }
+        .leaflet-container { background: #f8f9fa !important; font-family: 'Inter', sans-serif !important; }
+
+        /* Popup personalizado */
         .leaflet-popup-content-wrapper {
-            background: rgba(20,20,20,0.95) !important;
+            background: rgba(255,255,255,0.95) !important;
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
-            color: #fff !important;
+            color: #1a1a1a !important;
             border-radius: var(--radius-md) !important;
-            border: 1px solid var(--glass-border);
+            border: 1px solid rgba(0,0,0,0.1);
             box-shadow: var(--shadow-lg);
-            padding: 4px;
+            padding: 0;
+            overflow: hidden;
         }
         .leaflet-popup-content {
-            margin: 12px 16px;
+            margin: 0;
             font-size: 0.9rem;
             line-height: 1.5;
+            min-width: 200px;
         }
-        .leaflet-popup-content strong { color: var(--primary); display: block; margin-bottom: 4px; }
-        .leaflet-popup-tip { background: rgba(20,20,20,0.95) !important; }
-        .leaflet-popup-close-button { color: #fff !important; }
+        .leaflet-popup-content .popup-card {
+            display: flex;
+            flex-direction: column;
+        }
+        .leaflet-popup-content .popup-img {
+            width: 100%;
+            height: 120px;
+            object-fit: cover;
+            display: block;
+        }
+        .leaflet-popup-content .popup-body {
+            padding: 12px 16px;
+        }
+        .leaflet-popup-content strong {
+            color: #333;
+            display: block;
+            margin-bottom: 4px;
+            font-size: 1rem;
+        }
+        .leaflet-popup-content small {
+            color: #666;
+            font-size: 0.8rem;
+        }
+        .leaflet-popup-tip { background: rgba(255,255,255,0.95) !important; }
+        .leaflet-popup-close-button { color: #333 !important; }
 
-        /* Legend */
         .map-legend {
             display: flex; gap: 16px; padding: 12px 24px;
             border-top: 1px solid var(--glass-border);
             flex-wrap: wrap; font-size: 0.75rem; color: var(--text-dim);
         }
         .map-legend span { display: flex; align-items: center; gap: 6px; }
-        .legend-dot {
-            width: 10px; height: 10px; border-radius: 50%; display: inline-block;
-        }
+        .legend-dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
         .legend-dot.farmacia { background: #2ecc71; }
         .legend-dot.hospital { background: #e74c3c; }
         .legend-dot.onibus { background: #3498db; }
         .legend-dot.evento { background: #f39c12; }
         .legend-dot.obras { background: #95a5a6; }
+        .legend-dot.escola { background: #9b59b6; }
+        .legend-dot.restaurante { background: #e67e22; }
+        .legend-dot.delegacia { background: #34495e; }
+        .legend-dot.banco { background: #1abc9c; }
+        .legend-dot.correios { background: #f1c40f; }
+        .legend-dot.parque { background: #27ae60; }
 
-        /* ============================================================
-           WIDGET PANEL
-           ============================================================ */
         .widget-panel {
             width: var(--widget-w); flex-shrink: 0; display: flex; flex-direction: column; gap: 18px;
             position: sticky; top: calc(var(--header-h) + 28px);
@@ -339,30 +277,16 @@
             border-radius: var(--radius-lg); padding: 22px;
             backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
         }
-        .widget-card h4 {
-            font-size: 0.8rem; font-weight: 700; margin-bottom: 14px;
-            color: var(--text-secondary); text-transform: uppercase; letter-spacing: 1.5px;
-        }
+        .widget-card h4 { font-size: 0.8rem; font-weight: 700; margin-bottom: 14px; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 1.5px; }
         .weather-row { display: flex; align-items: center; gap: 14px; font-size: 2.2rem; }
         .weather-row .icon { color: var(--primary); font-size: 2.4rem; }
         .weather-row .temp { font-weight: 800; }
         .quick-links { display: flex; flex-direction: column; gap: 6px; }
-        .quick-links a {
-            display: flex; align-items: center; gap: 12px; padding: 10px 14px;
-            border-radius: var(--radius-md); font-size: 0.85rem; font-weight: 500;
-            color: var(--text-secondary); transition: var(--duration-fast);
-        }
+        .quick-links a { display: flex; align-items: center; gap: 12px; padding: 10px 14px; border-radius: var(--radius-md); font-size: 0.85rem; font-weight: 500; color: var(--text-secondary); transition: var(--duration-fast); }
         .quick-links a:hover { background: var(--surface-hover); color: var(--primary); }
         .quick-links a i { width: 20px; text-align: center; color: var(--primary); }
 
-        /* ============================================================
-           TOAST
-           ============================================================ */
-        .toast-container {
-            position: fixed; top: calc(var(--header-h) + 16px); right: 24px;
-            z-index: 4000; display: flex; flex-direction: column; gap: 10px;
-            pointer-events: none;
-        }
+        .toast-container { position: fixed; top: calc(var(--header-h) + 16px); right: 24px; z-index: 4000; display: flex; flex-direction: column; gap: 10px; pointer-events: none; }
         .toast {
             background: var(--glass-strong); backdrop-filter: blur(30px);
             border: 1px solid var(--glass-border); color: var(--text-main);
@@ -372,69 +296,25 @@
             pointer-events: auto; max-width: 360px;
         }
         .toast.removing { animation: toastOut 0.3s var(--ease-out-expo) forwards; }
-        @keyframes toastIn {
-            from { opacity: 0; transform: translateX(120%) scale(0.9); }
-            to { opacity: 1; transform: translateX(0) scale(1); }
-        }
-        @keyframes toastOut {
-            from { opacity: 1; transform: translateX(0) scale(1); }
-            to { opacity: 0; transform: translateX(120%) scale(0.9); }
-        }
+        @keyframes toastIn { from { opacity: 0; transform: translateX(120%) scale(0.9); } to { opacity: 1; transform: translateX(0) scale(1); } }
+        @keyframes toastOut { from { opacity: 1; transform: translateX(0) scale(1); } to { opacity: 0; transform: translateX(120%) scale(0.9); } }
 
-        /* ============================================================
-           ACESSIBILIDADE
-           ============================================================ */
-        .a11y-fab {
-            position: fixed; bottom: 28px; right: 28px; z-index: 1999;
-            width: 48px; height: 48px; border-radius: 50%; background: var(--surface);
-            border: 1px solid var(--glass-border); color: var(--text-dim);
-            display: flex; align-items: center; justify-content: center;
-            font-size: 1.2rem; backdrop-filter: blur(10px);
-            transition: all var(--duration-fast); box-shadow: var(--shadow-sm);
-        }
+        .a11y-fab { position: fixed; bottom: 28px; right: 28px; z-index: 1999; width: 48px; height: 48px; border-radius: 50%; background: var(--surface); border: 1px solid var(--glass-border); color: var(--text-dim); display: flex; align-items: center; justify-content: center; font-size: 1.2rem; backdrop-filter: blur(10px); transition: all var(--duration-fast); box-shadow: var(--shadow-sm); }
         .a11y-fab:hover { background: var(--primary); color: #000; border-color: var(--primary); transform: scale(1.1); box-shadow: var(--shadow-glow-strong); }
-        .a11y-panel {
-            position: fixed; top: 0; left: 0; right: 0; z-index: 2001;
-            background: rgba(0,0,0,0.95); backdrop-filter: blur(20px);
-            color: #ccc; padding: 14px 5%; font-size: var(--text-small);
-            display: flex; justify-content: center; flex-wrap: wrap; align-items: center; gap: 12px;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
-            transform: translateY(-100%); transition: transform var(--duration-normal) var(--ease-out-expo);
-        }
+        .a11y-panel { position: fixed; top: 0; left: 0; right: 0; z-index: 2001; background: rgba(0,0,0,0.95); backdrop-filter: blur(20px); color: #ccc; padding: 14px 5%; font-size: var(--text-small); display: flex; justify-content: center; flex-wrap: wrap; align-items: center; gap: 12px; border-bottom: 1px solid rgba(255,255,255,0.1); transform: translateY(-100%); transition: transform var(--duration-normal) var(--ease-out-expo); }
         .a11y-panel.visible { transform: translateY(0); }
-        .a11y-panel button {
-            display: inline-flex; align-items: center; gap: 6px;
-            padding: 8px 16px; border-radius: var(--radius-full); border: 1px solid #555;
-            font-size: 0.75rem; font-weight: 500; transition: var(--duration-fast);
-            color: #ddd;
-        }
-        .a11y-panel button:hover, .a11y-panel button.active {
-            background: var(--primary); color: #000; border-color: var(--primary);
-        }
+        .a11y-panel button { display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px; border-radius: var(--radius-full); border: 1px solid #555; font-size: 0.75rem; font-weight: 500; transition: var(--duration-fast); color: #ddd; }
+        .a11y-panel button:hover, .a11y-panel button.active { background: var(--primary); color: #000; border-color: var(--primary); }
 
-        /* ============================================================
-           RESPONSIVO
-           ============================================================ */
-        @media (max-width: 1200px) {
-            .widget-panel { display: none; }
-            .main-area { padding: 24px 20px; }
-        }
+        @media (max-width: 1200px) { .widget-panel { display: none; } .main-area { padding: 24px 20px; } }
         @media (max-width: 768px) {
-            .sidebar {
-                position: fixed; top: var(--header-h); left: 0; bottom: 0;
-                transform: translateX(-100%); z-index: 1500;
-                background: rgba(15,15,15,0.97); width: 280px;
-            }
+            .sidebar { position: fixed; top: var(--header-h); left: 0; bottom: 0; transform: translateX(-100%); z-index: 1500; background: rgba(15,15,15,0.97); width: 280px; }
             .sidebar.mobile-open { transform: translateX(0); }
-            .sidebar-overlay {
-                display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5);
-                z-index: 1400;
-            }
+            .sidebar-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 1400; }
             .sidebar-overlay.active { display: block; }
             .menu-toggle { display: flex; }
             .main-area { padding: 16px 10px; }
             .map-header { padding: 14px 18px; }
-            .map-header h2 { font-size: 1rem; }
             .map-filters button { padding: 6px 12px; font-size: 0.7rem; }
             #mapContainer { min-height: 400px; }
             .toast-container { right: 10px; left: 10px; align-items: stretch; }
@@ -449,9 +329,7 @@
     </style>
 </head>
 <body>
-
     <canvas id="particlesCanvas" aria-hidden="true"></canvas>
-
     <div class="a11y-panel" id="a11yPanel" role="region" aria-label="Acessibilidade">
         <span style="font-weight:700;color:#fff;">Acessibilidade:</span>
         <button id="toggleContrast" aria-label="Alto contraste"><i class="fa-solid fa-circle-half-stroke"></i> Contraste</button>
@@ -459,42 +337,29 @@
         <button id="toggleTheme" aria-label="Alternar tema"><i class="fa-solid fa-moon"></i> Tema</button>
         <button id="toggleFocus" aria-label="Modo foco"><i class="fa-solid fa-expand"></i> Foco</button>
     </div>
-    <button class="a11y-fab" id="a11yFab" aria-label="Opções de acessibilidade" title="Acessibilidade">
-        <i class="fa-solid fa-universal-access"></i>
-    </button>
-
+    <button class="a11y-fab" id="a11yFab" aria-label="Opções de acessibilidade" title="Acessibilidade"><i class="fa-solid fa-universal-access"></i></button>
     <div class="toast-container" id="toastContainer" role="status" aria-live="polite"></div>
     <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
-    <!-- Header -->
     <header class="app-header" id="appHeader" role="banner">
         <div style="display:flex; align-items:center; gap:16px;">
-            <button class="menu-toggle" id="menuToggle" aria-label="Abrir menu" title="Menu">
-                <i class="fa-solid fa-bars"></i>
-            </button>
+            <button class="menu-toggle" id="menuToggle" aria-label="Abrir menu" title="Menu"><i class="fa-solid fa-bars"></i></button>
             <a href="10.html" class="brand" aria-label="00brother - Ir para o início">
                 <div class="logo-circle" id="logoCircle">00</div>
                 <h1>00brother <span>Fechado com você</span></h1>
             </a>
         </div>
         <div class="header-actions">
-            <button popovertarget="searchPopover" aria-label="Buscar" title="Buscar">
-                <i class="fa-solid fa-magnifying-glass"></i>
-            </button>
-            <a href="70.html" aria-label="Notificações" title="Notificações" style="position:relative;">
-                <i class="fa-solid fa-bell"></i>
-                <span class="badge-dot" aria-hidden="true"></span>
-            </a>
+            <button popovertarget="searchPopover" aria-label="Buscar" title="Buscar"><i class="fa-solid fa-magnifying-glass"></i></button>
+            <a href="70.html" aria-label="Notificações" title="Notificações" style="position:relative;"><i class="fa-solid fa-bell"></i><span class="badge-dot" aria-hidden="true"></span></a>
         </div>
     </header>
 
-    <!-- Popover de busca -->
     <div id="searchPopover" popover style="position:fixed;top:80px;left:50%;transform:translateX(-50%);background:var(--glass-strong);backdrop-filter:blur(30px);border:1px solid var(--glass-border);border-radius:var(--radius-lg);padding:16px;width:min(400px,90vw);z-index:5000;color:var(--text-main);">
         <input type="text" placeholder="Buscar na cidade..." style="width:100%;padding:12px 16px;border-radius:var(--radius-full);border:1px solid var(--glass-border);background:var(--surface);color:var(--text-main);font-size:0.9rem;outline:none;">
     </div>
 
     <div class="app-layout">
-        <!-- Sidebar -->
         <aside class="sidebar" id="sidebar" role="navigation" aria-label="Menu principal">
             <span class="sidebar-nav-label">Navegação</span>
             <a href="10.html"><i class="fa-solid fa-house"></i> Início</a>
@@ -510,7 +375,6 @@
             <a href="40.html" class="new-post-btn"><i class="fa-solid fa-plus"></i> Nova Ocorrência</a>
         </aside>
 
-        <!-- Main -->
         <main class="main-area">
             <div class="map-wrapper">
                 <div class="map-card">
@@ -523,20 +387,25 @@
                             <button data-filter="onibus"><i class="fa-solid fa-bus"></i> Ônibus</button>
                             <button data-filter="evento"><i class="fa-solid fa-calendar-star"></i> Eventos</button>
                             <button data-filter="obras"><i class="fa-solid fa-cone-stripe"></i> Obras</button>
+                            <button data-filter="escola"><i class="fa-solid fa-graduation-cap"></i> Escolas</button>
+                            <button data-filter="restaurante"><i class="fa-solid fa-utensils"></i> Restaurantes</button>
+                            <button data-filter="parque"><i class="fa-solid fa-tree"></i> Parques</button>
                         </div>
                     </div>
                     <div id="mapContainer"></div>
                     <div class="map-legend">
                         <span><span class="legend-dot farmacia"></span> Farmácia</span>
                         <span><span class="legend-dot hospital"></span> Hospital</span>
-                        <span><span class="legend-dot onibus"></span> Terminal de Ônibus</span>
+                        <span><span class="legend-dot onibus"></span> Ônibus</span>
                         <span><span class="legend-dot evento"></span> Evento</span>
                         <span><span class="legend-dot obras"></span> Obras</span>
+                        <span><span class="legend-dot escola"></span> Escola</span>
+                        <span><span class="legend-dot restaurante"></span> Restaurante</span>
+                        <span><span class="legend-dot parque"></span> Parque</span>
                     </div>
                 </div>
             </div>
 
-            <!-- Widgets -->
             <aside class="widget-panel" aria-label="Widgets laterais">
                 <div class="widget-card"><h4>🌤️ Clima na Cidade</h4><div class="weather-row"><span class="icon"><i class="fa-solid fa-sun"></i></span><span class="temp">26°C</span></div><p style="font-size:0.8rem;color:var(--text-dim);margin-top:4px;">Céu limpo • Arapongas</p></div>
                 <div class="widget-card"><h4>⚡ Acesso Rápido</h4><div class="quick-links"><a href="30.html"><i class="fa-solid fa-location-dot"></i> Farmácias de Plantão</a><a href="30.html"><i class="fa-solid fa-bus"></i> Horários de Ônibus</a><a href="40.html"><i class="fa-solid fa-circle-exclamation"></i> Reportar Problema</a><a href="110.html"><i class="fa-solid fa-syringe"></i> Vacinação</a></div></div>
@@ -545,13 +414,10 @@
         </main>
     </div>
 
-    <!-- Leaflet JS -->
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
-
     <script>
         'use strict';
 
-        // ========== CANVAS PARTICLES ==========
         (function() {
             const canvas = document.getElementById('particlesCanvas');
             const ctx = canvas.getContext('2d');
@@ -579,11 +445,9 @@
             if (mq.matches) { cancelAnimationFrame(animationId); canvas.style.display = 'none'; }
         })();
 
-        // ========== SIDEBAR MOBILE ==========
         const sidebar = document.getElementById('sidebar');
         const overlay = document.getElementById('sidebarOverlay');
         const menuToggle = document.getElementById('menuToggle');
-
         function openSidebar() { sidebar.classList.add('mobile-open'); overlay.classList.add('active'); document.body.style.overflow = 'hidden'; }
         function closeSidebar() { sidebar.classList.remove('mobile-open'); overlay.classList.remove('active'); document.body.style.overflow = ''; }
         menuToggle.addEventListener('click', () => sidebar.classList.contains('mobile-open') ? closeSidebar() : openSidebar());
@@ -595,7 +459,6 @@
             sidebar.querySelectorAll('a').forEach(link => link.classList.toggle('active', link.getAttribute('href') === current));
         })();
 
-        // ========== ACESSIBILIDADE ==========
         const a11yPanel = document.getElementById('a11yPanel');
         const a11yFab = document.getElementById('a11yFab');
         let a11yVisible = false;
@@ -654,31 +517,35 @@
 
         // ========== MAPA INTERATIVO ==========
         (function() {
-            // Coordenadas centrais de Arapongas - PR
             const arapongasLat = -23.4195;
             const arapongasLng = -51.4244;
 
+            // Modo claro: tile layer padrão OpenStreetMap
             const map = L.map('mapContainer').setView([arapongasLat, arapongasLng], 14);
 
-            // Tile layer escuro para combinar com o tema
-            L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
-                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
-                subdomains: 'abcd',
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
                 maxZoom: 19
             }).addTo(map);
 
-            // Ícones personalizados
+            // Ícones e cores
             const iconColors = {
                 farmacia: '#2ecc71',
                 hospital: '#e74c3c',
                 onibus: '#3498db',
                 evento: '#f39c12',
-                obras: '#95a5a6'
+                obras: '#95a5a6',
+                escola: '#9b59b6',
+                restaurante: '#e67e22',
+                delegacia: '#34495e',
+                banco: '#1abc9c',
+                correios: '#f1c40f',
+                parque: '#27ae60'
             };
 
             function createIcon(color) {
                 return L.divIcon({
-                    html: `<div style="background:${color};width:28px;height:28px;border-radius:50%;border:2px solid #fff;box-shadow:0 0 12px ${color};display:flex;align-items:center;justify-content:center;font-size:14px;"><i class="fa-solid fa-circle" style="color:transparent;"></i></div>`,
+                    html: `<div style="background:${color};width:28px;height:28px;border-radius:50%;border:2px solid #fff;box-shadow:0 0 12px ${color};"></div>`,
                     className: '',
                     iconSize: [28, 28],
                     iconAnchor: [14, 14],
@@ -686,40 +553,65 @@
                 });
             }
 
-            const icons = {
-                farmacia: createIcon(iconColors.farmacia),
-                hospital: createIcon(iconColors.hospital),
-                onibus: createIcon(iconColors.onibus),
-                evento: createIcon(iconColors.evento),
-                obras: createIcon(iconColors.obras)
-            };
+            const icons = {};
+            Object.keys(iconColors).forEach(tipo => {
+                icons[tipo] = createIcon(iconColors[tipo]);
+            });
 
-            // Pontos de interesse em Arapongas (coordenadas aproximadas reais)
+            // Pontos de interesse expandidos com fotos (imagens genéricas do Unsplash)
             const pontos = [
-                { lat: -23.4150, lng: -51.4280, tipo: 'hospital', nome: 'Hospital Regional de Arapongas', desc: 'Atendimento 24h • Pronto-socorro' },
-                { lat: -23.4180, lng: -51.4300, tipo: 'hospital', nome: 'Santa Casa de Arapongas', desc: 'Atendimento de urgência e emergência' },
-                { lat: -23.4220, lng: -51.4200, tipo: 'farmacia', nome: 'Farmácia São Paulo', desc: 'Plantão 24h • Av. Arapongas, 1234' },
-                { lat: -23.4165, lng: -51.4250, tipo: 'farmacia', nome: 'DrogaRaia', desc: 'Aberto até 23h • Rua Juriti, 567' },
-                { lat: -23.4200, lng: -51.4180, tipo: 'farmacia', nome: 'Farmácia Nissei', desc: 'Plantão • Rua Sabiá, 890' },
-                { lat: -23.4250, lng: -51.4320, tipo: 'onibus', nome: 'Terminal Rodoviário', desc: 'Linhas intermunicipais e interestaduais' },
-                { lat: -23.4120, lng: -51.4220, tipo: 'onibus', nome: 'Terminal Urbano Central', desc: 'Integração de linhas municipais' },
-                { lat: -23.4190, lng: -51.4350, tipo: 'evento', nome: 'Praça da Matriz', desc: 'Show gratuito domingo às 18h 🎶' },
-                { lat: -23.4170, lng: -51.4150, tipo: 'evento', nome: 'Centro de Eventos', desc: 'Feira de Artesanato • Sáb e Dom' },
-                { lat: -23.4215, lng: -51.4275, tipo: 'obras', nome: 'Av. Central • Drenagem', desc: 'Interdição parcial até 20/11 🚧' },
-                { lat: -23.4130, lng: -51.4190, tipo: 'obras', nome: 'Rua das Flores', desc: 'Recapeamento asfáltico • Trânsito lento' },
+                // Hospitais
+                { lat: -23.4150, lng: -51.4280, tipo: 'hospital', nome: 'Hospital Regional de Arapongas', desc: 'Atendimento 24h • Pronto-socorro', img: 'https://images.unsplash.com/photo-1586773860418-d37222d8fce3?auto=format&fit=crop&w=400&q=80' },
+                { lat: -23.4180, lng: -51.4300, tipo: 'hospital', nome: 'Santa Casa de Arapongas', desc: 'Urgência e emergência', img: 'https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?auto=format&fit=crop&w=400&q=80' },
+                // Farmácias
+                { lat: -23.4220, lng: -51.4200, tipo: 'farmacia', nome: 'Farmácia São Paulo', desc: 'Plantão 24h • Av. Arapongas, 1234', img: 'https://images.unsplash.com/photo-1587854692152-cbe660dbde88?auto=format&fit=crop&w=400&q=80' },
+                { lat: -23.4165, lng: -51.4250, tipo: 'farmacia', nome: 'DrogaRaia', desc: 'Aberto até 23h • Rua Juriti, 567', img: 'https://images.unsplash.com/photo-1559526323-9c2d5c2e8b2a?auto=format&fit=crop&w=400&q=80' },
+                { lat: -23.4200, lng: -51.4180, tipo: 'farmacia', nome: 'Farmácia Nissei', desc: 'Plantão • Rua Sabiá, 890', img: 'https://images.unsplash.com/photo-1624628639857-6c9eb5b8d8e7?auto=format&fit=crop&w=400&q=80' },
+                { lat: -23.4100, lng: -51.4210, tipo: 'farmacia', nome: 'Farmácia Pague Menos', desc: 'Aberto 24h • Av. Maracanã, 450', img: 'https://images.unsplash.com/photo-1590080875519-7b4f3f15e4c3?auto=format&fit=crop&w=400&q=80' },
+                // Ônibus
+                { lat: -23.4250, lng: -51.4320, tipo: 'onibus', nome: 'Terminal Rodoviário', desc: 'Linhas intermunicipais e interestaduais', img: 'https://images.unsplash.com/photo-1544620347-c4fd4a3c0a5a?auto=format&fit=crop&w=400&q=80' },
+                { lat: -23.4120, lng: -51.4220, tipo: 'onibus', nome: 'Terminal Urbano Central', desc: 'Integração de linhas municipais', img: 'https://images.unsplash.com/photo-1570125909232-eb26371b1ed7?auto=format&fit=crop&w=400&q=80' },
+                // Eventos
+                { lat: -23.4190, lng: -51.4350, tipo: 'evento', nome: 'Praça da Matriz', desc: 'Show gratuito domingo às 18h 🎶', img: 'https://images.unsplash.com/photo-1501281668745-f7f57925c3b4?auto=format&fit=crop&w=400&q=80' },
+                { lat: -23.4170, lng: -51.4150, tipo: 'evento', nome: 'Centro de Eventos', desc: 'Feira de Artesanato • Sáb e Dom', img: 'https://images.unsplash.com/photo-1518895949257-7621c3b2b5f6?auto=format&fit=crop&w=400&q=80' },
+                // Obras
+                { lat: -23.4215, lng: -51.4275, tipo: 'obras', nome: 'Av. Central • Drenagem', desc: 'Interdição parcial até 20/11 🚧', img: 'https://images.unsplash.com/photo-1594402281535-1b0f4a2c0b0e?auto=format&fit=crop&w=400&q=80' },
+                { lat: -23.4130, lng: -51.4190, tipo: 'obras', nome: 'Rua das Flores', desc: 'Recapeamento asfáltico • Trânsito lento', img: 'https://images.unsplash.com/photo-1619689393467-3e39e4a860b9?auto=format&fit=crop&w=400&q=80' },
+                // Escolas
+                { lat: -23.4110, lng: -51.4290, tipo: 'escola', nome: 'Escola Municipal Monteiro Lobato', desc: 'Ensino fundamental I e II', img: 'https://images.unsplash.com/photo-1497633762265-9d179a990aa6?auto=format&fit=crop&w=400&q=80' },
+                { lat: -23.4235, lng: -51.4160, tipo: 'escola', nome: 'Colégio Estadual Carlos Drummond', desc: 'Ensino médio e técnico', img: 'https://images.unsplash.com/photo-1503676260728-1c00da094a0b?auto=format&fit=crop&w=400&q=80' },
+                // Restaurantes
+                { lat: -23.4175, lng: -51.4230, tipo: 'restaurante', nome: 'Restaurante Sabor da Terra', desc: 'Comida caseira • Aberto todos os dias', img: 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=400&q=80' },
+                { lat: -23.4205, lng: -51.4215, tipo: 'restaurante', nome: 'Pizzaria Forno a Lenha', desc: 'Rodízio aos sábados', img: 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=400&q=80' },
+                { lat: -23.4140, lng: -51.4260, tipo: 'restaurante', nome: 'Café Colonial Arapongas', desc: 'Café colonial com produtos locais', img: 'https://images.unsplash.com/photo-1504630083234-14187a9df0f5?auto=format&fit=crop&w=400&q=80' },
+                // Parques
+                { lat: -23.4090, lng: -51.4180, tipo: 'parque', nome: 'Parque das Nações', desc: 'Pista de caminhada, playground', img: 'https://images.unsplash.com/photo-1596997000103-e597b3ca50df?auto=format&fit=crop&w=400&q=80' },
+                { lat: -23.4260, lng: -51.4300, tipo: 'parque', nome: 'Jardim Petrópolis', desc: 'Novo parquinho inclusivo', img: 'https://images.unsplash.com/photo-1588668214407-6e7e1f9a7e7f?auto=format&fit=crop&w=400&q=80' },
+                // Bancos
+                { lat: -23.4185, lng: -51.4240, tipo: 'banco', nome: 'Banco do Brasil', desc: 'Agência centro', img: 'https://images.unsplash.com/photo-1501167786227-4cba60f6d58f?auto=format&fit=crop&w=400&q=80' },
+                { lat: -23.4210, lng: -51.4190, tipo: 'banco', nome: 'Caixa Econômica Federal', desc: 'Agência centro', img: 'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&w=400&q=80' },
+                // Correios
+                { lat: -23.4192, lng: -51.4225, tipo: 'correios', nome: 'Agência dos Correios', desc: 'Encomendas e serviços postais', img: 'https://images.unsplash.com/photo-1586110741476-3b44b5ff1e5e?auto=format&fit=crop&w=400&q=80' },
+                // Delegacia
+                { lat: -23.4155, lng: -51.4310, tipo: 'delegacia', nome: 'Delegacia de Polícia Civil', desc: 'Registro de ocorrências', img: 'https://images.unsplash.com/photo-1581376121647-2f0c8bdf2f0f?auto=format&fit=crop&w=400&q=80' }
             ];
 
-            // Grupos de marcadores por tipo
             const markerGroups = {};
             Object.keys(icons).forEach(tipo => { markerGroups[tipo] = L.layerGroup().addTo(map); });
 
-            const allMarkers = [];
-
             pontos.forEach(p => {
-                const marker = L.marker([p.lat, p.lng], { icon: icons[p.tipo] })
-                    .bindPopup(`<strong>${p.nome}</strong>${p.desc}`)
+                const popupContent = `
+                    <div class="popup-card">
+                        <img src="${p.img}" alt="${p.nome}" class="popup-img" onerror="this.style.display='none'">
+                        <div class="popup-body">
+                            <strong>${p.nome}</strong>
+                            <small>${p.desc}</small>
+                        </div>
+                    </div>
+                `;
+                L.marker([p.lat, p.lng], { icon: icons[p.tipo] })
+                    .bindPopup(popupContent, { maxWidth: 280 })
                     .addTo(markerGroups[p.tipo]);
-                allMarkers.push({ marker, tipo: p.tipo });
             });
 
             // Filtros
@@ -745,32 +637,28 @@
                 });
             });
 
-            // Ajustar mapa ao redimensionar
             window.addEventListener('resize', () => { map.invalidateSize(); });
 
             // Geolocalização
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(
                     (pos) => {
-                        const userLat = pos.coords.latitude;
-                        const userLng = pos.coords.longitude;
                         const userIcon = L.divIcon({
                             html: `<div style="background:var(--primary);width:20px;height:20px;border-radius:50%;border:3px solid #000;box-shadow:0 0 20px var(--primary-glow);animation:pulseBadge 2s ease-in-out infinite;"></div>`,
                             className: '',
                             iconSize: [20, 20],
                             iconAnchor: [10, 10]
                         });
-                        L.marker([userLat, userLng], { icon: userIcon })
+                        L.marker([pos.coords.latitude, pos.coords.longitude], { icon: userIcon })
                             .bindPopup('<strong>📍 Você está aqui</strong>')
                             .addTo(map);
-                        map.setView([userLat, userLng], 14);
+                        map.setView([pos.coords.latitude, pos.coords.longitude], 14);
                         showToast('📍 Localização encontrada!');
                     },
                     () => { showToast('Não foi possível obter sua localização'); }
                 );
             }
 
-            // Invalidade size após carregamento completo
             setTimeout(() => { map.invalidateSize(); }, 300);
         })();
     </script>
