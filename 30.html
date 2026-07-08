@@ -1,0 +1,778 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>00brother – Mapa da Cidade</title>
+    <meta name="description" content="00brother - Mapa interativo de Arapongas. Encontre farmácias, hospitais, pontos de ônibus e muito mais.">
+    <meta name="theme-color" content="#0f0f0f">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+    <!-- Font Awesome 6 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <!-- Google Fonts (Inter) -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800;14..32,900&display=swap" rel="stylesheet">
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+
+    <style>
+        /* ============================================================
+           DESIGN SYSTEM — TOKENS & VARIÁVEIS (2025)
+           ============================================================ */
+        :root {
+            --primary: #FFD700;
+            --primary-glow: rgba(255, 215, 0, 0.25);
+            --primary-glass: rgba(255, 215, 0, 0.08);
+            --bg: #0f0f0f;
+            --bg-elevated: rgba(255, 255, 255, 0.03);
+            --surface: rgba(255, 255, 255, 0.04);
+            --surface-hover: rgba(255, 255, 255, 0.07);
+            --glass: rgba(255, 255, 255, 0.05);
+            --glass-strong: rgba(255, 255, 255, 0.1);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --text-main: #ffffff;
+            --text-secondary: #b0b0b0;
+            --text-dim: #707070;
+            --danger: #ff4444;
+            --success: #2ecc71;
+            --info: #3498db;
+            --shadow-xs: 0 1px 3px rgba(0,0,0,0.3);
+            --shadow-sm: 0 4px 12px rgba(0,0,0,0.4);
+            --shadow-md: 0 8px 28px rgba(0,0,0,0.5);
+            --shadow-lg: 0 20px 60px rgba(0,0,0,0.7);
+            --shadow-glow: 0 0 40px rgba(255,215,0,0.2);
+            --shadow-glow-strong: 0 0 80px rgba(255,215,0,0.4);
+            --radius-xs: 6px;
+            --radius-sm: 10px;
+            --radius-md: 16px;
+            --radius-lg: 24px;
+            --radius-xl: 32px;
+            --radius-full: 9999px;
+            --ease-out-expo: cubic-bezier(0.19, 1, 0.22, 1);
+            --ease-out-back: cubic-bezier(0.34, 1.56, 0.64, 1);
+            --ease-spring: cubic-bezier(0.34, 1.8, 0.64, 1);
+            --duration-instant: 80ms;
+            --duration-fast: 180ms;
+            --duration-normal: 350ms;
+            --duration-slow: 600ms;
+            --text-body: clamp(0.875rem, 0.85rem + 0.1vw, 0.95rem);
+            --text-small: clamp(0.7rem, 0.68rem + 0.08vw, 0.8rem);
+            --header-h: 72px;
+            --sidebar-w: 260px;
+            --widget-w: 290px;
+            --safe-bottom: env(safe-area-inset-bottom, 16px);
+            --safe-top: env(safe-area-inset-top, 0px);
+        }
+
+        @media (prefers-color-scheme: light) {
+            :root {
+                --bg: #f0f2f5;
+                --bg-elevated: rgba(0,0,0,0.02);
+                --surface: rgba(0,0,0,0.03);
+                --surface-hover: rgba(0,0,0,0.06);
+                --glass: rgba(255,255,255,0.7);
+                --glass-strong: rgba(255,255,255,0.9);
+                --glass-border: rgba(0,0,0,0.08);
+                --text-main: #1a1a1a;
+                --text-secondary: #555;
+                --text-dim: #999;
+                --primary-glow: rgba(255,215,0,0.4);
+            }
+        }
+        body.high-contrast {
+            --bg: #000 !important;
+            --text-main: #fff !important;
+            --surface: #111 !important;
+            --primary: #FFFF00 !important;
+            --glass-border: #fff !important;
+            --primary-glow: rgba(255,255,0,0.6) !important;
+        }
+
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text-main);
+            min-height: 100vh;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+            line-height: 1.6;
+            transition: background var(--duration-normal) var(--ease-out-expo);
+            font-size: var(--text-body);
+        }
+        body::after {
+            content: '';
+            position: fixed; inset: 0;
+            background: radial-gradient(ellipse at 30% 0%, rgba(255,215,0,0.05) 0%, transparent 50%),
+                        radial-gradient(ellipse at 70% 100%, rgba(255,140,0,0.03) 0%, transparent 50%);
+            pointer-events: none; z-index: -1;
+            animation: ambientGlow 12s ease-in-out infinite alternate;
+        }
+        @keyframes ambientGlow {
+            0% { opacity: 0.7; }
+            100% { opacity: 1; }
+        }
+        a { color: inherit; text-decoration: none; }
+        button { cursor: pointer; border: none; background: none; color: inherit; font: inherit; }
+        img { max-width: 100%; display: block; }
+        ::selection { background: var(--primary); color: #000; }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.3); }
+
+        #particlesCanvas {
+            position: fixed; inset: 0; z-index: -2; pointer-events: none;
+            opacity: 0.25;
+        }
+
+        /* ============================================================
+           HEADER
+           ============================================================ */
+        .app-header {
+            position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+            height: var(--header-h); padding: 0 24px;
+            background: rgba(15,15,15,0.7); backdrop-filter: blur(30px) saturate(200%);
+            -webkit-backdrop-filter: blur(30px) saturate(200%);
+            border-bottom: 1px solid var(--glass-border);
+            display: flex; justify-content: space-between; align-items: center;
+            transition: background var(--duration-normal), box-shadow var(--duration-normal);
+        }
+        .app-header.scrolled { box-shadow: var(--shadow-md); }
+        .brand { display: flex; align-items: center; gap: 12px; user-select: none; }
+        .logo-circle {
+            width: 44px; height: 44px; background: var(--primary);
+            border-radius: var(--radius-sm); display: flex; align-items: center;
+            justify-content: center; font-weight: 900; color: #000;
+            font-size: 1.2rem; box-shadow: 0 0 24px var(--primary-glow);
+            transition: transform var(--duration-normal) var(--ease-spring), box-shadow var(--duration-normal);
+            position: relative; overflow: hidden;
+        }
+        .logo-circle::after {
+            content: '';
+            position: absolute; inset: -20%; background: radial-gradient(circle, rgba(255,255,255,0.8) 0%, transparent 70%);
+            opacity: 0; transition: opacity var(--duration-fast);
+        }
+        .logo-circle:hover::after { opacity: 0.4; }
+        .logo-circle:hover { transform: scale(1.08); box-shadow: 0 0 40px var(--primary-glow); }
+        .logo-circle:active { transform: scale(0.94); }
+        .brand h1 {
+            font-size: clamp(1.2rem, 1.1rem + 0.3vw, 1.4rem);
+            font-weight: 800; letter-spacing: -0.5px; line-height: 1.1;
+        }
+        .brand h1 span {
+            display: block; font-size: 0.5rem; font-weight: 500;
+            letter-spacing: 2.5px; text-transform: uppercase; color: var(--text-dim);
+        }
+        .header-actions { display: flex; gap: 20px; align-items: center; }
+        .header-actions a, .header-actions button {
+            color: var(--text-secondary); font-size: 1.15rem; transition: var(--duration-fast);
+            position: relative; width: 38px; height: 38px; display: flex;
+            align-items: center; justify-content: center; border-radius: 50%;
+        }
+        .header-actions a:hover, .header-actions button:hover {
+            color: var(--primary); background: var(--primary-glass);
+        }
+        .badge-dot {
+            position: absolute; top: 4px; right: 4px; width: 9px; height: 9px;
+            background: var(--danger); border-radius: 50%; border: 2px solid var(--bg);
+            animation: pulseBadge 2s ease-in-out infinite;
+        }
+        @keyframes pulseBadge {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.3); }
+        }
+        .menu-toggle { display: none; }
+
+        /* ============================================================
+           SIDEBAR
+           ============================================================ */
+        .sidebar {
+            width: var(--sidebar-w); flex-shrink: 0;
+            padding: 20px 14px; border-right: 1px solid var(--glass-border);
+            background: rgba(15,15,15,0.3); backdrop-filter: blur(10px);
+            display: flex; flex-direction: column; gap: 4px;
+            position: sticky; top: var(--header-h);
+            height: calc(100vh - var(--header-h));
+            overflow-y: auto; z-index: 500;
+            transition: transform var(--duration-normal) var(--ease-out-expo);
+        }
+        .sidebar-nav-label {
+            font-size: 0.6rem; text-transform: uppercase; letter-spacing: 2.5px;
+            color: var(--text-dim); padding: 10px 14px 6px; font-weight: 700;
+        }
+        .sidebar a {
+            display: flex; align-items: center; gap: 14px; padding: 11px 16px;
+            border-radius: var(--radius-md); color: var(--text-secondary);
+            font-weight: 500; font-size: 0.88rem; transition: var(--duration-fast);
+            position: relative;
+        }
+        .sidebar a::before {
+            content: ''; position: absolute; left: 0; top: 50%; transform: translateY(-50%);
+            width: 3px; height: 0; background: var(--primary); border-radius: 0 3px 3px 0;
+            transition: height var(--duration-fast) var(--ease-out-expo);
+        }
+        .sidebar a:hover { background: var(--surface-hover); color: var(--primary); }
+        .sidebar a.active {
+            background: var(--primary-glass); color: var(--primary); font-weight: 700;
+        }
+        .sidebar a.active::before { height: 24px; }
+        .sidebar a i { width: 22px; text-align: center; font-size: 1.1rem; }
+        .sidebar .new-post-btn {
+            background: linear-gradient(135deg, var(--primary), #ffaa00);
+            color: #000; justify-content: center; font-weight: 700;
+            margin-top: 14px; border-radius: var(--radius-lg); padding: 14px;
+            font-size: 0.95rem; gap: 8px; box-shadow: 0 8px 24px rgba(255,215,0,0.3);
+            transition: all var(--duration-normal) var(--ease-spring);
+        }
+        .sidebar .new-post-btn:hover {
+            transform: translateY(-3px); box-shadow: 0 12px 32px rgba(255,215,0,0.5);
+            filter: brightness(1.1);
+        }
+
+        /* ============================================================
+           MAIN AREA
+           ============================================================ */
+        .app-layout { display: flex; min-height: 100vh; padding-top: var(--header-h); }
+        .main-area { flex: 1; display: flex; justify-content: center; padding: 28px 36px; gap: 36px; min-width: 0; }
+
+        /* ============================================================
+           MAP CONTAINER
+           ============================================================ */
+        .map-wrapper {
+            flex: 1; max-width: 900px; min-width: 0;
+            display: flex; flex-direction: column; gap: 20px;
+        }
+        .map-card {
+            background: var(--surface); border: 1px solid var(--glass-border);
+            border-radius: var(--radius-lg); overflow: hidden;
+            backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+            box-shadow: var(--shadow-md);
+            flex: 1; display: flex; flex-direction: column;
+        }
+        .map-header {
+            padding: 18px 24px; border-bottom: 1px solid var(--glass-border);
+            display: flex; justify-content: space-between; align-items: center;
+            flex-wrap: wrap; gap: 12px;
+        }
+        .map-header h2 {
+            font-size: 1.2rem; font-weight: 700; display: flex; align-items: center; gap: 10px;
+        }
+        .map-header h2 i { color: var(--primary); }
+        .map-filters { display: flex; gap: 8px; flex-wrap: wrap; }
+        .map-filters button {
+            padding: 8px 16px; border-radius: var(--radius-full); font-size: 0.75rem;
+            font-weight: 600; border: 1px solid var(--glass-border);
+            color: var(--text-secondary); background: var(--surface);
+            transition: all var(--duration-fast); display: flex; align-items: center; gap: 6px;
+        }
+        .map-filters button:hover, .map-filters button.active {
+            background: var(--primary-glass); color: var(--primary); border-color: var(--primary);
+        }
+        .map-filters button.active { background: var(--primary); color: #000; border-color: var(--primary); }
+        #mapContainer {
+            flex: 1; min-height: 520px; width: 100%;
+            position: relative; z-index: 1;
+        }
+        .leaflet-container {
+            background: #1a1a1a !important;
+            font-family: 'Inter', sans-serif !important;
+        }
+        /* Custom marker popup */
+        .leaflet-popup-content-wrapper {
+            background: rgba(20,20,20,0.95) !important;
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            color: #fff !important;
+            border-radius: var(--radius-md) !important;
+            border: 1px solid var(--glass-border);
+            box-shadow: var(--shadow-lg);
+            padding: 4px;
+        }
+        .leaflet-popup-content {
+            margin: 12px 16px;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+        .leaflet-popup-content strong { color: var(--primary); display: block; margin-bottom: 4px; }
+        .leaflet-popup-tip { background: rgba(20,20,20,0.95) !important; }
+        .leaflet-popup-close-button { color: #fff !important; }
+
+        /* Legend */
+        .map-legend {
+            display: flex; gap: 16px; padding: 12px 24px;
+            border-top: 1px solid var(--glass-border);
+            flex-wrap: wrap; font-size: 0.75rem; color: var(--text-dim);
+        }
+        .map-legend span { display: flex; align-items: center; gap: 6px; }
+        .legend-dot {
+            width: 10px; height: 10px; border-radius: 50%; display: inline-block;
+        }
+        .legend-dot.farmacia { background: #2ecc71; }
+        .legend-dot.hospital { background: #e74c3c; }
+        .legend-dot.onibus { background: #3498db; }
+        .legend-dot.evento { background: #f39c12; }
+        .legend-dot.obras { background: #95a5a6; }
+
+        /* ============================================================
+           WIDGET PANEL
+           ============================================================ */
+        .widget-panel {
+            width: var(--widget-w); flex-shrink: 0; display: flex; flex-direction: column; gap: 18px;
+            position: sticky; top: calc(var(--header-h) + 28px);
+            align-self: flex-start; max-height: calc(100vh - var(--header-h) - 56px);
+            overflow-y: auto;
+        }
+        .widget-card {
+            background: var(--surface); border: 1px solid var(--glass-border);
+            border-radius: var(--radius-lg); padding: 22px;
+            backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+        }
+        .widget-card h4 {
+            font-size: 0.8rem; font-weight: 700; margin-bottom: 14px;
+            color: var(--text-secondary); text-transform: uppercase; letter-spacing: 1.5px;
+        }
+        .weather-row { display: flex; align-items: center; gap: 14px; font-size: 2.2rem; }
+        .weather-row .icon { color: var(--primary); font-size: 2.4rem; }
+        .weather-row .temp { font-weight: 800; }
+        .quick-links { display: flex; flex-direction: column; gap: 6px; }
+        .quick-links a {
+            display: flex; align-items: center; gap: 12px; padding: 10px 14px;
+            border-radius: var(--radius-md); font-size: 0.85rem; font-weight: 500;
+            color: var(--text-secondary); transition: var(--duration-fast);
+        }
+        .quick-links a:hover { background: var(--surface-hover); color: var(--primary); }
+        .quick-links a i { width: 20px; text-align: center; color: var(--primary); }
+
+        /* ============================================================
+           TOAST
+           ============================================================ */
+        .toast-container {
+            position: fixed; top: calc(var(--header-h) + 16px); right: 24px;
+            z-index: 4000; display: flex; flex-direction: column; gap: 10px;
+            pointer-events: none;
+        }
+        .toast {
+            background: var(--glass-strong); backdrop-filter: blur(30px);
+            border: 1px solid var(--glass-border); color: var(--text-main);
+            padding: 14px 22px; border-radius: var(--radius-lg);
+            font-weight: 600; font-size: 0.85rem; box-shadow: var(--shadow-lg);
+            animation: toastIn 0.4s var(--ease-spring) forwards;
+            pointer-events: auto; max-width: 360px;
+        }
+        .toast.removing { animation: toastOut 0.3s var(--ease-out-expo) forwards; }
+        @keyframes toastIn {
+            from { opacity: 0; transform: translateX(120%) scale(0.9); }
+            to { opacity: 1; transform: translateX(0) scale(1); }
+        }
+        @keyframes toastOut {
+            from { opacity: 1; transform: translateX(0) scale(1); }
+            to { opacity: 0; transform: translateX(120%) scale(0.9); }
+        }
+
+        /* ============================================================
+           ACESSIBILIDADE
+           ============================================================ */
+        .a11y-fab {
+            position: fixed; bottom: 28px; right: 28px; z-index: 1999;
+            width: 48px; height: 48px; border-radius: 50%; background: var(--surface);
+            border: 1px solid var(--glass-border); color: var(--text-dim);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.2rem; backdrop-filter: blur(10px);
+            transition: all var(--duration-fast); box-shadow: var(--shadow-sm);
+        }
+        .a11y-fab:hover { background: var(--primary); color: #000; border-color: var(--primary); transform: scale(1.1); box-shadow: var(--shadow-glow-strong); }
+        .a11y-panel {
+            position: fixed; top: 0; left: 0; right: 0; z-index: 2001;
+            background: rgba(0,0,0,0.95); backdrop-filter: blur(20px);
+            color: #ccc; padding: 14px 5%; font-size: var(--text-small);
+            display: flex; justify-content: center; flex-wrap: wrap; align-items: center; gap: 12px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            transform: translateY(-100%); transition: transform var(--duration-normal) var(--ease-out-expo);
+        }
+        .a11y-panel.visible { transform: translateY(0); }
+        .a11y-panel button {
+            display: inline-flex; align-items: center; gap: 6px;
+            padding: 8px 16px; border-radius: var(--radius-full); border: 1px solid #555;
+            font-size: 0.75rem; font-weight: 500; transition: var(--duration-fast);
+            color: #ddd;
+        }
+        .a11y-panel button:hover, .a11y-panel button.active {
+            background: var(--primary); color: #000; border-color: var(--primary);
+        }
+
+        /* ============================================================
+           RESPONSIVO
+           ============================================================ */
+        @media (max-width: 1200px) {
+            .widget-panel { display: none; }
+            .main-area { padding: 24px 20px; }
+        }
+        @media (max-width: 768px) {
+            .sidebar {
+                position: fixed; top: var(--header-h); left: 0; bottom: 0;
+                transform: translateX(-100%); z-index: 1500;
+                background: rgba(15,15,15,0.97); width: 280px;
+            }
+            .sidebar.mobile-open { transform: translateX(0); }
+            .sidebar-overlay {
+                display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5);
+                z-index: 1400;
+            }
+            .sidebar-overlay.active { display: block; }
+            .menu-toggle { display: flex; }
+            .main-area { padding: 16px 10px; }
+            .map-header { padding: 14px 18px; }
+            .map-header h2 { font-size: 1rem; }
+            .map-filters button { padding: 6px 12px; font-size: 0.7rem; }
+            #mapContainer { min-height: 400px; }
+            .toast-container { right: 10px; left: 10px; align-items: stretch; }
+            .toast { max-width: 100%; }
+        }
+        @media (max-width: 480px) {
+            .app-header { padding: 0 12px; }
+            .brand h1 { font-size: 1.1rem; }
+            .header-actions { gap: 12px; }
+            #mapContainer { min-height: 320px; }
+        }
+    </style>
+</head>
+<body>
+
+    <canvas id="particlesCanvas" aria-hidden="true"></canvas>
+
+    <div class="a11y-panel" id="a11yPanel" role="region" aria-label="Acessibilidade">
+        <span style="font-weight:700;color:#fff;">Acessibilidade:</span>
+        <button id="toggleContrast" aria-label="Alto contraste"><i class="fa-solid fa-circle-half-stroke"></i> Contraste</button>
+        <button id="increaseFont" aria-label="Aumentar fonte"><i class="fa-solid fa-text-height"></i> A+</button>
+        <button id="toggleTheme" aria-label="Alternar tema"><i class="fa-solid fa-moon"></i> Tema</button>
+        <button id="toggleFocus" aria-label="Modo foco"><i class="fa-solid fa-expand"></i> Foco</button>
+    </div>
+    <button class="a11y-fab" id="a11yFab" aria-label="Opções de acessibilidade" title="Acessibilidade">
+        <i class="fa-solid fa-universal-access"></i>
+    </button>
+
+    <div class="toast-container" id="toastContainer" role="status" aria-live="polite"></div>
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <!-- Header -->
+    <header class="app-header" id="appHeader" role="banner">
+        <div style="display:flex; align-items:center; gap:16px;">
+            <button class="menu-toggle" id="menuToggle" aria-label="Abrir menu" title="Menu">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+            <a href="10.html" class="brand" aria-label="00brother - Ir para o início">
+                <div class="logo-circle" id="logoCircle">00</div>
+                <h1>00brother <span>Fechado com você</span></h1>
+            </a>
+        </div>
+        <div class="header-actions">
+            <button popovertarget="searchPopover" aria-label="Buscar" title="Buscar">
+                <i class="fa-solid fa-magnifying-glass"></i>
+            </button>
+            <a href="70.html" aria-label="Notificações" title="Notificações" style="position:relative;">
+                <i class="fa-solid fa-bell"></i>
+                <span class="badge-dot" aria-hidden="true"></span>
+            </a>
+        </div>
+    </header>
+
+    <!-- Popover de busca -->
+    <div id="searchPopover" popover style="position:fixed;top:80px;left:50%;transform:translateX(-50%);background:var(--glass-strong);backdrop-filter:blur(30px);border:1px solid var(--glass-border);border-radius:var(--radius-lg);padding:16px;width:min(400px,90vw);z-index:5000;color:var(--text-main);">
+        <input type="text" placeholder="Buscar na cidade..." style="width:100%;padding:12px 16px;border-radius:var(--radius-full);border:1px solid var(--glass-border);background:var(--surface);color:var(--text-main);font-size:0.9rem;outline:none;">
+    </div>
+
+    <div class="app-layout">
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar" role="navigation" aria-label="Menu principal">
+            <span class="sidebar-nav-label">Navegação</span>
+            <a href="10.html"><i class="fa-solid fa-house"></i> Início</a>
+            <a href="30.html" class="active"><i class="fa-solid fa-map-location-dot"></i> Mapa da Cidade</a>
+            <a href="70.html"><i class="fa-solid fa-bell"></i> Alertas</a>
+            <a href="90.html"><i class="fa-solid fa-calendar-days"></i> Eventos</a>
+            <a href="50.html"><i class="fa-solid fa-briefcase"></i> Vagas</a>
+            <span class="sidebar-nav-label" style="margin-top:10px;">Comunidade</span>
+            <a href="100.html"><i class="fa-solid fa-road-barrier"></i> Obras</a>
+            <a href="110.html"><i class="fa-solid fa-hospital"></i> Saúde</a>
+            <a href="120.html"><i class="fa-solid fa-graduation-cap"></i> Escolas</a>
+            <a href="60.html"><i class="fa-solid fa-user"></i> Meu Perfil</a>
+            <a href="40.html" class="new-post-btn"><i class="fa-solid fa-plus"></i> Nova Ocorrência</a>
+        </aside>
+
+        <!-- Main -->
+        <main class="main-area">
+            <div class="map-wrapper">
+                <div class="map-card">
+                    <div class="map-header">
+                        <h2><i class="fa-solid fa-map-pin"></i> Mapa Interativo • Arapongas</h2>
+                        <div class="map-filters">
+                            <button class="active" data-filter="all"><i class="fa-solid fa-layer-group"></i> Todos</button>
+                            <button data-filter="farmacia"><i class="fa-solid fa-prescription-bottle-medical"></i> Farmácias</button>
+                            <button data-filter="hospital"><i class="fa-solid fa-hospital"></i> Hospitais</button>
+                            <button data-filter="onibus"><i class="fa-solid fa-bus"></i> Ônibus</button>
+                            <button data-filter="evento"><i class="fa-solid fa-calendar-star"></i> Eventos</button>
+                            <button data-filter="obras"><i class="fa-solid fa-cone-stripe"></i> Obras</button>
+                        </div>
+                    </div>
+                    <div id="mapContainer"></div>
+                    <div class="map-legend">
+                        <span><span class="legend-dot farmacia"></span> Farmácia</span>
+                        <span><span class="legend-dot hospital"></span> Hospital</span>
+                        <span><span class="legend-dot onibus"></span> Terminal de Ônibus</span>
+                        <span><span class="legend-dot evento"></span> Evento</span>
+                        <span><span class="legend-dot obras"></span> Obras</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Widgets -->
+            <aside class="widget-panel" aria-label="Widgets laterais">
+                <div class="widget-card"><h4>🌤️ Clima na Cidade</h4><div class="weather-row"><span class="icon"><i class="fa-solid fa-sun"></i></span><span class="temp">26°C</span></div><p style="font-size:0.8rem;color:var(--text-dim);margin-top:4px;">Céu limpo • Arapongas</p></div>
+                <div class="widget-card"><h4>⚡ Acesso Rápido</h4><div class="quick-links"><a href="30.html"><i class="fa-solid fa-location-dot"></i> Farmácias de Plantão</a><a href="30.html"><i class="fa-solid fa-bus"></i> Horários de Ônibus</a><a href="40.html"><i class="fa-solid fa-circle-exclamation"></i> Reportar Problema</a><a href="110.html"><i class="fa-solid fa-syringe"></i> Vacinação</a></div></div>
+                <div class="widget-card" style="text-align:center;padding:18px;"><p style="font-size:0.75rem;color:var(--text-dim);">© 2026 00brother<br>Fechado com você.</p></div>
+            </aside>
+        </main>
+    </div>
+
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+
+    <script>
+        'use strict';
+
+        // ========== CANVAS PARTICLES ==========
+        (function() {
+            const canvas = document.getElementById('particlesCanvas');
+            const ctx = canvas.getContext('2d');
+            let particles = [];
+            let animationId;
+            const maxParticles = 50;
+
+            function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+            window.addEventListener('resize', resize);
+            resize();
+
+            class Particle {
+                constructor() { this.reset(); this.y = Math.random() * canvas.height; }
+                reset() { this.x = Math.random() * canvas.width; this.y = -10; this.size = Math.random() * 3 + 1; this.speed = Math.random() * 0.5 + 0.2; this.opacity = Math.random() * 0.5 + 0.1; this.drift = Math.random() * 0.4 - 0.2; }
+                update() { this.y += this.speed; this.x += this.drift; if (this.y > canvas.height + 10) { this.reset(); this.y = -10; } if (this.x < 0) this.x = canvas.width; if (this.x > canvas.width) this.x = 0; }
+                draw() { ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2); ctx.fillStyle = `rgba(255,215,0,${this.opacity})`; ctx.fill(); }
+            }
+
+            for (let i = 0; i < maxParticles; i++) particles.push(new Particle());
+
+            function animate() { ctx.clearRect(0, 0, canvas.width, canvas.height); particles.forEach(p => { p.update(); p.draw(); }); animationId = requestAnimationFrame(animate); }
+            animate();
+
+            const mq = window.matchMedia('(prefers-reduced-motion: reduce)');
+            if (mq.matches) { cancelAnimationFrame(animationId); canvas.style.display = 'none'; }
+        })();
+
+        // ========== SIDEBAR MOBILE ==========
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('sidebarOverlay');
+        const menuToggle = document.getElementById('menuToggle');
+
+        function openSidebar() { sidebar.classList.add('mobile-open'); overlay.classList.add('active'); document.body.style.overflow = 'hidden'; }
+        function closeSidebar() { sidebar.classList.remove('mobile-open'); overlay.classList.remove('active'); document.body.style.overflow = ''; }
+        menuToggle.addEventListener('click', () => sidebar.classList.contains('mobile-open') ? closeSidebar() : openSidebar());
+        overlay.addEventListener('click', closeSidebar);
+        sidebar.querySelectorAll('a').forEach(link => { link.addEventListener('click', () => { if (window.innerWidth <= 768) closeSidebar(); }); });
+
+        (() => {
+            const current = window.location.pathname.split('/').pop() || '30.html';
+            sidebar.querySelectorAll('a').forEach(link => link.classList.toggle('active', link.getAttribute('href') === current));
+        })();
+
+        // ========== ACESSIBILIDADE ==========
+        const a11yPanel = document.getElementById('a11yPanel');
+        const a11yFab = document.getElementById('a11yFab');
+        let a11yVisible = false;
+        a11yFab.addEventListener('click', () => { a11yVisible = !a11yVisible; a11yPanel.classList.toggle('visible', a11yVisible); a11yFab.querySelector('i').className = a11yVisible ? 'fa-solid fa-xmark' : 'fa-solid fa-universal-access'; });
+        document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && a11yVisible) { a11yVisible = false; a11yPanel.classList.remove('visible'); a11yFab.querySelector('i').className = 'fa-solid fa-universal-access'; } });
+
+        const contrastBtn = document.getElementById('toggleContrast');
+        contrastBtn.addEventListener('click', () => { document.body.classList.toggle('high-contrast'); contrastBtn.classList.toggle('active'); localStorage.setItem('highContrast', document.body.classList.contains('high-contrast')); });
+        if (localStorage.getItem('highContrast') === 'true') { document.body.classList.add('high-contrast'); contrastBtn.classList.add('active'); }
+
+        const themeBtn = document.getElementById('toggleTheme');
+        themeBtn.addEventListener('click', () => {
+            const isLight = getComputedStyle(document.documentElement).getPropertyValue('--bg').trim() === '#f0f2f5';
+            const styles = isLight ? ['#0f0f0f','#ffffff','rgba(255,255,255,0.04)','rgba(255,255,255,0.08)','#b0b0b0','#707070'] : ['#f0f2f5','#1a1a1a','rgba(0,0,0,0.03)','rgba(0,0,0,0.08)','#555','#999'];
+            ['--bg','--text-main','--surface','--glass-border','--text-secondary','--text-dim'].forEach((v,i) => document.documentElement.style.setProperty(v, styles[i]));
+            themeBtn.innerHTML = isLight ? '<i class="fa-solid fa-moon"></i> Tema' : '<i class="fa-solid fa-sun"></i> Tema';
+            localStorage.setItem('theme', isLight ? 'dark' : 'light');
+        });
+        if (localStorage.getItem('theme') === 'light') themeBtn.click();
+
+        const focusBtn = document.getElementById('toggleFocus');
+        let focusMode = false;
+        focusBtn.addEventListener('click', () => {
+            focusMode = !focusMode;
+            focusBtn.classList.toggle('active', focusMode);
+            sidebar.style.display = focusMode ? 'none' : '';
+            document.querySelector('.widget-panel') && (document.querySelector('.widget-panel').style.display = focusMode ? 'none' : '');
+            showToast(focusMode ? 'Modo foco ativado 🎯' : 'Modo foco desativado');
+        });
+
+        const fontBtn = document.getElementById('increaseFont');
+        let fontLevel = 0;
+        fontBtn.addEventListener('click', () => { fontLevel = (fontLevel + 1) % 4; document.documentElement.style.setProperty('--text-body', ['0.875rem','0.95rem','1.05rem','1.2rem'][fontLevel]); document.documentElement.style.setProperty('--text-small', ['0.7rem','0.75rem','0.85rem','0.95rem'][fontLevel]); localStorage.setItem('fontSize', fontLevel); });
+        const savedFont = localStorage.getItem('fontSize'); if (savedFont) { fontLevel = parseInt(savedFont); fontBtn.click(); }
+
+        function showToast(msg, duration = 2500) {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = 'toast'; toast.textContent = msg;
+            container.appendChild(toast);
+            const remove = () => { toast.classList.add('removing'); setTimeout(() => toast.remove(), 300); };
+            setTimeout(remove, duration);
+            toast.addEventListener('click', remove);
+            while (container.children.length > 3) { container.firstChild.remove(); }
+        }
+
+        const header = document.getElementById('appHeader');
+        window.addEventListener('scroll', () => { header.classList.toggle('scrolled', window.scrollY > 10); });
+
+        document.addEventListener('click', (e) => {
+            const popover = document.getElementById('searchPopover');
+            if (popover.matches(':popover-open') && !popover.contains(e.target) && e.target !== document.querySelector('[popovertarget="searchPopover"]')) {
+                popover.hidePopover();
+            }
+        });
+
+        // ========== MAPA INTERATIVO ==========
+        (function() {
+            // Coordenadas centrais de Arapongas - PR
+            const arapongasLat = -23.4195;
+            const arapongasLng = -51.4244;
+
+            const map = L.map('mapContainer').setView([arapongasLat, arapongasLng], 14);
+
+            // Tile layer escuro para combinar com o tema
+            L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+                subdomains: 'abcd',
+                maxZoom: 19
+            }).addTo(map);
+
+            // Ícones personalizados
+            const iconColors = {
+                farmacia: '#2ecc71',
+                hospital: '#e74c3c',
+                onibus: '#3498db',
+                evento: '#f39c12',
+                obras: '#95a5a6'
+            };
+
+            function createIcon(color) {
+                return L.divIcon({
+                    html: `<div style="background:${color};width:28px;height:28px;border-radius:50%;border:2px solid #fff;box-shadow:0 0 12px ${color};display:flex;align-items:center;justify-content:center;font-size:14px;"><i class="fa-solid fa-circle" style="color:transparent;"></i></div>`,
+                    className: '',
+                    iconSize: [28, 28],
+                    iconAnchor: [14, 14],
+                    popupAnchor: [0, -16]
+                });
+            }
+
+            const icons = {
+                farmacia: createIcon(iconColors.farmacia),
+                hospital: createIcon(iconColors.hospital),
+                onibus: createIcon(iconColors.onibus),
+                evento: createIcon(iconColors.evento),
+                obras: createIcon(iconColors.obras)
+            };
+
+            // Pontos de interesse em Arapongas (coordenadas aproximadas reais)
+            const pontos = [
+                { lat: -23.4150, lng: -51.4280, tipo: 'hospital', nome: 'Hospital Regional de Arapongas', desc: 'Atendimento 24h • Pronto-socorro' },
+                { lat: -23.4180, lng: -51.4300, tipo: 'hospital', nome: 'Santa Casa de Arapongas', desc: 'Atendimento de urgência e emergência' },
+                { lat: -23.4220, lng: -51.4200, tipo: 'farmacia', nome: 'Farmácia São Paulo', desc: 'Plantão 24h • Av. Arapongas, 1234' },
+                { lat: -23.4165, lng: -51.4250, tipo: 'farmacia', nome: 'DrogaRaia', desc: 'Aberto até 23h • Rua Juriti, 567' },
+                { lat: -23.4200, lng: -51.4180, tipo: 'farmacia', nome: 'Farmácia Nissei', desc: 'Plantão • Rua Sabiá, 890' },
+                { lat: -23.4250, lng: -51.4320, tipo: 'onibus', nome: 'Terminal Rodoviário', desc: 'Linhas intermunicipais e interestaduais' },
+                { lat: -23.4120, lng: -51.4220, tipo: 'onibus', nome: 'Terminal Urbano Central', desc: 'Integração de linhas municipais' },
+                { lat: -23.4190, lng: -51.4350, tipo: 'evento', nome: 'Praça da Matriz', desc: 'Show gratuito domingo às 18h 🎶' },
+                { lat: -23.4170, lng: -51.4150, tipo: 'evento', nome: 'Centro de Eventos', desc: 'Feira de Artesanato • Sáb e Dom' },
+                { lat: -23.4215, lng: -51.4275, tipo: 'obras', nome: 'Av. Central • Drenagem', desc: 'Interdição parcial até 20/11 🚧' },
+                { lat: -23.4130, lng: -51.4190, tipo: 'obras', nome: 'Rua das Flores', desc: 'Recapeamento asfáltico • Trânsito lento' },
+            ];
+
+            // Grupos de marcadores por tipo
+            const markerGroups = {};
+            Object.keys(icons).forEach(tipo => { markerGroups[tipo] = L.layerGroup().addTo(map); });
+
+            const allMarkers = [];
+
+            pontos.forEach(p => {
+                const marker = L.marker([p.lat, p.lng], { icon: icons[p.tipo] })
+                    .bindPopup(`<strong>${p.nome}</strong>${p.desc}`)
+                    .addTo(markerGroups[p.tipo]);
+                allMarkers.push({ marker, tipo: p.tipo });
+            });
+
+            // Filtros
+            const filterButtons = document.querySelectorAll('.map-filters button');
+            filterButtons.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    filterButtons.forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    const filter = btn.dataset.filter;
+
+                    Object.keys(markerGroups).forEach(tipo => {
+                        if (filter === 'all' || filter === tipo) {
+                            map.addLayer(markerGroups[tipo]);
+                        } else {
+                            map.removeLayer(markerGroups[tipo]);
+                        }
+                    });
+
+                    if (filter === 'all') {
+                        map.setView([arapongasLat, arapongasLng], 14);
+                    }
+                    showToast(`Mostrando: ${btn.textContent.trim()}`);
+                });
+            });
+
+            // Ajustar mapa ao redimensionar
+            window.addEventListener('resize', () => { map.invalidateSize(); });
+
+            // Geolocalização
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    (pos) => {
+                        const userLat = pos.coords.latitude;
+                        const userLng = pos.coords.longitude;
+                        const userIcon = L.divIcon({
+                            html: `<div style="background:var(--primary);width:20px;height:20px;border-radius:50%;border:3px solid #000;box-shadow:0 0 20px var(--primary-glow);animation:pulseBadge 2s ease-in-out infinite;"></div>`,
+                            className: '',
+                            iconSize: [20, 20],
+                            iconAnchor: [10, 10]
+                        });
+                        L.marker([userLat, userLng], { icon: userIcon })
+                            .bindPopup('<strong>📍 Você está aqui</strong>')
+                            .addTo(map);
+                        map.setView([userLat, userLng], 14);
+                        showToast('📍 Localização encontrada!');
+                    },
+                    () => { showToast('Não foi possível obter sua localização'); }
+                );
+            }
+
+            // Invalidade size após carregamento completo
+            setTimeout(() => { map.invalidateSize(); }, 300);
+        })();
+    </script>
+</body>
+</html>
